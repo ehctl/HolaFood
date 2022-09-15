@@ -5,7 +5,7 @@ import { View } from "../components/View";
 import { Text } from "../components/Text";
 import { FlatList } from "react-native-gesture-handler";
 import { useCallback, useEffect, useState } from "react";
-import { getStyle, wait } from "../Utils/Utils";
+import { getStyle, wait } from "../utils/Utils";
 import { ActivityIndicator, NativeSyntheticEvent, Pressable, RefreshControl, TextInputEndEditingEventData } from "react-native";
 import { StyleSheet } from "react-native"
 import { FontAwesome } from "../components/FontAwesome";

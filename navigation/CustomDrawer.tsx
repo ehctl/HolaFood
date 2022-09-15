@@ -8,7 +8,7 @@ import { AppState } from '../redux/Reducer';
 import { FontAwesome } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { DrawerActions } from '@react-navigation/native';
-import { getStyle } from '../Utils/Utils';
+import { getStyle } from '../utils/Utils';
 import { BottomTabNavigator } from './BottomTabBar';
 
 const Drawer = createDrawerNavigator()

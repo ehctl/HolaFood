@@ -3,7 +3,7 @@ import { CommandExecuter } from '../command/Command';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppState, changeApplicationState } from '../redux/Reducer';
 import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
-import { getStyle, wait } from '../Utils/Utils';
+import { getStyle, wait } from '../utils/Utils';
 import { View } from '../components/View';
 import { Button } from '../components/Button';
 import Notification from '../notification/Notification';
@@ -16,7 +16,7 @@ import { WebView } from 'react-native-webview'
 import { DrawerActions } from '@react-navigation/native';
 import { Level1Header } from '../components/Headers/Level1Header';
 import Colors from '../constants/Colors';
-import { SearchHeader } from '../components/Headers/SearchHeader';
+import { HomePageHeader } from '../components/Headers/HomePageHeader';
 import { SearchScreen } from './Search';
 
 const dummyCommand = new DummyCommand()
@@ -31,7 +31,7 @@ export const HomeScreen = ({ navigation }: any) => {
 
     useLayoutEffect(() => {
         navigation.setOptions({
-            header: (_: NativeStackHeaderProps) => <SearchHeader onSearchIconPress={() => navigation.navigate('Search')}/>
+            header: (_: NativeStackHeaderProps) => <HomePageHeader onSearchIconPress={() => navigation.navigate('Search')} />
         })
     })
 

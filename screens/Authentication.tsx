@@ -3,7 +3,7 @@ import { ActivityIndicator } from 'react-native';
 import { Button } from '../components/Button';
 import { TextInput } from '../components/TextInput';
 import { View } from '../components/View';
-import { getStyle } from '../Utils/Utils';
+import { getStyle } from '../utils/Utils';
 
 export const Authentication = ({ navigation }: any) => {
     const [authenMode, setAuthenMode] = useState(AuthenticationMode.LOGIN)

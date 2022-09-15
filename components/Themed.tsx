@@ -2,7 +2,7 @@
 import { useSelector } from 'react-redux';
 import Colors from '../constants/Colors';
 import { AppState, AppTheme } from '../redux/Reducer';
-import { loadI18N } from '../Utils/Utils';
+import { loadI18N } from '../utils/Utils';
 
 export function useThemeColor(
   props: { light?: string; dark?: string },

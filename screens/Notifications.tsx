@@ -1,5 +1,5 @@
 import { View } from "../components/View";
-import { getStyle } from "../Utils/Utils";
+import { getStyle } from "../utils/Utils";
 import { Button } from "../components/Button";
 import { useEffect, useLayoutEffect } from "react";
 import { NativeStackHeaderProps } from "@react-navigation/native-stack";

@@ -4,7 +4,7 @@ import { FontAwesomeIconType } from "../constants/FontAwesomeIconType"
 import { FlatList } from 'react-native';
 import { Button } from "../components/Button";
 import { ListRenderItemInfo, StyleSheet } from 'react-native'
-import { getStyle } from "../Utils/Utils";
+import { getStyle } from "../utils/Utils";
 import { useEffect, useLayoutEffect } from "react";
 import { NativeStackHeaderProps } from "@react-navigation/native-stack";
 import { Level1Header } from '../components/Headers/Level1Header';

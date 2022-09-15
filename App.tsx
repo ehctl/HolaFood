@@ -14,7 +14,7 @@ import { AppState } from './redux/Reducer';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useDispatch } from 'react-redux';
 import { AppState as ApplicationState } from 'react-native';
-import { Constant } from './Utils/Constant';
+import { Constant } from './utils/Constant';
 import useCachedResources from './hooks/useCachedResources';
 
 if (__DEV__) {

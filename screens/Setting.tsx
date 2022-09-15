@@ -7,12 +7,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSelector } from 'react-redux';
 import { AppState, changeTheme } from '../redux/Reducer';
 import { useDispatch } from 'react-redux';
-import { Constant } from '../Utils/Constant';
+import { Constant } from '../utils/Constant';
 import { changeLanguage } from '../redux/Reducer';
 import { useEffect, useLayoutEffect, useState } from "react";
 import { NativeStackHeaderProps } from "@react-navigation/native-stack";
 import { Level2Header } from '../components/Headers/Level2Header';
-import { getStyle } from '../Utils/Utils';
+import { getStyle } from '../utils/Utils';
 
 
 export const Setting = ({ navigation }: any) => {

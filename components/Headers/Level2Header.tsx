@@ -3,7 +3,7 @@ import { Text } from "../../components/Text";
 import { SafeAreaView } from 'react-native';
 import {  Pressable } from 'react-native';
 import { FontAwesome } from "../../components/FontAwesome";
-import { getStyle } from "../../Utils/Utils";
+import { getStyle } from "../../utils/Utils";
 
 export const Level2Header = (props: Level2HeaderProps) => {
     return (

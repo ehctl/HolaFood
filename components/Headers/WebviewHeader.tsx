@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native';
 import { Pressable } from 'react-native';
 import { FontAwesome } from "../../components/FontAwesome";
 import { Component, ReactNode } from "react";
-import { getStyle } from "../../Utils/Utils";
+import { getStyle } from "../../utils/Utils";
 
 
 export class WebViewHeader extends Component<WebviewHeaderProps, WebviewHeaderState>{

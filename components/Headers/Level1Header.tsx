@@ -4,24 +4,30 @@ import { SafeAreaView } from 'react-native';
 import { Pressable } from 'react-native';
 import { FontAwesome } from "../../components/FontAwesome";
 import { getStyle } from "../../utils/Utils";
+import { Component } from "react";
+import { Animated } from "react-native";
 
-export const Level1Header = (props: Level1HeaderProps) => {
-    return (
-        <SafeAreaView>
-            <View style={getStyle().headerContainer}>
-                {
-                    props.showIcon ?
-                        <Pressable style={getStyle().headerLeftIcon} >
-                            <FontAwesome name="bars" size={25} onPress={props.onLeftIconPress} />
-                        </Pressable> : null
-                }
-                <View style={getStyle().headerTitleCointainer}>
-                    <Text style={getStyle().headerTitle} text={props.title} />
-                </View>
-            </View>
-            {/* <View style={getStyle().headerDivider} /> */}
-        </SafeAreaView>
-    )
+
+export class Level1Header extends Component<Level1HeaderProps>{
+
+    render() {
+        return (
+            <SafeAreaView style={{ height: Level1HeaderStat.HEADER_MAX_HEIGHT, justifyContent: 'center', alignItems: 'center', backgroundColor: 'white' }}>
+                <Animated.View style={getStyle().headerContainer}>
+                    {
+                        this.props.showIcon ?
+                            <Pressable style={getStyle().headerLeftIcon} >
+                                <FontAwesome name="bars" size={25} onPress={this.props.onLeftIconPress} />
+                            </Pressable> : null
+                    }
+                    <View style={getStyle().headerTitleCointainer}>
+                        <Text style={getStyle().headerTitle} text={this.props.title} />
+                    </View>
+                </Animated.View>
+                {/* <View style={getStyle().headerDivider} /> */}
+            </SafeAreaView>
+        )
+    }
 }
 
 export type Level1HeaderProps = {
@@ -29,3 +35,10 @@ export type Level1HeaderProps = {
     showIcon?: boolean | false,
     onLeftIconPress?: () => void,
 }
+
+export const Level1HeaderStat = {
+    HEADER_MAX_HEIGHT: 50,
+}
+
+
+

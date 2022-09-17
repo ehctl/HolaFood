@@ -1,18 +1,27 @@
-import { useLayoutEffect, useRef } from "react";
-import { Animated, NativeScrollEvent, NativeSyntheticEvent, ScrollView } from "react-native";
+import { useCallback, useLayoutEffect, useRef, useState } from "react";
+import { Animated, NativeScrollEvent, NativeSyntheticEvent, RefreshControl, ScrollView } from "react-native";
 import { View } from "../components/View";
 import { Level1Header } from '../components/Headers/Level1Header';
 import { Text } from "../components/Text";
+import { wait } from "../utils/Utils";
 
 export const Mock = ({ navigation }: any) => {
-
+    const [refreshing, setRefreshing] = useState(false);
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+        wait(2000).then(() => setRefreshing(false));
+    }, []);
+    
     return (
         <View style={{ flex: 1 }}>
             <ScrollView
                 scrollEventThrottle={16}
                 stickyHeaderHiddenOnScroll={true}
                 showsVerticalScrollIndicator={false}
-                stickyHeaderIndices={[0]} >
+                stickyHeaderIndices={[0]} 
+                refreshControl={
+                    <RefreshControl  refreshing={refreshing} onRefresh={onRefresh}/>
+                }>
                 <Level1Header onLeftIconPress={navigation} title='Mock Screen' />
 
                 {DATA.map((book, index) => {

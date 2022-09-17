@@ -31,7 +31,7 @@ export const HomeScreen = ({ navigation }: any) => {
 
     useLayoutEffect(() => {
         navigation.setOptions({
-            header: (_: NativeStackHeaderProps) => <HomePageHeader onSearchIconPress={() => navigation.navigate('Search')} />
+            header: (_: NativeStackHeaderProps) => <HomePageHeader />
         })
     })
 
@@ -109,6 +109,12 @@ export const HomeScreen = ({ navigation }: any) => {
                             navigation.navigate('Search')
                         }}
                         text={'Open Search Screen'} />
+
+                    <Button
+                        onPress={() => {
+                            navigation.navigate('Dummb')
+                        }}
+                        text={'Open Dummb Screen'} />
 
                     <Modal
                         animationType="slide"

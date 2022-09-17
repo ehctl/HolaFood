@@ -48,7 +48,8 @@ export const Style = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         paddingVertical: 5,
-        position: 'relative'
+        position: 'relative',
+        backgroundColor: 'white'
     },
     headerLeftIcon: {
         position: 'absolute',

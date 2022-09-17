@@ -10,7 +10,7 @@ import { useTheme } from "./Themed";
 export function FontAwesome(props: IconProps<FontAwesomeIconType>) {
     const theme = useTheme()
   
-    return <FontAwesomeDefault {...props} color={Colors[theme].text} />;
+    return <FontAwesomeDefault  color={Colors[theme].text} {...props}  />;
   }
   
   

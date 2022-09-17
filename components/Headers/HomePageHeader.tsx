@@ -3,15 +3,22 @@ import { FontAwesome } from "../FontAwesome"
 import { TextInput } from "../TextInput"
 import { View } from "../View"
 import { Text } from "../Text"
+import { useNavigation } from '@react-navigation/native';
 
 export const HomePageHeader = (props: HomeHeaderProp) => {
+    const navigation = useNavigation()
+
     return (
-        <View style={style.container}>
+        <View style={[style.container, { height: HomePageHeaderStat.HEADER_MAX_HEIGHT }]}>
             <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                <FontAwesome name="folder-open-o" color={'blue'} size={22} />
+                <FontAwesome name="folder-open-o" size={22} />
                 <Text text="HolaFood" style={{ fontSize: 14 }} />
             </View>
-            <Pressable style={style.iconContainer} onPress={props.onSearchIconPress} >
+            <Pressable style={style.iconContainer}
+                onPress={() => {
+                    props.onSearchIconPress?.()
+                    navigation.navigate('Search')
+                }} >
                 <FontAwesome name="search" size={22} />
             </Pressable>
         </View>
@@ -19,7 +26,8 @@ export const HomePageHeader = (props: HomeHeaderProp) => {
 }
 
 export type HomeHeaderProp = {
-    onSearchIconPress: () => void,
+    // already navigate to Search screen, this function is for additional things...
+    onSearchIconPress?: () => void,
 }
 
 const style = StyleSheet.create({
@@ -38,3 +46,7 @@ const style = StyleSheet.create({
         marginRight: 10
     }
 })
+
+export const HomePageHeaderStat = {
+    HEADER_MAX_HEIGHT: 70,
+}

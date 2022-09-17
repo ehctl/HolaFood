@@ -4,6 +4,7 @@ import { Setting } from '../screens/Setting';
 import { WebView } from '../components/WebView';
 import { SearchScreen as Search } from '../screens/Search';
 import { BottomTabNavigator } from './BottomTabBar';
+import { DummbScreen } from '../screens/Dumm';
 
 
 const Stack = createNativeStackNavigator<GroupStackParamList>();
@@ -19,6 +20,7 @@ export const Root = () => {
             <Stack.Screen name='Mock' component={Mock} options={{ animation: 'slide_from_right', headerShown: false }} />
             <Stack.Screen name='WebView' component={WebView} options={{ animation: 'slide_from_bottom', }} />
             <Stack.Screen name='Search' component={Search} options={{ animation: 'slide_from_right', headerShown: false}} />
+            <Stack.Screen name='Dummb' component={DummbScreen} options={{ animation: 'slide_from_right', headerShown: false}} />
         </Stack.Navigator>
     )
 }
@@ -26,12 +28,14 @@ export const Root = () => {
 export type GroupStackParamList = {
     RootTab: undefined;
 
-    Setting: { slug: string };
+    Setting: undefined;
 
     Mock: { data: Array<string> };
 
     WebView: { uri: string };
 
     Search: undefined;
+
+    Dummb: undefined;
 };
 

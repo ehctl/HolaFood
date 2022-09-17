@@ -1,3 +1,4 @@
+import { Platform } from "react-native"
 import { AppLanguage } from "../redux/Reducer"
 import Warehouse from "./Warehouse"
 
@@ -15,3 +16,5 @@ export const loadI18N = (lanaguage: AppLanguage, text: string) => {
 export const wait = (timeout: number) => {
     return new Promise(resolve => setTimeout(resolve, timeout));
 }
+
+export const isIosDevice = () => Platform.OS === 'ios' 

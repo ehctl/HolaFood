@@ -8,7 +8,7 @@ import { Root } from './StackGroup';
 
 const Stack = createNativeStackNavigator();
 
-export const AppNavigation = () => {
+export const AppNavigation = React.memo(() => {
     const props = useSelector((state: AppState) => {
         return {
             theme: state.theme
@@ -20,7 +20,7 @@ export const AppNavigation = () => {
             theme={props.theme === 'dark' ? DarkTheme : DefaultTheme}>
             <Stack.Navigator initialRouteName='Login' >
                 <Stack.Screen
-                    name='Login'
+                    name='Authentication'
                     component={Authentication}
                     options={{ headerShown: false, animation: 'fade' }} />
                 <Stack.Screen
@@ -30,4 +30,4 @@ export const AppNavigation = () => {
             </Stack.Navigator>
         </NavigationContainer>
     )
-}
+})

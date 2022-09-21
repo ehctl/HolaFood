@@ -4,14 +4,20 @@ import { Button } from "../components/Button";
 import { useEffect, useLayoutEffect } from "react";
 import { NativeStackHeaderProps } from "@react-navigation/native-stack";
 import { Level1Header } from '../components/Headers/Level1Header';
+import { useLanguage } from '../components/Themed';
+import React from "react";
 
-export const NotificationsScreen = ({ navigation }: any) => {
+export const NotificationsScreen = React.memo(({ navigation }: any) => {
+    const title = useLanguage('Notification')
 
     useLayoutEffect(() => {
         navigation.setOptions({
-            header: (_: NativeStackHeaderProps) => <Level1Header title='Notifications' />
+            headerShown: true,
+            header: (_: NativeStackHeaderProps) => <Level1Header title='Notification' />,
+            title: title
         })
     })
+
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('tabPress', (e: any) => {
@@ -26,4 +32,4 @@ export const NotificationsScreen = ({ navigation }: any) => {
             <Button onPress={() => navigation.goBack()} text="Go back home" />
         </View>
     );
-}
+})

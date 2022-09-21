@@ -11,8 +11,9 @@ import { StyleSheet } from "react-native"
 import { FontAwesome } from "../components/FontAwesome";
 import { TextInput } from "../components/TextInput";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import React from "react";
 
-export const SearchScreen = (props: SearchScreenProp) => {
+export const SearchScreen = React.memo((props: SearchScreenProp) => {
     const [searchData, setSearchData] = useState<SearchData[]>([])
     const [listRecentSearch, setListRecentSearch] = useState<SearchData[]>([])
     const [refreshing, setRefreshing] = useState(false);
@@ -97,7 +98,7 @@ export const SearchScreen = (props: SearchScreenProp) => {
                 keyExtractor={item => item.id} />
         </View>
     )
-}
+})
 
 const SearchItem = (props: SearchData) => {
     return (

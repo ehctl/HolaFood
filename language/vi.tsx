@@ -3,4 +3,6 @@ export const vi: any = {
     'Setting': 'Cài đặt',
     'Menu': 'Tùy chọn',
     'Notification': 'Thông báo',
+    'Change App Language': 'Thay đổi ngôn ngữ',
+    'Language': 'Ngôn ngữ',
 }

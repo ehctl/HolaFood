@@ -1,37 +1,40 @@
 import { DummyCommand } from '../command/Dummy';
 import { CommandExecuter } from '../command/Command';
-import { useDispatch, useSelector } from 'react-redux';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { AppState, changeApplicationState } from '../redux/Reducer';
 import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
 import { getStyle, wait } from '../utils/Utils';
 import { View } from '../components/View';
 import { Button } from '../components/Button';
 import Notification from '../notification/Notification';
-import { Modal, RefreshControl, ScrollView } from 'react-native';
+import { Linking, Modal, RefreshControl, ScrollView } from 'react-native';
 import { Text } from '../components/Text';
 import { Pressable } from 'react-native';
 import { StyleSheet } from 'react-native';
 import { NativeStackHeaderProps } from "@react-navigation/native-stack";
-import { WebView } from 'react-native-webview'
-import { DrawerActions } from '@react-navigation/native';
-import { Level1Header } from '../components/Headers/Level1Header';
 import Colors from '../constants/Colors';
 import { HomePageHeader } from '../components/Headers/HomePageHeader';
-import { SearchScreen } from './Search';
+import React from 'react';
 
 const dummyCommand = new DummyCommand()
 
-export const HomeScreen = ({ navigation }: any) => {
+export const HomeScreen = React.memo(({ navigation }: any) => {
     const dispatch = useDispatch()
     const props = useSelector((state: AppState) => ({
         applicationState: state.applicationState,
         theme: state.theme
-    }))
+    }), shallowEqual)
+
     const [modalVisible, setModalVisible] = useState(false);
+    const [appUrl, setAppUrl] = useState('');
+    const [refreshing, setRefreshing] = useState(false);
+
+    console.log('trigger home')
 
     useLayoutEffect(() => {
         navigation.setOptions({
-            header: (_: NativeStackHeaderProps) => <HomePageHeader />
+            headerShow: true,
+            header: (_: NativeStackHeaderProps) => <HomePageHeader />,
         })
     })
 
@@ -40,108 +43,128 @@ export const HomeScreen = ({ navigation }: any) => {
             // button press xD
         });
 
+        const getUrlAsync = async () => {
+            // Get the deep link used to open the app
+            const initialUrl = await Linking.getInitialURL();
+
+            setAppUrl(initialUrl);
+        };
+
+        getUrlAsync();
+
         return unsubscribe;
     })
-
-    const [refreshing, setRefreshing] = useState(false);
 
     const onRefresh = useCallback(() => {
         setRefreshing(true);
         wait(2000).then(() => setRefreshing(false));
     }, []);
 
+
     return (
-        <View style={[getStyle().flex_c_c, getStyle().defaultView]}>
+        <View style={[getStyle().flex_c_c, getStyle().defaultView]} >
             <ScrollView style={{ width: '100%', backgroundColor: Colors[props.theme].background }} contentContainerStyle={{ flex: 1 }}
                 showsVerticalScrollIndicator={false}
                 horizontal={false}
                 refreshControl={
                     <RefreshControl refreshing={refreshing} onRefresh={onRefresh} title='Refreshing' />
-                }
-            >
-                <View>
-                    <Button
-                        onPress={() =>
-                            CommandExecuter(dummyCommand, {
-                                first: '1',
-                                second: '2'
-                            })
-                        }
-                        text='Call Api' />
-                    <Button
-                        onPress={() => {
-                            Notification.getInstance().schedulePushNotification({
-                                content: {
-                                    title: "Test notification's title",
-                                    body: "Test notification's body",
-                                },
-                                trigger: {
-                                    seconds: 1
-                                }
-                            })
-                        }}
-                        text='Trigger notification' />
-                    <Button
-                        onPress={() => {
-                            setModalVisible(true)
-                        }}
-                        text='Show pop up' />
-                    <Button
-                        onPress={() => {
-                            dispatch(changeApplicationState('active'))
-                        }}
-                        text={`Trigger action ${props.applicationState}`} />
-                    <Button
-                        onPress={() => {
-                            navigation.navigate('Mock')
-                        }}
-                        text={'Open mock screen'} />
-                    <Button
-                        onPress={() => {
-                            navigation.navigate('WebView', {
-                                uri: 'https://youtube.com'
-                            })
-                        }}
-                        text={'Open Webview'} />
+                } >
 
-                    <Button
-                        onPress={() => {
-                            navigation.navigate('Search')
-                        }}
-                        text={'Open Search Screen'} />
+                <Button
+                    onPress={() =>
+                        CommandExecuter(dummyCommand, {
+                            first: '1',
+                            second: '2'
+                        })
+                    }
+                    text='Call Api' />
+                <Button
+                    onPress={() => {
+                        Notification.getInstance().schedulePushNotification({
+                            content: {
+                                title: "Test notification's title",
+                                body: "Test notification's body",
+                            },
+                            trigger: {
+                                seconds: 1
+                            }
+                        })
+                    }}
+                    text='Trigger notification' />
+                <Button
+                    onPress={() => {
+                        setModalVisible(true)
+                    }}
+                    text='Show pop up' />
+                <Button
+                    onPress={() => {
+                        dispatch(changeApplicationState('active'))
+                    }}
+                    text={`Trigger action ${props.applicationState}`} />
+                <Button
+                    onPress={() => {
+                        navigation.navigate('Mock')
+                    }}
+                    text={'Open mock screen'} />
+                <Button
+                    onPress={() => {
+                        navigation.navigate('WebView', {
+                            uri: 'https://youtube.com'
+                        })
+                    }}
+                    text={'Open Webview'} />
 
-                    <Button
-                        onPress={() => {
-                            navigation.navigate('Dummb')
-                        }}
-                        text={'Open Dummb Screen'} />
+                <Button
+                    onPress={() => {
+                        navigation.navigate('Search')
+                    }}
+                    text={'Open Search Screen'} />
 
-                    <Modal
-                        animationType="slide"
-                        transparent={true}
-                        visible={modalVisible}
-                        onRequestClose={() => {
-                            setModalVisible(!modalVisible);
-                        }} >
-                        <View style={styles.modal}>
-                            <View style={styles.modalView}>
-                                <Text style={styles.modalText} text='Hello World!' />
-                                <Pressable
-                                    style={[styles.button, styles.buttonClose]}
-                                    onPress={() => setModalVisible(!modalVisible)} >
-                                    <Text style={styles.textStyle} text='Hide Modal' />
-                                </Pressable>
-                            </View>
+                <Button
+                    onPress={() => {
+                        navigation.navigate('Dummb')
+                    }}
+                    text={'Open Dummb Screen'} />
+
+                <Button
+                    onPress={() => {
+                        Linking.openURL('tel:0921471293')
+                    }}
+                    text={'Call random phone number: 0921471293'} />
+                
+                <Button
+                    onPress={() => {
+                        // navigation.navigate('Language')
+                        Linking.openURL("App-Prefs:root=General&path=Language&Region");
+                    }}
+                    text={'Open setting language'} />
+
+                <Button
+                    text={`App's universal url ${appUrl} | not set on press`} />
+
+                <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={modalVisible}
+                    onRequestClose={() => {
+                        setModalVisible(!modalVisible);
+                    }} >
+                    <View style={styles.modal}>
+                        <View style={styles.modalView}>
+                            <Text style={styles.modalText} text='Hello World!' />
+                            <Pressable
+                                style={[styles.button, styles.buttonClose]}
+                                onPress={() => setModalVisible(!modalVisible)} >
+                                <Text style={styles.textStyle} text='Hide Modal' />
+                            </Pressable>
                         </View>
-                    </Modal>
-                </View>
-
-
+                    </View>
+                </Modal>
             </ScrollView>
         </View>
 
     );
-}
+})
 
 const styles = StyleSheet.create({
     modal: {

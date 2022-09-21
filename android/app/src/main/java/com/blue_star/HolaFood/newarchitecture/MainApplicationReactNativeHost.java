@@ -1,4 +1,4 @@
-package com.holafood.newarchitecture;
+package com.blue_star.HolaFood.newarchitecture;
 
 import android.app.Application;
 import androidx.annotation.NonNull;
@@ -20,9 +20,9 @@ import com.facebook.react.fabric.EmptyReactNativeConfig;
 import com.facebook.react.fabric.FabricJSIModuleProvider;
 import com.facebook.react.fabric.ReactNativeConfig;
 import com.facebook.react.uimanager.ViewManagerRegistry;
-import com.holafood.BuildConfig;
-import com.holafood.newarchitecture.components.MainComponentsRegistry;
-import com.holafood.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
+import com.blue_star.HolaFood.BuildConfig;
+import com.blue_star.HolaFood.newarchitecture.components.MainComponentsRegistry;
+import com.blue_star.HolaFood.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
 import java.util.ArrayList;
 import java.util.List;
 

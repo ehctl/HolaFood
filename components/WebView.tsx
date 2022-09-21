@@ -4,21 +4,24 @@ import { RouteProp } from '@react-navigation/core'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { GroupStackParamList } from '../navigation/StackGroup';
 import { WebViewHeader } from './Headers/WebviewHeader';
+import React from 'react';
 
 export const WebView = (props: WebViewProp) => {
     const webView = useRef<DefaultWebView>(null)
-    const webViewHeader = useRef<WebViewHeader>(null)
+    const webViewHeader = useRef(null)
 
     useLayoutEffect(() => {
         props.navigation.setOptions({
-            header: () => <WebViewHeader ref={webViewHeader} title='Loading' onLeftIconPress={() => props.navigation.goBack()} onRightIconPress={() => webView.current?.reload()} />
+            header: () => <WebViewHeader ref={webViewHeader} webViewRef={webView} title='Loading' />
         })
     }, [])
 
 
     const handleWebViewNavigationStateChange = (newNavState: WebViewNavigation) => {
-        const { title } = newNavState
+        const { title, canGoBack, canGoForward } = newNavState
         webViewHeader.current?.changeTitle(title)
+        webViewHeader.current?.setGoBack(canGoBack)
+        webViewHeader.current?.setGoForward(canGoForward)
     }
 
     return <DefaultWebView

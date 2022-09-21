@@ -4,8 +4,10 @@ import { TextInput } from "../TextInput"
 import { View } from "../View"
 import { Text } from "../Text"
 import { useNavigation } from '@react-navigation/native';
+import { forwardRef } from "react"
+import React from "react"
 
-export const HomePageHeader = (props: HomeHeaderProp) => {
+export const HomePageHeader = React.memo((props: HomeHeaderProp) => {
     const navigation = useNavigation()
 
     return (
@@ -17,13 +19,14 @@ export const HomePageHeader = (props: HomeHeaderProp) => {
             <Pressable style={style.iconContainer}
                 onPress={() => {
                     props.onSearchIconPress?.()
+                    // ?? ?error
                     navigation.navigate('Search')
                 }} >
                 <FontAwesome name="search" size={22} />
             </Pressable>
         </View>
     )
-}
+})
 
 export type HomeHeaderProp = {
     // already navigate to Search screen, this function is for additional things...

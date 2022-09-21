@@ -7,7 +7,7 @@ import { AppNavigation } from './navigation/AppNavigation';
 import Colors from './constants/Colors';
 import useColorScheme from './hooks/useColorScheme';
 import { createStore } from "redux";
-import { changeApplicationState, changeTheme, reducer } from './redux/Reducer';
+import { AppLanguage, changeApplicationState, changeLanguage, changeTheme, reducer } from './redux/Reducer';
 import { Provider } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { AppState } from './redux/Reducer';
@@ -16,6 +16,7 @@ import { useDispatch } from 'react-redux';
 import { AppState as ApplicationState } from 'react-native';
 import { Constant } from './utils/Constant';
 import useCachedResources from './hooks/useCachedResources';
+import { getLocale } from './utils/Utils';
 
 if (__DEV__) {
   import('./ReactotronConfig').then(() => console.log('Reactotron Configured'))
@@ -61,6 +62,10 @@ const AppRoot = () => {
         const value = await AsyncStorage.getItem(Constant.APP_THEME);
         const darkMode = value !== null ? (value === 'dark' ? true : false) : (osColorScheme === 'dark' ? true : false)
         dispatch(changeTheme(darkMode ? 'dark' : 'light'))
+
+        // setup locale
+        const locale = (await getLocale()).split('_')[0] as AppLanguage
+        dispatch(changeLanguage(locale))
 
         // tracking app state : [inactive(ios only), background, active]
         const subscription = ApplicationState.addEventListener("change", nextAppState => {

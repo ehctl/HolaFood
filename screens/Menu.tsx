@@ -8,12 +8,17 @@ import { getStyle } from "../utils/Utils";
 import { useEffect, useLayoutEffect } from "react";
 import { NativeStackHeaderProps } from "@react-navigation/native-stack";
 import { Level1Header } from '../components/Headers/Level1Header';
+import { useLanguage } from '../components/Themed';
+import React from "react";
 
-export const MenuScreen = ({ navigation }: any) => {
+export const MenuScreen = React.memo(({ navigation }: any) => {
+    const title = useLanguage('Menu') 
 
     useLayoutEffect(() => {
         navigation.setOptions({
-            header: (props: NativeStackHeaderProps) => <Level1Header title='Menu' />
+            headerShown: true,
+            header: (props: NativeStackHeaderProps) => <Level1Header title='Menu' />,
+            title: title
         })
     })
 
@@ -24,7 +29,7 @@ export const MenuScreen = ({ navigation }: any) => {
 
         return unsubscribe;
     })
-
+    
     const renderItems = ({ item }: ListRenderItemInfo<MenuItem>) => {
         return (
             <Button text={item.name} iconName={item.icon} iconColor='azure' onPress={() => navigation.navigate(item.target)} style={style.flat_list_item} />
@@ -40,7 +45,7 @@ export const MenuScreen = ({ navigation }: any) => {
                 keyExtractor={item => item.id} />
         </View>
     )
-}
+})
 
 const style = StyleSheet.create({
     flat_list_item: {

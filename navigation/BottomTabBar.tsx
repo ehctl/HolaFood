@@ -1,5 +1,5 @@
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { Setting } from '../screens/Setting';
+import { Setting } from '../screens/Setting/Setting';
 import { NotificationsScreen as Notifications } from '../screens/Notifications';
 import { HomeScreen as Home } from '../screens/Home';
 import { Animated, Pressable, TouchableOpacity } from 'react-native';
@@ -14,14 +14,15 @@ import { FontAwesomeIconType } from '../constants/FontAwesomeIconType';
 import { MenuScreen as Menu } from '../screens/Menu';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useLanguage } from '../components/Themed';
+import React from 'react';
 
 
 const BottomTab = createMaterialTopTabNavigator()
 const Stack = createNativeStackNavigator()
 
-export const BottomTabNavigator = () => {
+export const BottomTabNavigator = React.memo(() => {
     return (
-        <BottomTab.Navigator tabBarPosition='bottom' screenOptions={{lazy: true}} tabBar={props =>
+        <BottomTab.Navigator tabBarPosition='bottom' screenOptions={{ lazy: true }} tabBar={props =>
             <MyTabBar
                 props={props}
                 iconList={['home', 'bell', 'ellipsis-h']} />
@@ -29,36 +30,36 @@ export const BottomTabNavigator = () => {
 
             <BottomTab.Screen name="HomeStack" component={HomeStack} options={{ title: useLanguage('Home') }} />
             <BottomTab.Screen name="NotificationStack" component={NotificationStack} options={{ title: useLanguage('Notification') }} />
-            <BottomTab.Screen name="MenuStack" component={MenuStack} options={{ title: useLanguage('Menu'),  }} />
+            <BottomTab.Screen name="MenuStack" component={MenuStack} options={{ title: useLanguage('Menu'), }} />
         </BottomTab.Navigator>
     )
-}
+})
 
-const MenuStack = () => {
+const MenuStack = React.memo(() => {
     return (
         <Stack.Navigator initialRouteName='Menu' screenOptions={{ fullScreenGestureEnabled: true }}>
             <Stack.Screen name='Menu' component={Menu} />
         </Stack.Navigator>
     )
-}
+})
 
-const HomeStack = () => {
+const HomeStack = React.memo(() => {
     return (
         <Stack.Navigator initialRouteName='Home' screenOptions={{}}>
             <Stack.Screen name='Home' component={Home} />
         </Stack.Navigator>
     )
-}
+})
 
-const NotificationStack = () => {
+const NotificationStack = React.memo(() => {
     return (
         <Stack.Navigator initialRouteName='Notification' screenOptions={{}}>
             <Stack.Screen name='Notification' component={Notifications} />
         </Stack.Navigator>
     )
-}
+})
 
-const MyTabBar = (params: BottomBarParams) => {
+const MyTabBar = React.memo((params: BottomBarParams) => {
     const props = useSelector((state: AppState) => ({
         theme: state.theme
     }))
@@ -125,7 +126,7 @@ const MyTabBar = (params: BottomBarParams) => {
             })}
         </View>
     );
-}
+})
 
 type BottomBarParams = { props: MaterialTopTabBarProps, iconList: FontAwesomeIconType[] }
 

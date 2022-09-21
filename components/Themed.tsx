@@ -1,7 +1,7 @@
 
-import { useSelector } from 'react-redux';
+import { shallowEqual, useSelector } from 'react-redux';
 import Colors from '../constants/Colors';
-import { AppState, AppTheme } from '../redux/Reducer';
+import { AppLanguage, AppState, AppTheme } from '../redux/Reducer';
 import { loadI18N } from '../utils/Utils';
 
 export function useThemeColor(
@@ -10,8 +10,7 @@ export function useThemeColor(
 ) {
   const themeState = useSelector((state: AppState) => ({
     theme: state.theme
-  }))
-
+  }), shallowEqual)
   const colorFromProps = props[themeState.theme];
 
   if (colorFromProps) {
@@ -27,16 +26,18 @@ export const useLanguage = (text: string | undefined): string => {
 
   const props = useSelector((state: AppState) => ({
     language: state.language
-  }))
+  }), shallowEqual)
   return loadI18N(props.language, text)
 }
 
 export const useTheme = (): AppTheme => {
-  const themeProps = useSelector((state: AppState) => ({
-    theme: state.theme
-  }))
+  const theme = useSelector((state: AppState) => state.theme, shallowEqual)
+  return theme
+}
 
-  return themeProps.theme
+export const useLocale = (): AppLanguage => {
+  const language = useSelector((state: AppState) => state.language)
+  return language
 }
 
 export type ThemeProps = {

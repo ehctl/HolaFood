@@ -1,21 +1,21 @@
 import { createDrawerNavigator } from '@react-navigation/drawer'
-import { View } from '../components/View'
-import { Button } from '../components/Button';
-import { Text } from '../components/Text';
-import { Switch } from "react-native";
+import { View } from '../../components/View'
+import { Button } from '../../components/Button';
+import { Text } from '../../components/Text';
+import { Linking, Switch } from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSelector } from 'react-redux';
-import { AppState, changeTheme } from '../redux/Reducer';
+import { AppState, changeTheme } from '../../redux/Reducer';
 import { useDispatch } from 'react-redux';
-import { Constant } from '../utils/Constant';
-import { changeLanguage } from '../redux/Reducer';
+import { Constant } from '../../utils/Constant';
+import { changeLanguage } from '../../redux/Reducer';
 import { useEffect, useLayoutEffect, useState } from "react";
 import { NativeStackHeaderProps } from "@react-navigation/native-stack";
-import { Level2Header } from '../components/Headers/Level2Header';
-import { getStyle } from '../utils/Utils';
+import { Level2Header } from '../../components/Headers/Level2Header';
+import { getStyle } from '../../utils/Utils';
+import React from 'react';
 
-
-export const Setting = ({ navigation }: any) => {
+export const Setting = React.memo(({ navigation }: any) => {
     const dispatch = useDispatch()
     const props = useSelector((state: AppState) => ({
         theme: state.theme,
@@ -24,7 +24,7 @@ export const Setting = ({ navigation }: any) => {
 
     useLayoutEffect(() => {
         navigation.setOptions({
-            header: (_: NativeStackHeaderProps) => <Level2Header onLeftIconPress={() => navigation.goBack()} title='Setting' />
+            header: (_: NativeStackHeaderProps) => <Level2Header title='Setting' />
         })
     })
 
@@ -47,8 +47,16 @@ export const Setting = ({ navigation }: any) => {
                     onValueChange={darkModeToggleSwitch}
                     value={isDarkMode} />
             </View>
-            <Button text={`Change language - Current language: ${props.language}`} onPress={() => dispatch(changeLanguage(props.language == 'vi' ? 'en' : 'vi'))} />
+            <Button text={`Change App Language`}
+                onPress={
+                    // () => navigation.navigate('Language')
+                    () => Linking.openSettings()
+                }
+            />
+            <Button text={`Log out`}
+                onPress={() => navigation.replace('Authentication')}
+            />
         </View>
     )
 
-}
+})

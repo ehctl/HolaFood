@@ -6,9 +6,10 @@ import { getStyle } from "../utils/Utils"
 import { FontAwesome } from "@expo/vector-icons"
 import { FontAwesomeIconType } from "../constants/FontAwesomeIconType"
 import { View } from "./View"
+import React from "react"
 
 
-export const Button = (params: ButtonParams) => {
+export const Button = React.memo((params: ButtonParams) => {
     return (
         <Pressable {...params} style={[getStyle().defaultButton, style.container, params.style]} accessibilityRole='button' >
             {
@@ -21,7 +22,7 @@ export const Button = (params: ButtonParams) => {
             </View>
         </Pressable>
     )
-}
+})
 
 export type ButtonParams = PressableProps & {
     text: string,

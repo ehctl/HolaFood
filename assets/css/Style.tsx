@@ -1,6 +1,7 @@
 import { StyleSheet } from "react-native"
 
 export const Style = StyleSheet.create({
+////
     flex_c_c: {
         flex: 1,
         justifyContent: 'center',
@@ -11,7 +12,34 @@ export const Style = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'stretch'
     },
-    defaultView:{ 
+    ab_t_l: {
+        position: 'absolute',
+        left: 0,
+        top: 0
+    },
+    ab_t_r: {
+        position: 'absolute',
+        right: 0,
+        top: 0
+    },
+    ab_b_l: {
+        position: 'absolute',
+        left: 0,
+        bottom: 0
+    },
+    ab_b_r: {
+        position: 'absolute',
+        right: 0,
+        bottom: 0
+    },
+    ab_r_l: {
+        position: 'absolute',
+        right: 0,
+        left: 0
+    },
+
+///
+    defaultView: {
         flex: 1,
         backgroundColor: 'white'
     },
@@ -19,7 +47,7 @@ export const Style = StyleSheet.create({
         marginLeft: 5,
     },
     defaultButton: {
-        flexDirection: 'row', 
+        flexDirection: 'row',
         fontSize: 20,
         backgroundColor: '#6aabd9',
         margin: 5,
@@ -46,10 +74,9 @@ export const Style = StyleSheet.create({
     headerContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between',
+        justifyContent: 'space-evenly',
         paddingVertical: 5,
-        position: 'relative',
-        backgroundColor: 'white'
+        position: 'relative'
     },
     headerLeftIcon: {
         position: 'absolute',
@@ -80,5 +107,16 @@ export const Style = StyleSheet.create({
         backgroundColor: 'black',
         opacity: 0.8,
         height: 0.2
+    },
+    AnimatedHeader_container: {
+        flex: 1,
+        position: 'relative'
+    },
+    AnimatedHeader_header: {    
+        position: 'absolute', 
+        top: 0, 
+        left: 0, 
+        right: 0, 
+        zIndex: 1,
     }
 })

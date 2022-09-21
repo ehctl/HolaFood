@@ -4,8 +4,9 @@ import { View } from "../components/View";
 import { Level1Header } from '../components/Headers/Level1Header';
 import { Text } from "../components/Text";
 import { wait } from "../utils/Utils";
+import React from "react";
 
-export const Mock = ({ navigation }: any) => {
+export const Mock = React.memo(({ navigation }: any) => {
     const [refreshing, setRefreshing] = useState(false);
     const onRefresh = useCallback(() => {
         setRefreshing(true);
@@ -32,7 +33,7 @@ export const Mock = ({ navigation }: any) => {
             </ScrollView>
         </View>
     );
-}
+})
 
 const DATA = [
     {

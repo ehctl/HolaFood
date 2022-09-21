@@ -18,7 +18,7 @@ export default class Warehouse {
     return this._instance
   }
 
+
   public getStyle = () => this.style
-  public getStyles = () => Style
   public getLanguage = () => this.language
 }

@@ -1,4 +1,4 @@
-package com.holafood;
+package com.blue_star.HolaFood;
 
 import android.os.Build;
 import android.os.Bundle;

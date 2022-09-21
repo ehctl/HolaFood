@@ -15,7 +15,7 @@ export type AppLanguage = "en" | "vi"
 const initalStates: AppState = {
     applicationState: "unknown",
     theme: "light",
-    language: "en",
+    language: "vi",
 }
 
 const MainAppReducer = createSlice({

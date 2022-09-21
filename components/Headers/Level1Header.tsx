@@ -36,7 +36,7 @@ export type Level1HeaderProps = {
 }
 
 export const Level1HeaderStat = {
-    HEADER_MAX_HEIGHT: 50,
+    HEADER_MAX_HEIGHT: 40,
 }
 
 

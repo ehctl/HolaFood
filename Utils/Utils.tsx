@@ -22,8 +22,10 @@ export const wait = (timeout: number) => {
 export const isIosDevice = () => Platform.OS === 'ios'
 
 export async function getLocale(): Promise<AppLanguage> {
+    // if its ios device then using the os locale preference
+    // android can have a custom locale, but first time using app both os using their locale
     var deviceLanguage =
-        await AsyncStorage.getItem(Constant.APP_LOCALE)
+        !isIosDevice() ? await AsyncStorage.getItem(Constant.APP_LOCALE) : null
 
     if (deviceLanguage == null) {
         deviceLanguage = Platform.OS === 'ios'
@@ -31,7 +33,7 @@ export async function getLocale(): Promise<AppLanguage> {
             NativeModules.SettingsManager.settings.AppleLanguages[0] // iOS 13
             : NativeModules.I18nManager.localeIdentifier
 
-        await AsyncStorage.setItem(Constant.APP_LOCALE, deviceLanguage)
+        !isIosDevice() ? await AsyncStorage.setItem(Constant.APP_LOCALE, deviceLanguage) : null
     }
 
     return deviceLanguage as AppLanguage

@@ -12,7 +12,7 @@ import { changeLanguage } from '../../redux/Reducer';
 import { useEffect, useLayoutEffect, useState } from "react";
 import { NativeStackHeaderProps } from "@react-navigation/native-stack";
 import { Level2Header } from '../../components/Headers/Level2Header';
-import { getStyle } from '../../utils/Utils';
+import { getStyle, isIosDevice } from '../../utils/Utils';
 import React from 'react';
 
 export const Setting = React.memo(({ navigation }: any) => {
@@ -48,10 +48,9 @@ export const Setting = React.memo(({ navigation }: any) => {
                     value={isDarkMode} />
             </View>
             <Button text={`Change App Language`}
-                onPress={
-                    // () => navigation.navigate('Language')
-                    () => Linking.openSettings()
-                }
+                onPress={() => {
+                    isIosDevice() ? Linking.openURL('App-Prefs:General@path=Location&Region') : navigation.navigate('Language')
+                }}
             />
             <Button text={`Log out`}
                 onPress={() => navigation.replace('Authentication')}

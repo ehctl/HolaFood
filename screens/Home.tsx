@@ -15,6 +15,7 @@ import { NativeStackHeaderProps } from "@react-navigation/native-stack";
 import Colors from '../constants/Colors';
 import { HomePageHeader } from '../components/Headers/HomePageHeader';
 import React from 'react';
+import { isIosDevice } from '../utils/Utils';
 
 const dummyCommand = new DummyCommand()
 
@@ -134,8 +135,7 @@ export const HomeScreen = React.memo(({ navigation }: any) => {
                 
                 <Button
                     onPress={() => {
-                        // navigation.navigate('Language')
-                        Linking.openURL("App-Prefs:root=General&path=Language&Region");
+                        isIosDevice() ? Linking.openURL('App-Prefs:General@path=Location&Region') : navigation.navigate('Language')
                     }}
                     text={'Open setting language'} />
 

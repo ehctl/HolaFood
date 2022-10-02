@@ -16,10 +16,12 @@ import Colors from '../constants/Colors';
 import { HomePageHeader } from '../components/Headers/HomePageHeader';
 import React from 'react';
 import { isIosDevice } from '../utils/Utils';
+import * as Analytics from 'expo-firebase-analytics';
+import crashlytics from '@react-native-firebase/crashlytics';
 
 const dummyCommand = new DummyCommand()
 
-export const HomeScreen = React.memo(({ navigation }: any) => {
+export const UtilScreen = React.memo(({ navigation }: any) => {
     const dispatch = useDispatch()
     const props = useSelector((state: AppState) => ({
         applicationState: state.applicationState,
@@ -30,7 +32,7 @@ export const HomeScreen = React.memo(({ navigation }: any) => {
     const [appUrl, setAppUrl] = useState('');
     const [refreshing, setRefreshing] = useState(false);
 
-    console.log('trigger home')
+    console.log('trigger util')
 
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -102,11 +104,7 @@ export const HomeScreen = React.memo(({ navigation }: any) => {
                         dispatch(changeApplicationState('active'))
                     }}
                     text={`Trigger action ${props.applicationState}`} />
-                <Button
-                    onPress={() => {
-                        navigation.navigate('Mock')
-                    }}
-                    text={'Open mock screen'} />
+
                 <Button
                     onPress={() => {
                         navigation.navigate('WebView', {
@@ -132,7 +130,7 @@ export const HomeScreen = React.memo(({ navigation }: any) => {
                         Linking.openURL('tel:0921471293')
                     }}
                     text={'Call random phone number: 0921471293'} />
-                
+
                 <Button
                     onPress={() => {
                         isIosDevice() ? Linking.openURL('App-Prefs:General@path=Location&Region') : navigation.navigate('Language')
@@ -141,6 +139,22 @@ export const HomeScreen = React.memo(({ navigation }: any) => {
 
                 <Button
                     text={`App's universal url ${appUrl} | not set on press`} />
+                    
+                <Button
+                    text={`${Notification.getInstance().getExpoToken()} `} />
+                
+                <Button
+                    onPress={() =>{
+                        Analytics.logEvent('button_click', { 'name': 'test button'})
+                    }}
+                    text='Test google analytics ' />
+                
+                <Button
+                    onPress={() => { 
+                        console.log('????');
+                        // console.log(crashlytics().isCrashlyticsCollectionEnabled)
+                    }}
+                    text='Test crashlytics ' />
 
                 <Modal
                     animationType="slide"

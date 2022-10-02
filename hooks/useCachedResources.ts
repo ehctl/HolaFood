@@ -2,6 +2,7 @@ import { FontAwesome } from '@expo/vector-icons';
 import * as Font from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect, useState } from 'react';
+import { Image } from 'react-native';
 
 export default function useCachedResources() {
   const [isLoadingComplete, setLoadingComplete] = useState(false);
@@ -12,6 +13,11 @@ export default function useCachedResources() {
       try {
         SplashScreen.preventAutoHideAsync();
 
+        // // Load images
+        // await cacheImages([
+        //   require('../../assets/images/food_background.jpgg'),
+        // ]);  
+        
         // Load fonts
         await Font.loadAsync({
           ...FontAwesome.font,
@@ -30,4 +36,13 @@ export default function useCachedResources() {
   }, []);
 
   return isLoadingComplete;
+}
+
+function cacheImages(images) {
+  return images.map(image => {
+    if (typeof image === 'string') {
+      return Image.prefetch(image);
+    } else {
+    }
+  });
 }

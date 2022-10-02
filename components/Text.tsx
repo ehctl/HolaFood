@@ -14,4 +14,10 @@ export const Text = React.memo((props: TextProps) => {
     );
 })
 
+export const TransparentText = React.memo((props: TextProps) => {
+    return (
+        <Text {...props} {...{backgroundColor: 'transparent'}}/>
+    );  
+})
+
 export type TextProps = ThemeProps & DefaultText['props'] & { text: string | undefined };

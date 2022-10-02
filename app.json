@@ -1,42 +1,59 @@
 {
-  "expo": {
-    "name": "HolaFood",
-    "slug": "HolaFood",
-    "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
-    "userInterfaceStyle": "automatic",
-    "splash": {
-      "image": "./assets/images/chill.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
-    "updates": {
-      "fallbackToCacheTimeout": 0
-    },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
-    "ios": {
-      "supportsTablet": true
-    },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
-      },
-      "package": "com.blue_star.HolaFood",
-      "useNextNotificationsApi": true
-    },
-    "web": {
-      "favicon": "./assets/images/favicon.png"
-    },
-    "plugins": [
-      [
-        "expo-notifications", {
-          
-        }
-      ]
-    ]
-  }
+    "expo": {
+        "name": "HolaFood",
+        "slug": "HolaFood",
+        "version": "1.0.0",
+        "orientation": "portrait",
+        "icon": "./assets/images/icon.png",
+        "userInterfaceStyle": "automatic",
+        "splash": {
+            "image": "./assets/images/chill.png",
+            "resizeMode": "contain",
+            "backgroundColor": "#ffffff"
+        },
+        "updates": {
+            "fallbackToCacheTimeout": 0
+        },
+        "assetBundlePatterns": ["assets/images/*"],
+        "ios": {
+            "supportsTablet": true,
+            "googleServicesFile": "./GoogleService-Info.plist"
+        },
+        "android": {
+            "adaptiveIcon": {
+                "foregroundImage": "./assets/images/adaptive-icon.png",
+                "backgroundColor": "#FFFFFF"
+            },
+            "package": "com.blue_star.HolaFood",
+            "useNextNotificationsApi": true,
+            "googleServicesFile": "./google-services.json"
+        },
+        "web": {
+            "favicon": "./assets/images/favicon.png",
+            "config": {
+                "firebase": {
+                    "apiKey": "AIzaSyDscbYTDAceo8-kABv7gcl7C4nxQgvwzv4",
+                    "authDomain": "holafood-8f12e.firebaseapp.com",
+                    "projectId": "holafood-8f12e",
+                    "storageBucket": "holafood-8f12e.appspot.com",
+                    "messagingSenderId": "614378768219",
+                    "appId": "1:614378768219:web:b5d87ec69b968158007c7e",
+                    "measurementId": "G-HXWED8Q406"
+                }
+            }
+        },
+        "plugins": [
+            ["expo-notifications", {}],
+            [
+                "expo-build-properties",
+                {
+                    "ios": {
+                        "useFrameworks": "static"
+                    }
+                }
+            ],
+            "@react-native-firebase/app",
+            "@react-native-firebase/crashlytics"
+        ]
+    }
 }

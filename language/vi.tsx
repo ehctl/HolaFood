@@ -5,4 +5,6 @@ export const vi: any = {
     'Notification': 'Thông báo',
     'Change App Language': 'Thay đổi ngôn ngữ',
     'Language': 'Ngôn ngữ',
+    'Orders': 'Đơn hàng',
+    'Order': 'Đặt hàng',
 }

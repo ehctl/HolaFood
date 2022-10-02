@@ -5,4 +5,6 @@ export const en: any = {
     'Notification': 'Notification',
     'Change App Language': 'Change App Language',
     'Language': 'Language',
+    'Orders': 'Order',
+    'Order': 'Order',
 }

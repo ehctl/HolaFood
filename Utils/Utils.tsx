@@ -3,6 +3,10 @@ import { NativeModules, Platform } from "react-native"
 import { AppLanguage } from "../redux/Reducer"
 import { Constant } from "./Constant"
 import Warehouse from "./Warehouse"
+import { useEffect, useState } from 'react';
+import { Keyboard, KeyboardEvent } from 'react-native';
+
+
 
 export const getStyle = () => Warehouse.getInstance().getStyle()
 
@@ -38,3 +42,26 @@ export async function getLocale(): Promise<AppLanguage> {
 
     return deviceLanguage as AppLanguage
 }
+
+export const useKeyboard = () => {
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
+
+  function onKeyboardDidShow(e: KeyboardEvent) { 
+    setKeyboardHeight(e.endCoordinates.height);
+  }
+
+  function onKeyboardDidHide() {
+    setKeyboardHeight(0);
+  }
+
+  useEffect(() => {
+    const showSubscription = Keyboard.addListener('keyboardDidShow', onKeyboardDidShow);
+    const hideSubscription = Keyboard.addListener('keyboardDidHide', onKeyboardDidHide);
+    return () => {
+      showSubscription.remove();
+      hideSubscription.remove();
+    };
+  }, []);
+
+  return keyboardHeight;
+};

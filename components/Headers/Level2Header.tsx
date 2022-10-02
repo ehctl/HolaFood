@@ -1,17 +1,20 @@
-import { View } from "../../components/View";
+import { TransparentView, View } from "../../components/View";
 import { Text } from "../../components/Text";
 import { Pressable } from 'react-native';
 import { FontAwesome } from "../../components/FontAwesome";
 import { getStyle } from "../../utils/Utils";
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from "../../components/View";
+import { useTheme } from "../Themed";
+import Colors from "../../constants/Colors";
 
 export const Level2Header = (props: Level2HeaderProps) => {
     const navigation = useNavigation()
+    const theme = useTheme()
 
     return (
         <SafeAreaView style={{ height: Level2HeaderStat.HEADER_MAX_HEIGHT, justifyContent: 'center', alignItems: 'center' }}>
-            <View style={getStyle().headerContainer}>
+            <TransparentView style={getStyle().headerContainer}>
                 <Pressable style={getStyle().headerLeftIcon}
                     onPress={() => {
                         navigation.goBack()
@@ -20,11 +23,11 @@ export const Level2Header = (props: Level2HeaderProps) => {
 
                     <FontAwesome name="angle-left" size={35} />
                 </Pressable>
-                <View style={getStyle().headerTitleCointainer}>
+                <TransparentView style={getStyle().headerTitleCointainer}>
                     <Text style={getStyle().headerTitle} text={props.title} />
-                </View>
-            </View>
-            {/* <View style={getStyle().headerDivider} /> */}
+                </TransparentView>
+            </TransparentView>
+            {/* <View style={[getStyle().headerDivider, { backgroundColor: Colors[theme].text }]} /> */}
         </SafeAreaView>
     )
 }

@@ -2,11 +2,13 @@ import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import { Platform } from 'react-native';
 import { NotificationRequestInput, NotificationChannelInput } from 'expo-notifications';
+import Warehouse from '../utils/Warehouse';
 
 
 export default class Notification {
   private static _instance?: Notification;
   private expoToken?: string;
+  private dimissNotificationList: string[] = [];
 
   constructor() { }
 
@@ -17,15 +19,56 @@ export default class Notification {
   }
 
   public setExpoToken(token?: string) {
-    this.expoToken = token?.slice(18, token.length - 1)
+    this.expoToken = token
     console.log('New Expo Push Token: ', this.expoToken)
   }
 
   public getExpoToken = (): string | undefined => this.expoToken
 
+  public addToBeDissmissNotificationID = (id: string) => this.dimissNotificationList.push(id)
+
+  public canNotificationDismiss = (id: string): boolean => {
+    const index = this.dimissNotificationList.indexOf(id)
+    if (index != -1) {
+      this.dimissNotificationList.splice(index, 1)
+      return true
+    }
+
+    return false
+  }
+
+  public isDataNotification = (notification: Notifications.Notification) => {
+    return notification.request.content.title == 'gotmine'
+  }
+
+  public newNotification = (notification: Notifications.Notification) => {
+    try {
+      if (this.isDataNotification(notification)) {
+        const data = notification.request.content.data as DataNotificationType
+        switch (data.category) {
+          case 'notification':
+            console.log('new notification data', data)
+            break;
+          case 'order':
+            console.log('new order data', data)
+            break;
+          default:
+            console.log('Unsupported type')
+        }
+      }
+    } catch (e) {
+      console.log('Error:', e)
+    }
+  } 
+
+  public dissmissNotification = (identifier: string) => {
+    if (this.canNotificationDismiss(identifier))
+      Notifications.dismissNotificationAsync(identifier);
+  }
+
   public async schedulePushNotification(request: NotificationRequestInput): Promise<string> {
-    try{
-      var notiResponse =  await Notifications.scheduleNotificationAsync(request);
+    try {
+      var notiResponse = await Notifications.scheduleNotificationAsync(request);
     } catch (err) {
       console.log(err)
     } finally {
@@ -67,5 +110,11 @@ export default class Notification {
   public async addNewAndroidNotificationChannel(channelId: string, channel: NotificationChannelInput) {
     await Notifications.setNotificationChannelAsync(channelId, channel);
   }
+}
+
+export type DataNotificationType = {
+  category: string,
+  type: string,
+  data: any
 }
 

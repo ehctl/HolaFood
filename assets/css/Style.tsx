@@ -83,7 +83,7 @@ export const Style = StyleSheet.create({
         height: '200%',
         left: 5,
         zIndex: 1,
-        paddingHorizontal: 10,
+        paddingHorizontal: 5,
         justifyContent: 'center'
     },
     headerRightIcon: {

@@ -1,10 +1,8 @@
-import { Pressable, StyleSheet } from "react-native"
+import { ImageBackground, Pressable, StyleSheet } from "react-native"
 import { FontAwesome } from "../FontAwesome"
-import { TextInput } from "../TextInput"
-import { View } from "../View"
-import { Text } from "../Text"
+import { TransparentView, View } from "../View"
+import { TransparentText } from "../Text"
 import { useNavigation } from '@react-navigation/native';
-import { forwardRef } from "react"
 import React from "react"
 
 export const HomePageHeader = React.memo((props: HomeHeaderProp) => {
@@ -12,18 +10,19 @@ export const HomePageHeader = React.memo((props: HomeHeaderProp) => {
 
     return (
         <View style={[style.container, { height: HomePageHeaderStat.HEADER_MAX_HEIGHT }]}>
-            <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                <FontAwesome name="folder-open-o" size={22} />
-                <Text text="HolaFood" style={{ fontSize: 14 }} />
-            </View>
-            <Pressable style={style.iconContainer}
-                onPress={() => {
-                    props.onSearchIconPress?.()
-                    // ?? ?error
-                    navigation.navigate('Search')
-                }} >
-                <FontAwesome name="search" size={22} />
-            </Pressable>
+
+
+                <TransparentView style={{ justifyContent: 'center', alignItems: 'center' }}>
+                    <TransparentText text="HolaFood" style={{ fontSize: 22, fontWeight: '700', }} />
+                </TransparentView>
+                <Pressable style={style.iconContainer}
+                    onPress={() => {
+                        props.onSearchIconPress?.()
+                        // ?? ?error
+                        navigation.navigate('Search')
+                    }} >
+                    <FontAwesome name="search" size={20} />
+                </Pressable>
         </View>
     )
 })
@@ -51,5 +50,5 @@ const style = StyleSheet.create({
 })
 
 export const HomePageHeaderStat = {
-    HEADER_MAX_HEIGHT: 70,
+    HEADER_MAX_HEIGHT: 60,
 }

@@ -1,12 +1,12 @@
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Authentication } from '../screens/Authentication';
 import { useSelector } from 'react-redux';
 import { AppState } from '../redux/Reducer';
 import React from 'react';
+import { AuthenticationScreen as Authentication } from '../screens/Authentication/Authentication';
 import { Root } from './StackGroup';
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<StackRoot>();
 
 export const AppNavigation = React.memo(() => {
     const props = useSelector((state: AppState) => {
@@ -18,7 +18,7 @@ export const AppNavigation = React.memo(() => {
     return (
         <NavigationContainer
             theme={props.theme === 'dark' ? DarkTheme : DefaultTheme}>
-            <Stack.Navigator initialRouteName='Login' >
+            <Stack.Navigator initialRouteName='Authentication' >
                 <Stack.Screen
                     name='Authentication'
                     component={Authentication}
@@ -31,3 +31,9 @@ export const AppNavigation = React.memo(() => {
         </NavigationContainer>
     )
 })
+
+export type StackRoot = {
+    Authentication: undefined;
+
+    Root: undefined;
+};

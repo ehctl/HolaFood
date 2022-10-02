@@ -1,4 +1,3 @@
-import { createDrawerNavigator } from '@react-navigation/drawer'
 import { View } from '../../components/View'
 import { Button } from '../../components/Button';
 import { Text } from '../../components/Text';
@@ -8,14 +7,13 @@ import { useSelector } from 'react-redux';
 import { AppState, changeTheme } from '../../redux/Reducer';
 import { useDispatch } from 'react-redux';
 import { Constant } from '../../utils/Constant';
-import { changeLanguage } from '../../redux/Reducer';
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import { NativeStackHeaderProps } from "@react-navigation/native-stack";
 import { Level2Header } from '../../components/Headers/Level2Header';
 import { getStyle, isIosDevice } from '../../utils/Utils';
 import React from 'react';
 
-export const Setting = React.memo(({ navigation }: any) => {
+export const SettingScreen = React.memo(({ navigation }: any) => {
     const dispatch = useDispatch()
     const props = useSelector((state: AppState) => ({
         theme: state.theme,
@@ -37,8 +35,12 @@ export const Setting = React.memo(({ navigation }: any) => {
 
     const [isDarkMode, setDarkMode] = useState(props.theme === 'dark');
     return (
-        <View style={getStyle().flex_c_s}>
-            <View style={[{ flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center' }, getStyle().defaultButton]}>
+        <View style={{ flex: 1, justifyContent: 'flex-start' }}>
+            <View
+                style={[{
+                    flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center', marginHorizontal: 20
+                }, getStyle().defaultButton, { borderRadius: 15 }]}>
+
                 <Text style={{ marginHorizontal: 20 }} text='Dark Mode' />
                 <Switch
                     trackColor={{ false: "green", true: "orange" }}

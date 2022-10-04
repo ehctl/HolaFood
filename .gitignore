@@ -4,6 +4,8 @@
 
 #vscode
 .vscode
+.GoogleService-Info.plist
+.google-services.json
 
 # Xcode
 #

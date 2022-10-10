@@ -1,4 +1,4 @@
-import { ImageBackground, Pressable, StyleSheet } from "react-native"
+import { Pressable, StyleSheet } from "react-native"
 import { FontAwesome } from "../FontAwesome"
 import { TransparentView, View } from "../View"
 import { TransparentText } from "../Text"
@@ -10,26 +10,29 @@ export const HomePageHeader = React.memo((props: HomeHeaderProp) => {
 
     return (
         <View style={[style.container, { height: HomePageHeaderStat.HEADER_MAX_HEIGHT }]}>
+            <TransparentView style={{ justifyContent: 'center', alignItems: 'center', marginLeft: 5 }}>
+                <TransparentText text="HolaFood" style={{ fontSize: 22, fontWeight: '700', color: '#d9091f' }} />
+            </TransparentView>
 
-
-                <TransparentView style={{ justifyContent: 'center', alignItems: 'center' }}>
-                    <TransparentText text="HolaFood" style={{ fontSize: 22, fontWeight: '700', }} />
-                </TransparentView>
+            <TransparentView style={{flexDirection: 'row'}}>
                 <Pressable style={style.iconContainer}
                     onPress={() => {
-                        props.onSearchIconPress?.()
-                        // ?? ?error
-                        navigation.navigate('Search')
+                        navigation.navigate('Search' as never)
                     }} >
-                    <FontAwesome name="search" size={20} />
+                    <FontAwesome name="search" size={20} color='#4666a6'/>
                 </Pressable>
+                <Pressable style={style.iconContainer}
+                    onPress={() => {
+                        navigation.navigate('Order' as never)
+                    }} >
+                    <FontAwesome name="shopping-cart" size={20} color='#d14fa6'/>
+                </Pressable>
+            </TransparentView>
         </View>
     )
 })
 
 export type HomeHeaderProp = {
-    // already navigate to Search screen, this function is for additional things...
-    onSearchIconPress?: () => void,
 }
 
 const style = StyleSheet.create({
@@ -37,7 +40,6 @@ const style = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        paddingHorizontal: 5,
         paddingBottom: 10,
         paddingTop: 5
     },
@@ -45,7 +47,8 @@ const style = StyleSheet.create({
         borderRadius: 25,
         backgroundColor: '#d4d4d4',
         padding: 10,
-        marginRight: 10
+        marginRight: 5,
+        marginLeft: 10
     }
 })
 

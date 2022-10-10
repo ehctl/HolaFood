@@ -25,7 +25,7 @@ export const Level1Header = (props: Level1HeaderProps) => {
                     <Text style={getStyle().headerTitle} text={props.title} />
                 </View>
             </Animated.View>
-            <View style={[getStyle().headerDivider, { backgroundColor: Colors[theme].text }]} />
+            {/* <View style={[getStyle().headerDivider, { backgroundColor: Colors[theme].text }]} /> */}
         </SafeAreaView>
     )
 }
@@ -37,7 +37,7 @@ export type Level1HeaderProps = {
 }
 
 export const Level1HeaderStat = {
-    HEADER_MAX_HEIGHT: 40,
+    HEADER_MAX_HEIGHT: 60,
 }
 
 

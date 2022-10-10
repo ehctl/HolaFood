@@ -35,10 +35,10 @@ export const SettingScreen = React.memo(({ navigation }: any) => {
 
     const [isDarkMode, setDarkMode] = useState(props.theme === 'dark');
     return (
-        <View style={{ flex: 1, justifyContent: 'flex-start' }}>
+        <View style={{ flex: 1, justifyContent: 'flex-start', paddingHorizontal: 10 }}>
             <View
                 style={[{
-                    flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center', marginHorizontal: 20
+                    flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center'
                 }, getStyle().defaultButton, { borderRadius: 15 }]}>
 
                 <Text style={{ marginHorizontal: 20 }} text='Dark Mode' />
@@ -54,7 +54,7 @@ export const SettingScreen = React.memo(({ navigation }: any) => {
                     isIosDevice() ? Linking.openURL('App-Prefs:General@path=Location&Region') : navigation.navigate('Language')
                 }}
             />
-            <Button text={`Log out`}
+            <Button text={`Log Out`}
                 onPress={() => navigation.replace('Authentication')}
             />
         </View>

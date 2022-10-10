@@ -46,13 +46,14 @@ export const FoodDetailScreen = React.memo(({ route }: any) => {
     }
 
     return (
-        <View style={{ flex: 1, paddingHorizontal: 10 }}>
+        <View style={{ flex: 1 }}>
             <AnimatedHeaderScreen
                 headerProps={{
                     header: <Level2Header title={data?.name ? data.name : 'Loading'} />,
                     headerHeight: Level2HeaderStat.HEADER_MAX_HEIGHT
                 }}
                 flatListProps={{
+                    style: {paddingHorizontal: 10},
                     renderItem: renderItems,
                     data: getListItem(),
                     keyExtractor: (_, index) => `${index}`,

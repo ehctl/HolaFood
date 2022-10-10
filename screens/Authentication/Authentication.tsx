@@ -9,6 +9,8 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { StackRoot } from '../../navigation/AppNavigation';
 import { AuthenticationMode } from './AuthenticationMode';
+import { setUserType, UserType } from '../../redux/Reducer';
+import { useDispatch } from 'react-redux';
 
 
 export const AuthenticationScreen = React.memo(({ navigation }: any) => {
@@ -17,12 +19,12 @@ export const AuthenticationScreen = React.memo(({ navigation }: any) => {
             <KeyboardAvoidingView
                 behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1, position: 'relative', justifyContent: 'space-between' }} >
                 <View style={{ position: 'absolute', top: 0, right: 0, left: 0, height: '100%', aspectRatio: 1 }}>
-                    <Image style={{flex:1, height:null, width: null}}
+                    <Image style={{ flex: 1, height: null, width: null }}
                         source={require('../../assets/images/food_background.jpg')} />
                 </View>
 
                 <View />
-                <SmallModule style={{backgroundColor: 'transparent', margin: 20}}/>
+                <SmallModule style={{ backgroundColor: 'transparent', margin: 20 }} />
             </KeyboardAvoidingView>
         </View>
     )
@@ -31,12 +33,24 @@ export const AuthenticationScreen = React.memo(({ navigation }: any) => {
 export const SmallModule = React.memo((props: ViewProps) => {
     const [mode, setMode] = useState(AuthenticationMode.LOGIN)
     const { replace } = useNavigation<NativeStackNavigationProp<StackRoot>>()
+    const dispatch = useDispatch()
+    
     return (
         <View style={props.style}>
             {
                 mode == AuthenticationMode.LOGIN
-                    ? <LoginScreen onSuccess={() => replace('Root')} changeMode={mode => setMode(mode)} />
-                    : <SignupScreen onSuccess={() => replace('Root')} changeMode={mode => setMode(mode)} />
+                    ? <LoginScreen
+                        changeMode={mode => setMode(mode)}
+                        onSuccess={(userType: UserType) => {
+                            dispatch(setUserType(userType))
+                            replace('Root')
+                        }} />
+                    : <SignupScreen
+                        changeMode={mode => setMode(mode)}
+                        onSuccess={(userType: UserType) => {
+                            dispatch(setUserType(userType))
+                            replace('Root')
+                        }} />
             }
         </View>
     )

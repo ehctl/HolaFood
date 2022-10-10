@@ -7,7 +7,7 @@ import { Dimensions } from 'react-native';
 import { HomePageHeader, HomePageHeaderStat } from "../components/Headers/HomePageHeader"
 import { AnimatedHeaderScreen } from "./AnimatedHeaderScreen"
 import React from "react"
-import { VerticalFoodItem } from "../components/PopularFoodItem"
+import { VerticalFoodItem } from "./Home/VerticalFoodItem"
 import { HelperItem } from "./Home/FoodList"
 
 export const DummbScreen = ({ navigation }: any) => {

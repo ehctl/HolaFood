@@ -4,11 +4,12 @@ import { FlatList } from "react-native-gesture-handler"
 import { Level2Header } from "../../components/Headers/Level2Header"
 import { View } from "../../components/View"
 import { Text } from "../../components/Text"
-import { RadioButton, RadioButtonGroup } from "../../components/RadioButtonGroup"
+import { RadioButtonGroup } from "../../components/RadioGroup/RadioButtonGroup"
 import { useDispatch } from "react-redux"
 import { AppLanguage, changeLanguage } from "../../redux/Reducer"
 import { useLocale } from "../../components/Themed"
 import React from "react"
+import { RadioButton } from "../../components/RadioGroup/RadioButton"
 
 
 export const LanguageScreen = React.memo(({ navigation }: any) => {
@@ -27,7 +28,7 @@ export const LanguageScreen = React.memo(({ navigation }: any) => {
     }
 
     return (
-        <View style={{flex: 1}} >
+        <View style={{ flex: 1 }} >
             <RadioButtonGroup
                 value={useLocale()}
                 valueChange={(value: string) => {

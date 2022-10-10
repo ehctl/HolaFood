@@ -5,6 +5,7 @@ import { FontAwesome } from '../../components/FontAwesome';
 import { TransparentText, Text } from '../../components/Text';
 import { TextInput } from '../../components/TextInput';
 import { TransparentView, View } from '../../components/View';
+import { UserType } from '../../redux/Reducer';
 import { getStyle } from '../../utils/Utils';
 import { AuthenticationMode } from './AuthenticationMode';
 
@@ -48,9 +49,16 @@ export const LoginScreen = (props: LoginScreenProp) => {
 
             <Button
                 onPress={() => {
-                    props.onSuccess()
+                    props.onSuccess('user')
                 }}
-                text='Login'
+                text='Login as User'
+                style={{ alignSelf: 'center', marginTop: 10 }} />
+
+            <Button
+                onPress={() => {
+                    props.onSuccess('shipper')
+                }}
+                text='Login as Shipper'
                 style={{ alignSelf: 'center', marginTop: 10 }} />
 
             <ActivityIndicator animating={loading} size='large' />
@@ -73,5 +81,5 @@ export const LoginScreen = (props: LoginScreenProp) => {
 
 export type LoginScreenProp = {
     changeMode: (mode: AuthenticationMode) => void,
-    onSuccess: () => void
+    onSuccess: (userType: UserType) => void
 }

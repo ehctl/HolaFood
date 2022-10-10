@@ -19,26 +19,11 @@ import useCachedResources from './hooks/useCachedResources';
 import { getLocale } from './utils/Utils';
 import Warehouse from './utils/Warehouse';
 import React from 'react';
+import { NavigationContainer, useNavigationContainerRef, DefaultTheme, DarkTheme } from '@react-navigation/native';
 
 if (__DEV__) {
   import('./ReactotronConfig').then(() => console.log('Reactotron Configured'))
 }
-
-Notifications.setNotificationHandler({
-  handleNotification: async (notification) => {
-    if (Notification.getInstance().isDataNotification(notification)) 
-        Notification.getInstance().addToBeDissmissNotificationID(notification.request.identifier)
-
-    return ({
-      shouldShowAlert: true,
-      shouldPlaySound: false,
-      shouldSetBadge: false,
-    })
-  },
-  handleSuccess: notificationIdentifier => {
-    Notification.getInstance().dissmissNotification(notificationIdentifier)
-  }
-});
 
 export default function App() {
   const isLoadingComplete = useCachedResources();
@@ -53,6 +38,7 @@ export default function App() {
   );
 }
 
+
 const AppRoot = React.memo(() => {
   const dispatch = useDispatch()
   const osColorScheme = useColorScheme()
@@ -63,19 +49,23 @@ const AppRoot = React.memo(() => {
 
   const notificationListener = useRef(null);
   const responseListener = useRef(null);
+  const appStateListener = useRef(null);
+  const navigationRef = useNavigationContainerRef();
 
   useEffect(() => {
     // set up notification
-    const setUp = async () => {
+    const loadStoredData = async () => {
       try {
         // setup notification
         Notification.getInstance().registerForPushNotificationsAsync().then(token => Notification.getInstance().setExpoToken(token));
+
         notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-          Notification.getInstance().newNotification(notification)
+          Notification.getInstance().newNotification(dispatch, notification)
         });
-    
+
         responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-          console.log('User click notification');
+          if (response.notification.request.content.data?.category == "order")
+            navigationRef.current.navigate('Order', { needRefresh: true })
         });
 
 
@@ -89,24 +79,25 @@ const AppRoot = React.memo(() => {
         dispatch(changeLanguage(locale))
 
         // tracking app state : [inactive(ios only), background, active]
-        const subscription = ApplicationState.addEventListener("change", nextAppState => {
+        appStateListener.current = ApplicationState.addEventListener("change", nextAppState => {
           Warehouse.getInstance().setAppState(nextAppState)
 
           props.appState = nextAppState;
           dispatch(changeApplicationState(props.appState))
         });
 
-        return () => {
-          subscription.remove();
-          Notifications.removeNotificationSubscription(notificationListener.current);
-          Notifications.removeNotificationSubscription(responseListener.current);
-        };
       } catch (err) {
         console.log(`Error: ${err}`)
       }
     }
 
-    setUp()
+    loadStoredData()
+
+    return () => {
+      appStateListener.current.remove();
+      Notifications.removeNotificationSubscription(notificationListener.current);
+      Notifications.removeNotificationSubscription(responseListener.current);
+    };
   }, []);
 
   return (
@@ -117,7 +108,11 @@ const AppRoot = React.memo(() => {
           hidden={false}
           backgroundColor={Colors[props.theme].background}
           barStyle={props.theme !== 'dark' ? 'dark-content' : 'light-content'} />
-        <AppNavigation />
+        <NavigationContainer
+          ref={navigationRef}
+          theme={props.theme === 'dark' ? DarkTheme : DefaultTheme}>
+          <AppNavigation />
+        </NavigationContainer>
       </SafeAreaView>
     </SafeAreaProvider >
   )

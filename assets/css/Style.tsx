@@ -50,8 +50,6 @@ export const Style = StyleSheet.create({
         flexDirection: 'row',
         fontSize: 20,
         backgroundColor: '#6aabd9',
-        margin: 5,
-        padding: 10,
         borderRadius: 20,
         shadowColor: "#000",
         shadowOffset: {
@@ -98,8 +96,8 @@ export const Style = StyleSheet.create({
         flexGrow: 1,
     },
     headerTitle: {
-        fontSize: 18,
-        fontWeight: '400',
+        fontSize: 20,
+        fontWeight: '600',
         textAlign: 'center'
     },
     headerDivider: {

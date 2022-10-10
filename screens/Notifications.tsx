@@ -6,6 +6,7 @@ import React from "react";
 import { AnimatedHeaderScreen } from "./AnimatedHeaderScreen";
 import { Text } from "../components/Text";
 import { ListRenderItemInfo } from "react-native";
+import { NotificationPageHeader, NotificationPageHeaderStat } from "../components/Headers/NotificationPageHeader";
 
 export const NotificationsScreen = React.memo(({ navigation }: any) => {
 
@@ -26,11 +27,11 @@ export const NotificationsScreen = React.memo(({ navigation }: any) => {
     }
 
     return (
-        <View style={getStyle().flex_c_c}>
+        <View style={getStyle().flex_c_s}>
             <AnimatedHeaderScreen
                 headerProps={{
-                    header: <Level1Header title="Notification"/>,
-                    headerHeight: Level1HeaderStat.HEADER_MAX_HEIGHT
+                    header: <NotificationPageHeader />,
+                    headerHeight: NotificationPageHeaderStat.HEADER_MAX_HEIGHT
                 }}
                 flatListProps={{
                     renderItem: renderItem,

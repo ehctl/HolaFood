@@ -8,77 +8,77 @@ import { StyleSheet } from 'react-native';
 import { View } from '../components/View';
 import { FontAwesome } from '@expo/vector-icons';
 import { useSelector } from 'react-redux';
-import { AppState } from '../redux/Reducer';
+import { AppState, setSelectedBottomTabIndex } from '../redux/Reducer';
 import Colors from '../constants/Colors';
 import { FontAwesomeIconType } from '../constants/FontAwesomeIconType';
 import { MenuScreen as Menu } from '../screens/Menu';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useLanguage } from '../components/Themed';
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { HomeDraft } from '../screens/Home/HomeDraft';
 import { OrderScreen as Order } from '../screens/Order/Order';
+import { useDispatch } from 'react-redux';
 
 
-const BottomTab = createMaterialTopTabNavigator()
-const Stack = createNativeStackNavigator()
+const BottomTab = createMaterialTopTabNavigator<BottomStackParamList>()
 
 export const BottomTabNavigator = React.memo(() => {
+    const stateProps = useSelector((state: AppState) => ({
+        userType: state.userType
+    }))
+
     return (
         <BottomTab.Navigator tabBarPosition='bottom' screenOptions={{ lazy: true }} tabBar={props =>
             <MyTabBar
                 props={props}
-                iconList={['home', 'file', 'bell', 'ellipsis-h']} />
+                iconList={
+                    stateProps.userType == 'user' ?
+                        ['home', 'shopping-cart', 'bell', 'ellipsis-h'] :
+                        ['shopping-cart', 'ellipsis-h']
+                } />
         }>
-
-            <BottomTab.Screen name="HomeStack" component={HomeStack} options={{ title: useLanguage('Home') }} />
-            <BottomTab.Screen name="OrderStack" component={OrderStack} options={{ title: useLanguage('Orders') }} />
-            <BottomTab.Screen name="NotificationStack" component={NotificationStack} options={{ title: useLanguage('Notification') }} />
-            <BottomTab.Screen name="MenuStack" component={MenuStack} options={{ title: useLanguage('Menu'), }} />
+            {
+                stateProps.userType == 'user' ?
+                    <BottomTab.Group>
+                        <BottomTab.Screen name="Home" component={HomeDraft} options={{ title: useLanguage('Home') }} />
+                        <BottomTab.Screen name="Order" component={Order} options={{ title: useLanguage('Orders') }} />
+                        <BottomTab.Screen name="Notification" component={Notifications} options={{ title: useLanguage('Notification') }} />
+                        <BottomTab.Screen name="Menu" component={Menu} options={{ title: useLanguage('Menu'), }} />
+                    </BottomTab.Group>
+                    :
+                    <BottomTab.Group>
+                        <BottomTab.Screen name="Order" component={Order} options={{ title: useLanguage('Orders') }} />
+                        <BottomTab.Screen name="Menu" component={Menu} options={{ title: useLanguage('Menu'), }} />
+                    </BottomTab.Group>
+            }
         </BottomTab.Navigator>
     )
 })
 
-const MenuStack = React.memo(() => {
-    return (
-        <Stack.Navigator initialRouteName='Menu' screenOptions={{ headerShown: false }}>
-            <Stack.Screen name='Menu' component={Menu} />
-        </Stack.Navigator>
-    )
-})
-
-const OrderStack = React.memo(() => {
-    return (
-        <Stack.Navigator initialRouteName='Order' screenOptions={{ headerShown: false}}>
-            <Stack.Screen name='Order' component={Order} />
-        </Stack.Navigator>
-    )
-})
-
-const HomeStack = React.memo(() => {
-    return (
-        <Stack.Navigator initialRouteName='Home' screenOptions={{ headerShown: false }}>
-            <Stack.Screen name='Home' component={HomeDraft} />
-        </Stack.Navigator>
-    )
-})
-
-const NotificationStack = React.memo(() => {
-    return (
-        <Stack.Navigator initialRouteName='Notification' screenOptions={{ headerShown: false }}>
-            <Stack.Screen name='Notification' component={Notifications} />
-        </Stack.Navigator>
-    )
-})
-
 const MyTabBar = React.memo((params: BottomBarParams) => {
+    const dispatch = useDispatch()
     const props = useSelector((state: AppState) => ({
-        theme: state.theme
+        theme: state.theme,
+        newOrderNotification: state.newOrderNotification,
+        selectedBottomTabIndex: state.selectedBottomTabIndex
     }))
+
+    useEffect(() => {
+        params.props.position.addListener(({ value }) => {
+            if ((value == 0 || value % Math.floor(value) == 0) && value != props.selectedBottomTabIndex)
+                dispatch(setSelectedBottomTabIndex(value))
+        })
+
+        return () => {
+            params.props.position.removeAllListeners()
+        }
+    }, [params.props.position])
 
     return (
         <View style={{ flexDirection: 'row' }} >
             <View style={style.divider} />
             {params.props.state.routes.map((route, index) => {
+                // params.props.position.addListener((v) => console.log(v))
                 const { options } = params.props.descriptors[route.key];
                 const title =
                     options.title !== undefined
@@ -112,8 +112,8 @@ const MyTabBar = React.memo((params: BottomBarParams) => {
                     outputRange: inputRange.map(i => (i === index ? 1 : 0.3)),
                 });
 
-
                 const AnimatedIcon = Animated.createAnimatedComponent(FontAwesome)
+
                 return (
                     <Pressable
                         key={`${index}`}
@@ -127,7 +127,14 @@ const MyTabBar = React.memo((params: BottomBarParams) => {
 
                         <Animated.View style={[style.divider, { opacity }]} />
                         <View style={style.tab_element_container}>
-                            <AnimatedIcon name={params.iconList[index]} size={20} color={'#2a90c7'} style={{ opacity }} />
+                            <View style={{ flexDirection: 'row', position: 'relative' }}>
+                                <AnimatedIcon name={params.iconList[index]} size={20} color={'#2a90c7'} style={{ opacity }} />
+                                {
+                                    (route.name == 'Order' && props.newOrderNotification) ?
+                                    <FontAwesome name='exclamation-circle' size={15} color={'#269437'} style={{ position: 'absolute', right: -10, top: -5 }} />
+                                    : null
+                                }
+                            </View>
                             <Animated.Text style={[style.tab_element_text, { opacity, color: Colors[props.theme].text }]}>
                                 {title}
                             </Animated.Text>
@@ -161,4 +168,14 @@ const style = StyleSheet.create({
         fontWeight: '500'
     }
 })
+
+export type BottomStackParamList = {
+    Home: undefined;
+
+    Order: { needRefresh?: boolean };
+
+    Notification: undefined;
+
+    Menu: undefined;
+};
 

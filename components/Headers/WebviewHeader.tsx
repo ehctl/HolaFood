@@ -1,4 +1,4 @@
-import { View } from "../../components/View";
+import { TransparentView, View } from "../../components/View";
 import { Text } from "../../components/Text";
 import { SafeAreaView } from 'react-native';
 import { Pressable } from 'react-native';
@@ -27,32 +27,38 @@ export const WebViewHeader = React.memo(forwardRef<any, WebviewHeaderProps>((pro
 
     return (
         <SafeAreaView >
-            <View style={getStyle().headerContainer}>
-                <Pressable style={getStyle().headerLeftIcon} onPress={() => {
-                    navigation.goBack()
-                }}>
-                    <FontAwesome name="angle-down" size={28} />
-                </Pressable>
-                <Pressable style={{opacity: canGoBack ? 0.8 : 0.5, paddingHorizontal: 10}} onPress={() => {
-                    if (canGoBack)
-                        props.webViewRef.current.goBack()
-                }}>
-                    <FontAwesome name="angle-left" size={28} />
-                </Pressable>
-                <View style={{ width: '30%' }}>
+            <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', height: WebviewHeaderStat.HEADER_MAX_HEIGHT}}>
+                <TransparentView style={{flexDirection: 'row', alignItems: 'center', marginLeft: 10}}>
+                    <Pressable style={{}} onPress={() => {
+                        navigation.goBack()
+                    }}>
+                        <FontAwesome name="angle-down" size={32} />
+                    </Pressable>
+                    <Pressable style={{ opacity: canGoBack ? 0.8 : 0.5, paddingHorizontal: 20 }} onPress={() => {
+                        if (canGoBack)
+                            props.webViewRef.current.goBack()
+                    }}>
+                        <FontAwesome name="angle-left" size={28} />
+                    </Pressable>
+                </TransparentView>
+
+                <View style={{ flexGrow: 1, flexShrink: 1 }}>
                     <Text style={getStyle().headerTitle} text={title ? title : props.title} />
                 </View>
-                <Pressable style={{opacity: canGoForward ? 0.8 : 0.5, paddingHorizontal: 10}} onPress={() => {
-                    if (canGoForward)
-                        props.webViewRef.current.goForward()
-                }}>
-                    <FontAwesome name="angle-right" size={28} />
-                </Pressable>
-                <Pressable style={getStyle().headerRightIcon} onPress={() => {
-                    props.webViewRef.current.reload()
-                }}>
-                    <FontAwesome name="rotate-left" size={20} />
-                </Pressable>
+
+                <TransparentView style={{flexDirection: 'row', alignItems: 'center', marginRight: 10}}>
+                    <Pressable style={{ opacity: canGoForward ? 0.8 : 0.5, paddingHorizontal: 20 }} onPress={() => {
+                        if (canGoForward)
+                            props.webViewRef.current.goForward()
+                    }}>
+                        <FontAwesome name="angle-right" size={28} />
+                    </Pressable>
+                    <Pressable style={{paddingVertical: 10}} onPress={() => {
+                        props.webViewRef.current.reload()
+                    }}>
+                        <FontAwesome name="rotate-left" size={22} />
+                    </Pressable>
+                </TransparentView>
             </View>
             <View style={getStyle().headerDivider} />
         </SafeAreaView>
@@ -62,4 +68,8 @@ export const WebViewHeader = React.memo(forwardRef<any, WebviewHeaderProps>((pro
 export type WebviewHeaderProps = {
     title: string,
     webViewRef?: React.MutableRefObject<DefaultWebView<{}>>
+}
+
+export const WebviewHeaderStat = {
+    HEADER_MAX_HEIGHT: 40,
 }

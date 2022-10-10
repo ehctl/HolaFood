@@ -6,8 +6,6 @@ import { BottomTabNavigator } from './BottomTabBar';
 import { DummbScreen } from '../screens/Dumm';
 import React from 'react';
 import { LanguageScreen } from '../screens/Setting/Languague';
-import { LoginScreen } from '../screens/Authentication/Login';
-import { SignupScreen } from '../screens/Authentication/Signup';
 import { FoodDetailScreen } from '../screens/FoodDetail/FoodDetail';
 
 

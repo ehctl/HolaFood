@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react"
-import { Animated, Modal, Pressable } from "react-native"
+import { Animated, Image, Modal, Pressable } from "react-native"
 import { TransparentView, View } from "../../components/View"
 import { Text } from "../../components/Text"
 import React from "react"
@@ -13,6 +13,18 @@ import { Rate } from "./Rate"
 
 export const Info = React.memo((props: FoodDetailData) => {
     const [isFavorite, setIsFavorite] = useState(props.isFavorite)
+    const [popupAnimation, setPopupAnimation] = useState(false)
+
+    const setFoodFavorite = useCallback((value: boolean) => {
+        setIsFavorite(value)
+
+        if (value) {
+            setPopupAnimation(true)
+            setTimeout(() => {
+                setPopupAnimation(false)
+            }, 1200)
+        }
+    }, [])
 
     return (
         <View style={{ marginTop: 20, padding: 5, borderColor: 'green', borderWidth: 2, borderRadius: 10 }}>
@@ -25,8 +37,9 @@ export const Info = React.memo((props: FoodDetailData) => {
                         style={{ marginTop: 5, textAlign: 'left', fontSize: 14, fontWeight: '400' }}
                         text={props.description} />
                 </View>
-                <Pressable style={{ padding: 10 }} onPress={() => { setIsFavorite(!isFavorite) }}>
-                    <FontAwesome name={isFavorite ? 'bookmark' : 'bookmark-o'} color={isFavorite ? 'red' : 'black'} size={22} />
+                <Pressable style={{ padding: 10 }} onPress={() => { setFoodFavorite(!isFavorite) }}>
+                    <FontAwesome name={isFavorite ? 'heart' : 'heart-o'} color={isFavorite ? 'red' : 'black'} size={22} />
+
                 </Pressable>
             </View>
 
@@ -34,12 +47,19 @@ export const Info = React.memo((props: FoodDetailData) => {
                 <Text text={`${props.price}đ`} style={{ textAlign: 'left', color: 'red' }} />
             </View>
 
-            <Rate {...props}/>
+            <Rate {...props} />
 
             <View style={{ marginTop: 10 }} >
                 <Text text={props.sellerName} style={{ textAlign: 'left', fontSize: 14, fontWeight: '500' }} />
             </View>
 
+            {
+                popupAnimation ?
+                    <TransparentView style={{ position: 'absolute', height: 100, width: 100 }}>
+                        <Image source={require('../../assets/images/heart_animation.gif')} style={{ height: '100%', aspectRatio: 1, }} />
+                    </TransparentView>
+                    : null
+            }
         </View>
     )
 })

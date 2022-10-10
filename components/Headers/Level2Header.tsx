@@ -14,8 +14,8 @@ export const Level2Header = (props: Level2HeaderProps) => {
 
     return (
         <SafeAreaView style={{ height: Level2HeaderStat.HEADER_MAX_HEIGHT, justifyContent: 'center', alignItems: 'center' }}>
-            <TransparentView style={getStyle().headerContainer}>
-                <Pressable style={getStyle().headerLeftIcon}
+            <TransparentView style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                <Pressable style={{ padding: 10 }}
                     onPress={() => {
                         navigation.goBack()
                         props.onBackPress?.()
@@ -23,9 +23,15 @@ export const Level2Header = (props: Level2HeaderProps) => {
 
                     <FontAwesome name="angle-left" size={35} />
                 </Pressable>
-                <TransparentView style={getStyle().headerTitleCointainer}>
+                <TransparentView style={[getStyle().headerTitleCointainer]}>
                     <Text style={getStyle().headerTitle} text={props.title} />
                 </TransparentView>
+                <Pressable style={{ backgroundColor: '#d4d4d4', borderRadius: 25, padding: 10, marginRight: 10 }}
+                    onPress={() => {
+                        navigation.navigate('Order' as never)
+                    }} >
+                    <FontAwesome name="shopping-cart" size={20} color='#d14fa6' />
+                </Pressable>
             </TransparentView>
             {/* <View style={[getStyle().headerDivider, { backgroundColor: Colors[theme].text }]} /> */}
         </SafeAreaView>
@@ -38,5 +44,5 @@ export type Level2HeaderProps = {
 }
 
 export const Level2HeaderStat = {
-    HEADER_MAX_HEIGHT: 40,
+    HEADER_MAX_HEIGHT: 60,
 }

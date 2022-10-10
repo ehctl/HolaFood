@@ -8,6 +8,8 @@ import { Level1Header, Level1HeaderStat } from '../components/Headers/Level1Head
 import { useLanguage } from '../components/Themed';
 import React from "react";
 import { AnimatedHeaderScreen } from "./AnimatedHeaderScreen";
+import { MenuPageHeader, MenuPageHeaderStat } from "../components/Headers/MenuPageHeader";
+import { ShimmerItem } from "../components/Shimmer";
 
 export const MenuScreen = React.memo(({ navigation }: any) => {
     const title = useLanguage('Menu')
@@ -32,10 +34,7 @@ export const MenuScreen = React.memo(({ navigation }: any) => {
 
             case MenuItemType.LINK: {
                 return (
-                    <Button
-                        text={item.title} iconName={item.icon} iconColor='azure' onPress={() => navigation.navigate('WebView', {
-                            uri: item.link
-                        })} style={style.flat_list_item} />
+                    <ShimmerItem />
                 )
             }
             default: {
@@ -48,8 +47,8 @@ export const MenuScreen = React.memo(({ navigation }: any) => {
         <View style={getStyle().flex_c_s}>
              <AnimatedHeaderScreen
                 headerProps={{
-                    header: < Level1Header title="Menu"/>,
-                    headerHeight: Level1HeaderStat.HEADER_MAX_HEIGHT
+                    header: <MenuPageHeader />,
+                    headerHeight: MenuPageHeaderStat.HEADER_MAX_HEIGHT
                 }}
                 flatListProps={{
                     renderItem: renderItems,
@@ -64,7 +63,7 @@ export const MenuScreen = React.memo(({ navigation }: any) => {
 
 const style = StyleSheet.create({
     flat_list_item: {
-        marginHorizontal: 30
+        marginHorizontal: 10
     }
 })
 
@@ -79,7 +78,7 @@ const getListItem = (): MenuItem[] => {
         {
             type: MenuItemType.LINK,
             title: 'About us',
-            icon: 'book',
+            icon: 'info-circle',
             link: 'https://google.com'
         }
     ]

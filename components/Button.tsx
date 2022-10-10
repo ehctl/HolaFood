@@ -35,8 +35,10 @@ export type ButtonParams = PressableProps & {
 const style = StyleSheet.create({
     container: {
         justifyContent: 'space-between',
-        marginHorizontal: 20,
         borderRadius: 10,
+        marginHorizontal: 10,
+        marginVertical: 5,
+        padding: 10
     },
     icon: {
         

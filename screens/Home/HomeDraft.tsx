@@ -16,12 +16,8 @@ export const HomeDraft = React.memo(({ navigation }: any) => {
                 return <News />
             case HomeItem.LOCATION:
                 return <Location />
-            case HomeItem.NEW_FOOD:
-                return <FoodList type={FoodListType.FAVORITE_FOOD} setListDirectionHorizon={true} />
-            case HomeItem.RANDOM_FOOD:
-                return <FoodList type={FoodListType.NEW_FOOD} setListDirectionHorizon={true} />
-            case HomeItem.POPULAR_FOOD:
-                return <FoodList type={FoodListType.POPULAR_FOOD} setListDirectionHorizon={false} />
+            case HomeItem.FOOD_LIST:
+                return <FoodList type={FoodListType.POPULAR_FOOD} horizon={false} />
             default:
                 console.log('Unsupported item type')
         }
@@ -30,21 +26,20 @@ export const HomeDraft = React.memo(({ navigation }: any) => {
     const [itemList, setItemList] = useState([
         HomeItem.NEWS,
         HomeItem.LOCATION,
-        HomeItem.NEW_FOOD,
-        HomeItem.RANDOM_FOOD,
-        HomeItem.POPULAR_FOOD,
+        HomeItem.FOOD_LIST
     ])
 
     const extractor = (item: HomeItem, index: number) => `${index}`
 
     return (
-        <View style={{ flex: 1, paddingHorizontal: 10 }}>
+        <View style={{ flex: 1 }}>
             <AnimatedHeaderScreen
                 headerProps={{
                     header: < HomePageHeader />,
                     headerHeight: HomePageHeaderStat.HEADER_MAX_HEIGHT
                 }}
                 flatListProps={{
+                    style: {marginHorizontal: 10},
                     renderItem: renderItem,
                     data: itemList,
                     keyExtractor: extractor,
@@ -57,9 +52,7 @@ export const HomeDraft = React.memo(({ navigation }: any) => {
 enum HomeItem {
     NEWS,
     LOCATION,
-    NEW_FOOD,
-    RANDOM_FOOD,
-    POPULAR_FOOD,
+    FOOD_LIST
 }
 
 

@@ -5,6 +5,7 @@ import { FontAwesome } from '../../components/FontAwesome';
 import { TransparentText, Text } from '../../components/Text';
 import { TextInput } from '../../components/TextInput';
 import { TransparentView, View } from '../../components/View';
+import { UserType } from '../../redux/Reducer';
 import { AuthenticationMode } from './AuthenticationMode';
 
 export const SignupScreen = (props: SignupScreenProp) => {
@@ -49,7 +50,7 @@ export const SignupScreen = (props: SignupScreenProp) => {
 
             <Button
                 onPress={() => {
-                    props.onSuccess()
+                    props.onSuccess('user')
                 }}
                 text='Signup'
                 style={{ alignSelf: 'center', marginTop: 10 }} />
@@ -74,5 +75,5 @@ export const SignupScreen = (props: SignupScreenProp) => {
 
 export type SignupScreenProp = {
     changeMode: (mode: AuthenticationMode) => void,
-    onSuccess: () => void
+    onSuccess: (userType: UserType) => void
 }

@@ -3,6 +3,8 @@ import * as Notifications from 'expo-notifications';
 import { Platform } from 'react-native';
 import { NotificationRequestInput, NotificationChannelInput } from 'expo-notifications';
 import Warehouse from '../utils/Warehouse';
+import { AnyAction, Dispatch } from 'redux';
+import { addOrders } from '../redux/Reducer';
 
 
 export default class Notification {
@@ -38,19 +40,17 @@ export default class Notification {
   }
 
   public isDataNotification = (notification: Notifications.Notification) => {
-    return notification.request.content.title == 'gotmine'
+    return notification.request.content.data.category != undefined
   }
 
-  public newNotification = (notification: Notifications.Notification) => {
+  public newNotification = (dispatch: Dispatch<AnyAction>,notification: Notifications.Notification) => {
     try {
       if (this.isDataNotification(notification)) {
         const data = notification.request.content.data as DataNotificationType
         switch (data.category) {
-          case 'notification':
-            console.log('new notification data', data)
-            break;
           case 'order':
-            console.log('new order data', data)
+            console.log('Notification: new order')
+            dispatch(addOrders([data.data]))
             break;
           default:
             console.log('Unsupported type')
@@ -61,9 +61,10 @@ export default class Notification {
     }
   } 
 
-  public dissmissNotification = (identifier: string) => {
-    if (this.canNotificationDismiss(identifier))
-      Notifications.dismissNotificationAsync(identifier);
+  public dissmissNotification = async (identifier: string) => {
+    if (this.canNotificationDismiss(identifier)){
+      await Notifications.dismissNotificationAsync(identifier);
+    }
   }
 
   public async schedulePushNotification(request: NotificationRequestInput): Promise<string> {

@@ -1,7 +1,7 @@
-import { TransparentView, View } from "../../../base/View"
-import { Text } from "../../../base/Text"
-import { FontAwesome2 } from "../../../base/FontAwesome"
-import { PopupModal } from "../../../base/PopupModal"
+import { TransparentView, View } from "../../../../base/View"
+import { Text } from "../../../../base/Text"
+import { FontAwesome2 } from "../../../../base/FontAwesome"
+import { PopupModal } from "../../../../base/PopupModal"
 import { useRef, useState } from "react"
 import { Pressable, TextInput } from "react-native"
 
@@ -51,11 +51,11 @@ export const Info = () => {
             <PopupModal ref={updateUsernameModal} title="Update" shouldAvoidKeyboard={true}>
                 <UpdateUsername username="Tuan Linh" />
             </PopupModal>
-            
+
             <PopupModal ref={updatePhoneNumberModal} title="Update" shouldAvoidKeyboard={true}>
                 <UpdatePhone phoneNumber="0968550429" />
             </PopupModal>
-            
+
             <PopupModal ref={updatePasswordModal} title="Update" shouldAvoidKeyboard={true}>
                 <UpdatePassword password='sadfsdfasf' />
             </PopupModal>

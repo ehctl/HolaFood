@@ -158,3 +158,27 @@ export const getFoodReviews = (
         console.log(e)
     })
 }
+
+export const getListAddress = (
+    userId: string,
+    success: (data: any) => void,
+    failure: (error: any) => void
+) => {
+    const option = {
+        method: 'GET',
+        params: {
+        },
+        url: 'https://mocki.io/v1/0fc2e3d9-e4bd-431a-9159-ca71adb563e3',
+    }
+
+    axios(option).then((response) => {
+        if (response.status === 200) {
+            success(response.data);
+        } else {
+            failure(response);
+        }
+    })
+    .catch((e) => {
+        console.log(e)
+    })
+}

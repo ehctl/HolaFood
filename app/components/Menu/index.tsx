@@ -1,7 +1,7 @@
 import { TransparentView, View } from "../../base/View"
 import { FontAwesomeIconType } from "../../constants/FontAwesomeIconType"
 import { Button } from "../../base/Button";
-import { ListRenderItemInfo, Pressable } from 'react-native'
+import { Linking, ListRenderItemInfo, Pressable } from 'react-native'
 import { getStyle } from "../../utils/Utils";
 import { useEffect } from "react";
 import { useLanguage } from '../../base/Themed';
@@ -52,6 +52,11 @@ export const MenuScreen = React.memo(({ navigation }: any) => {
                 <MenuItem
                     text='About Us' iconName='info-circle' iconColor='#5a996b'
                     onPress={() => navigation.navigate('WebView', { uri: "https://google.com" })} />
+                <MenuItem
+                    text='About Us' iconName='info-circle' iconColor='#5a996b'
+                    onPress={() => {
+                        navigation.navigate('WebView', { uri: "https://test-payment.momo.vn/pay/app" })
+                    }} />
 
                 {/* <FoodItemShimmer visible={true} /> */}
 

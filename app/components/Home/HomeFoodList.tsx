@@ -6,9 +6,8 @@ import { Text } from "../../base/Text"
 import { FoodItem } from "./FoodItem"
 import { wait } from "../../utils/Utils"
 import { PopupModal } from "../../base/PopupModal"
-import { RadioButtonGroup } from "../../base/RadioGroup/RadioButtonGroup"
+import { RadioButtonGroup, RadioButton, RadioButtonIcon } from "../../base/RadioGroup"
 import { FontAwesome, FontAwesome1, FontAwesome2 } from "../../base/FontAwesome"
-import { RadioButton, RadioButtonIcon } from "../../base/RadioGroup/RadioButton"
 import { FoodItemShimmer } from "./FoodItemShimmer"
 import { Pressable } from "react-native"
 import { useNavigation } from '@react-navigation/native';
@@ -102,7 +101,7 @@ export const HomeFoodList = React.memo((props: FoodListProps) => {
 
                     <RadioButton value={FoodListType.POPULAR_FOOD} style={{ width: '100%', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 10 }}>
                         <TransparentView style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                            <View style={{ backgroundColor: 'grey', borderRadius: 1000, padding: 10, width: 50, aspectRatio: 1,justifyContent: 'center', alignItems: 'center' }}>
+                            <View style={{ backgroundColor: 'grey', borderRadius: 1000, padding: 10, width: 50, aspectRatio: 1, justifyContent: 'center', alignItems: 'center' }}>
                                 <FontAwesome name="thumbs-o-up" size={22} />
                             </View>
                             <Text text={FoodListType.POPULAR_FOOD} style={{ fontSize: 18, marginLeft: 15 }} />
@@ -112,7 +111,7 @@ export const HomeFoodList = React.memo((props: FoodListProps) => {
 
                     <RadioButton value={FoodListType.FAVORITE_FOOD} style={{ width: '100%', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 10 }}>
                         <TransparentView style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                            <View style={{ backgroundColor: 'grey', borderRadius: 1000, padding: 10, width: 50, aspectRatio: 1,justifyContent: 'center', alignItems: 'center' }}>
+                            <View style={{ backgroundColor: 'grey', borderRadius: 1000, padding: 10, width: 50, aspectRatio: 1, justifyContent: 'center', alignItems: 'center' }}>
                                 <FontAwesome2 name="format-list-numbered" size={25} />
                             </View>
                             <Text text={FoodListType.FAVORITE_FOOD} style={{ fontSize: 18, marginLeft: 15 }} />
@@ -128,7 +127,7 @@ export const HomeFoodList = React.memo((props: FoodListProps) => {
                         </TransparentView>
                         <RadioButtonIcon size={5} />
                     </RadioButton>
-                    
+
                 </RadioButtonGroup>
             </PopupModal>
 

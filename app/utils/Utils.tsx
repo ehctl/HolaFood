@@ -5,6 +5,7 @@ import { Constant } from "./Constant"
 import Warehouse from "./Warehouse"
 import { useEffect, useState } from 'react';
 import { Keyboard, KeyboardEvent } from 'react-native';
+import { FontAwesome } from "@expo/vector-icons"
 
 
 
@@ -68,6 +69,7 @@ export const useKeyboard = () => {
 
 
 export const AnimatedPressable = Animated.createAnimatedComponent(Pressable)
+export const AnimatedFontAwesome = Animated.createAnimatedComponent(FontAwesome)
 
 export const getEnumKeyByEnumValue = (myEnum, enumValue) => {
   let keys = Object.keys(myEnum).filter(x => myEnum[x] == enumValue);

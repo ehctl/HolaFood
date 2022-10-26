@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react"
 import { FlatList } from "react-native-gesture-handler"
 import { TransparentView, View } from "../../base/View"
 import { DUMMY_DATA, DUMMY_TYPE } from "./DummyData"
-import { Text } from "../../base/Text"
+import { I18NText, Text } from "../../base/Text"
 import { FoodItem } from "./FoodItem"
 import { wait } from "../../utils/Utils"
 import { PopupModal } from "../../base/PopupModal"
@@ -59,7 +59,7 @@ export const HomeFoodList = React.memo((props: FoodListProps) => {
         return (
             <Pressable
                 style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginVertical: 10 }}
-                onPress={() => navigation.navigate('FoodList' as never)}>
+                onPress={() => navigation.navigate('FoodList' as never, { type: foodListType } as never)}>
                 <Text text='More' style={{ fontSize: 16, marginHorizontal: 15 }} />
                 <FontAwesome1 name="rightcircleo" size={18} />
             </Pressable>
@@ -74,25 +74,21 @@ export const HomeFoodList = React.memo((props: FoodListProps) => {
 
     return (
         <View style={{
-            marginVertical: 10, backgroundColor: '#c0c6cf',
-            borderTopLeftRadius: 15,
-            borderBottomLeftRadius: 15,
-            borderTopRightRadius: props.horizon ? 0 : 15,
-            borderBottomRightRadius: props.horizon ? 0 : 15
+            marginVertical: 20, 
         }}>
-            <TransparentView style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 10, marginBottom: 5 }}>
-                <Text
-                    style={{ textAlign: 'left', fontWeight: '600', fontSize: 20 }}
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',  marginBottom: 5,}}>
+                <I18NText
+                    style={{ textAlign: 'left', fontWeight: '600', fontSize: 20, marginRight: 20 }}
                     text={foodListType.toString()} />
 
                 <FontAwesome1
                     name="ellipsis1" size={28}
                     onPress={() => popupModalRef.current.changeVisibility(true)} />
-            </TransparentView>
+            </View>
 
             <PopupModal ref={popupModalRef} title='Food'>
                 <RadioButtonGroup
-                    defaultColor='#34838a'
+                    selectedColor='#207499'
                     value={foodListType}
                     valueChange={(value: string) => {
                         popupModalRef.current.changeVisibility(false)
@@ -101,8 +97,8 @@ export const HomeFoodList = React.memo((props: FoodListProps) => {
 
                     <RadioButton value={FoodListType.POPULAR_FOOD} style={{ width: '100%', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 10 }}>
                         <TransparentView style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                            <View style={{ backgroundColor: 'grey', borderRadius: 1000, padding: 10, width: 50, aspectRatio: 1, justifyContent: 'center', alignItems: 'center' }}>
-                                <FontAwesome name="thumbs-o-up" size={22} />
+                            <View style={{ backgroundColor: '#c0c6cf', borderRadius: 1000, padding: 10, width: 50, aspectRatio: 1, justifyContent: 'center', alignItems: 'center' }}>
+                                <FontAwesome name="thumbs-up" size={22} color='#207499'/>
                             </View>
                             <Text text={FoodListType.POPULAR_FOOD} style={{ fontSize: 18, marginLeft: 15 }} />
                         </TransparentView>
@@ -111,8 +107,8 @@ export const HomeFoodList = React.memo((props: FoodListProps) => {
 
                     <RadioButton value={FoodListType.FAVORITE_FOOD} style={{ width: '100%', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 10 }}>
                         <TransparentView style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                            <View style={{ backgroundColor: 'grey', borderRadius: 1000, padding: 10, width: 50, aspectRatio: 1, justifyContent: 'center', alignItems: 'center' }}>
-                                <FontAwesome2 name="format-list-numbered" size={25} />
+                            <View style={{ backgroundColor: '#c0c6cf', borderRadius: 1000, padding: 10, width: 50, aspectRatio: 1, justifyContent: 'center', alignItems: 'center' }}>
+                                <FontAwesome2 name="format-list-numbered" size={25} color='#207499'/>
                             </View>
                             <Text text={FoodListType.FAVORITE_FOOD} style={{ fontSize: 18, marginLeft: 15 }} />
                         </TransparentView>
@@ -120,8 +116,8 @@ export const HomeFoodList = React.memo((props: FoodListProps) => {
                     </RadioButton>
                     <RadioButton value={FoodListType.NEW_FOOD} style={{ width: '100%', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 10 }}>
                         <TransparentView style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                            <View style={{ backgroundColor: 'grey', borderRadius: 1000, padding: 10, width: 50, aspectRatio: 1, justifyContent: 'center', alignItems: 'center' }}>
-                                <FontAwesome1 name="upcircleo" size={22} />
+                            <View style={{ backgroundColor: '#c0c6cf', borderRadius: 1000, padding: 10, width: 50, aspectRatio: 1, justifyContent: 'center', alignItems: 'center' }}>
+                                <FontAwesome1 name="upcircleo" size={22} color='#207499'/>
                             </View>
                             <Text text={FoodListType.NEW_FOOD} style={{ fontSize: 18, marginLeft: 15 }} />
                         </TransparentView>
@@ -131,7 +127,11 @@ export const HomeFoodList = React.memo((props: FoodListProps) => {
                 </RadioButtonGroup>
             </PopupModal>
 
-            <View style={{ flexDirection: props.type == FoodListType.POPULAR_FOOD ? 'column' : 'row', justifyContent: 'center', backgroundColor: 'transparent' }}>
+            <View style={{ flexDirection: props.type == FoodListType.POPULAR_FOOD ? 'column' : 'row', justifyContent: 'center', backgroundColor: '#c0c6cf',
+            borderTopLeftRadius: 15,
+            borderBottomLeftRadius: 15,
+            borderTopRightRadius: props.horizon ? 0 : 15,
+            borderBottomRightRadius: props.horizon ? 0 : 15 }}>
                 <FlatList
                     contentContainerStyle={{}}
                     style={{}}

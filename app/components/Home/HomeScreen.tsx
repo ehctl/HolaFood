@@ -7,6 +7,7 @@ import { Location } from "./Location"
 import { HomeFoodList } from "./HomeFoodList"
 import { View } from "../../base/View"
 import { FoodListType } from "../FoodList/FoodListType"
+import { CategoryList } from "./CategoryList"
 
 
 export const HomeScreen = React.memo(({ navigation }: any) => {
@@ -17,6 +18,8 @@ export const HomeScreen = React.memo(({ navigation }: any) => {
                 return <News />
             case HomeItem.LOCATION:
                 return <Location />
+            case HomeItem.CATEGORY_LIST:
+                return <CategoryList />
             case HomeItem.FOOD_LIST:
                 return <HomeFoodList type={FoodListType.POPULAR_FOOD} horizon={false} />
             default:
@@ -27,6 +30,7 @@ export const HomeScreen = React.memo(({ navigation }: any) => {
     const [itemList, setItemList] = useState([
         HomeItem.NEWS,
         HomeItem.LOCATION,
+        HomeItem.CATEGORY_LIST,
         HomeItem.FOOD_LIST
     ])
 
@@ -58,6 +62,7 @@ export const HomeScreen = React.memo(({ navigation }: any) => {
 enum HomeItem {
     NEWS,
     LOCATION,
+    CATEGORY_LIST,
     FOOD_LIST
 }
 

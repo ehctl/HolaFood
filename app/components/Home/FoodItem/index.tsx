@@ -43,12 +43,12 @@ export const FoodItem = React.memo((item: ItemType) => {
                 </Pressable>
 
                 <TransparentView style={{ flexGrow: 1, flexShrink: 1, flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'flex-start', marginHorizontal: 10 }}>
-                    <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginVertical: 5, flexShrink: 1 }}>
+                    {/* <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginVertical: 5, flexShrink: 1 }}>
                         <View style={{ width: 20, justifyContent: 'center', alignItems: 'center' }}>
                             <FontAwesome name="shield" size={14} style={{ marginRight: 5 }} color='#7044b3' />
                         </View>
                         <BText text="Openning" style={{ color: '#7044b3', fontSize: 14, flexShrink: 1 }} />
-                    </View>
+                    </View> */}
 
                     <Pressable
                         onPress={() => navigateToFoodDetail(item.id)}

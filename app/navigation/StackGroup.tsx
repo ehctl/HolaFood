@@ -9,6 +9,7 @@ import { FoodDetailScreen } from '../components/FoodDetail/FoodDetailScreen';
 import { FoodListScreen } from '../components/FoodList/FoodListScreen';
 import { AccountScreen } from '../components/Menu/AccountScreen';
 import { ShopDetail } from '../components/ShopDetail';
+import { FAQScreen } from '../components/Menu/FAQScreen';
 
 
 const Stack = createNativeStackNavigator<GroupStackParamList>();
@@ -27,6 +28,7 @@ export const Root = React.memo(() => {
             <Stack.Screen name='FoodList' component={FoodListScreen} options={{ animation: 'slide_from_right', headerShown: false }} />
             <Stack.Screen name='Account' component={AccountScreen} options={{ animation: 'slide_from_right', headerShown: false }} />
             <Stack.Screen name='ShopDetail' component={ShopDetail} options={{ animation: 'slide_from_right', headerShown: false }} />
+            <Stack.Screen name='FAQScreen' component={FAQScreen} options={{ animation: 'slide_from_right', headerShown: false }} />
         </Stack.Navigator>
     )
 })
@@ -44,8 +46,10 @@ export type GroupStackParamList = {
 
     ShopDetail: undefined;
 
-    FoodList: undefined;
+    FoodList: { type: string};
 
     Account: undefined;
+
+    FAQScreen: undefined;
 };
 

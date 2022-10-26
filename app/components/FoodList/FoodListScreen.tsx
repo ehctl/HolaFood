@@ -6,10 +6,12 @@ import { AnimatedHeader } from "../../base/AnimatedHeader"
 import { CategoryList } from "./CategoryList"
 import { FoodList } from "./FoodList"
 import { FoodListScreenContext, FoodListType } from "./FoodListType"
+import { RouteProp } from '@react-navigation/core'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { GroupStackParamList } from '../../navigation/StackGroup';
 
-
-export const FoodListScreen = () => {
-    const [foodListType, setFoodListType] = useState(FoodListType.POPULAR_FOOD)
+export const FoodListScreen = (props: FoodListScreenProps) => {
+    const [foodListType, setFoodListType] = useState(props.route.params?.type ?? FoodListType.POPULAR_FOOD)
 
     const renderItems = ({ item }: ListRenderItemInfo<ListItem>) => {
         switch (item) {
@@ -33,7 +35,7 @@ export const FoodListScreen = () => {
                         headerHeight: Level2HeaderStat.HEADER_MAX_HEIGHT
                     }}
                     flatListProps={{
-                        style: { paddingHorizontal: 10 },
+                        style: {},
                         renderItem: renderItems,
                         data: getListItem(),
                         keyExtractor: (_, index) => `${index}`,
@@ -43,6 +45,11 @@ export const FoodListScreen = () => {
             </View>
         </FoodListScreenContext.Provider>
     )
+}
+
+export interface FoodListScreenProps {
+    navigation: NativeStackNavigationProp<GroupStackParamList, 'FoodList'>;
+    route: RouteProp<GroupStackParamList, 'FoodList'>
 }
 
 enum ListItem {

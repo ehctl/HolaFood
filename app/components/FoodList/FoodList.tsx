@@ -6,7 +6,6 @@ import { Text } from "../../base/Text"
 import { FoodItem } from "../Home/FoodItem"
 import { wait } from "../../utils/Utils"
 import { FoodItemShimmer } from "../Home/FoodItemShimmer"
-import { FoodListType } from "./FoodListType"
 import { getFoodList } from "../../core/apis/requests"
 
 export const FoodList = React.memo((props: FoodListProps) => {
@@ -24,7 +23,7 @@ export const FoodList = React.memo((props: FoodListProps) => {
         return <FoodItem {...item} />
     }
 
-    const extractor = (_, index: number) => `${index}`
+    const extractor = (_: any, index: number) => `${index}`
 
     const fetchMoreData = useCallback(async (currentPageIndex: number) => {
         setLoadingMore(true)
@@ -50,7 +49,7 @@ export const FoodList = React.memo((props: FoodListProps) => {
 
     return (
         <View style={{
-            marginTop: 10, backgroundColor: '#a3c3c4', borderRadius: 15,
+            marginTop: 10, backgroundColor: '#a3c3c4', borderRadius: 15, marginHorizontal: 10
         }}>
             <TransparentView style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 10, marginBottom: 5 }}>
                 <Text
@@ -85,5 +84,5 @@ export const FoodList = React.memo((props: FoodListProps) => {
 export type ItemType = DUMMY_TYPE
 
 type FoodListProps = {
-    type: FoodListType,
+    type: string,
 }

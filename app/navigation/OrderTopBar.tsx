@@ -49,7 +49,6 @@ const OrderTabBar = React.memo((params: OrderTopBarParams) => {
         <View style={{ flexDirection: 'row' }} >
             <View style={style.divider} />
             {params.props.state.routes.map((route, index) => {
-                // params.props.position.addListener((v) => console.log(v))
                 const { options } = params.props.descriptors[route.key];
                 const title =
                     options.title !== undefined

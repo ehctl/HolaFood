@@ -47,17 +47,12 @@ export const MenuScreen = React.memo(({ navigation }: any) => {
 
                 <MenuItem
                     text='FAQs' iconName='question-circle' iconColor='#5a996b'
-                    onPress={() => navigation.navigate('Language')} />
+                    onPress={() => navigation.navigate('FAQScreen')} />
 
                 <MenuItem
                     text='About Us' iconName='info-circle' iconColor='#5a996b'
                     onPress={() => navigation.navigate('WebView', { uri: "https://google.com" })} />
-                <MenuItem
-                    text='About Us' iconName='info-circle' iconColor='#5a996b'
-                    onPress={() => {
-                        navigation.navigate('WebView', { uri: "https://test-payment.momo.vn/pay/app" })
-                    }} />
-
+                    
                 {/* <FoodItemShimmer visible={true} /> */}
 
                 {/* <View style={{ height: 80, backgroundColor: '#e8e8e8', marginHorizontal: -15 }} /> */}

@@ -11,7 +11,6 @@ import { Rate } from "./Rate"
 export const Info = React.memo((props: FoodDetailData) => {
     const [isFavorite, setIsFavorite] = useState(props.isFavorite)
     const [popupAnimation, setPopupAnimation] = useState(false)
-    const popupModal = useRef(null)
 
     const setFoodFavorite = useCallback((value: boolean) => {
         setIsFavorite(value)

@@ -66,7 +66,7 @@ export const Review = React.memo((props: ReviewProps) => {
                 onPress={() => collapse()}>
 
                 <Text text='Reviews' style={{ fontSize: 20, fontWeight: '500' }} />
-                <FontAwesome name={isCollapse ? 'angle-up' : 'angle-down'} size={24} style={{ marginLeft: 10 }} />
+                <FontAwesome name={isCollapse ? 'angle-down' : 'angle-up'} size={24} style={{ marginLeft: 10 }} />
             </Pressable>
             {
                 isCollapse ?

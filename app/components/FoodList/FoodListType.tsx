@@ -7,11 +7,11 @@ export enum FoodListType {
 }
 
 export const FoodListScreenContext = React.createContext<FoodListScreenContextType>({
-    foodListType: FoodListType.POPULAR_FOOD,
-    changeFoodListType: (_: FoodListType) => { }
+    foodListType: 'popular',
+    changeFoodListType: (_: string) => { }
 });
 
 export type FoodListScreenContextType = {
-    foodListType: FoodListType,
-    changeFoodListType: (type: FoodListType) => void
+    foodListType: string,
+    changeFoodListType: (type: string) => void
 }

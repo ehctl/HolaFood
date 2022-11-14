@@ -5,8 +5,8 @@ import { BText, Text } from "../../base/Text";
 import { FontAwesome } from "../../base/FontAwesome";
 
 export const News = () => {
-    const animatedHeight = useRef(new Animated.Value(200)).current
-    const animatedOpcity = useRef(Animated.divide(animatedHeight, 200)).current
+    const animatedHeight = useRef(new Animated.Value(100)).current
+    const animatedOpcity = useRef(Animated.divide(animatedHeight, 100)).current
 
     const closeAnim = () => {
         Animated.sequence([
@@ -17,7 +17,7 @@ export const News = () => {
             }),
             Animated.timing(animatedHeight, {
                 useNativeDriver: false,
-                toValue: 200,
+                toValue: 100,
                 duration: 500
             }),
         ]).start();
@@ -29,7 +29,7 @@ export const News = () => {
                 <FontAwesome name="close" size={20} />
             </Pressable>
             <View style={{ marginTop: 35, backgroundColor: 'transparent' }}>
-                <BText text='HOLA Food là 1 sản phẩm dành riêng cho người Hòa Lạc. Mời các bạn trải nghiệm :D' numberOfLines={10} />
+                <BText text='HOLA Food là 1 sản phẩm dành riêng cho người Hòa Lạc. Mời các bạn trải nghiệm ๑(◕‿◕)๑ ๑(◕‿◕)๑ ๑(◕‿◕)๑' numberOfLines={10} />
             </View>
         </Animated.View>
     )

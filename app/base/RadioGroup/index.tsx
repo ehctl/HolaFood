@@ -8,7 +8,7 @@ import { style } from "./style/index.css";
 
 export const RadioButtonGroupContext = React.createContext<RadioButtonGroupProps>({
     value: '',
-    valueChange: (_: string) => { }
+    valueChange: (_: any) => { }
 });
 
 export const RadioButtonContext = React.createContext<{ isSelected: boolean }>({
@@ -17,10 +17,12 @@ export const RadioButtonContext = React.createContext<{ isSelected: boolean }>({
 
 export const RadioButtonGroup = (props: RadioButtonGroupProps) => {
     const [value, setValue] = useState(props.value)
-    const valueChange = useCallback((value: string) => {
-        setValue(value)
-        props.valueChange(value)
-    }, [])
+    const valueChange = useCallback((newValue: string) => {
+        if (newValue !== value) {
+            setValue(newValue)
+            props.valueChange(newValue)
+        }
+    }, [value])
 
     return (
         <RadioButtonGroupContext.Provider
@@ -39,7 +41,7 @@ export const RadioButton = (props: RadioButtonProps) => {
         <RadioButtonGroupContext.Consumer >
             {({ value, valueChange }) => {
                 return (
-                    <RadioButtonContext.Provider value={{ isSelected: props.value == value }}>
+                    <RadioButtonContext.Provider value={{ isSelected: props.value === value }}>
                         <Pressable onPress={() => valueChange(props.value)} style={props.style}>
                             {props.children}
                         </Pressable>
@@ -84,15 +86,15 @@ export const RadioButtonIcon = React.memo((props: RadioButtonIconProps) => {
 })
 
 export type RadioButtonGroupProps = {
-    value: string,
-    valueChange: (value: string) => void,
+    value: any,
+    valueChange: (value: any) => void,
     defaultColor?: ColorValue,
     selectedColor?: ColorValue,
     children?: React.ReactNode[] | React.ReactNode
 }
 
 export type RadioButtonProps = {
-    value: string,
+    value: any,
     style?: DefaultView['props']['style']
     children?: React.ReactNode[] | React.ReactNode,
 }

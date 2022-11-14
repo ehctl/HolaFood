@@ -7,15 +7,20 @@ import { useSelector } from 'react-redux';
 import { AppState } from '../redux/Reducer';
 import Colors from '../constants/Colors';
 import React from 'react';
-import { OrderScreen as Order } from '../components/Order/Order';
-import { useDispatch } from 'react-redux';
+import { OrderScreen as Order } from '../components/Order';
 import { getStyle } from '../utils/Utils';
 import { Level1Header, Level1HeaderStats } from '../base/Headers/Level1Header';
+import { Cart } from '../components/Order/Cart';
+import { useLanguage } from '../base/Themed';
 
 
 const OrderTabNavigator = createMaterialTopTabNavigator<OrderStackParamList>()
 
 export const OrderTab = React.memo(() => {
+    const stateProps = useSelector((state: AppState) => ({
+        userType: state.userType
+    }))
+
     return (
         <View style={getStyle().AnimatedHeader_container}>
             <View style={getStyle().AnimatedHeader_header}>
@@ -26,14 +31,31 @@ export const OrderTab = React.memo(() => {
                     leftIconsColor={['#4666a6']}
                     leftIconsTarget={['Search']} />
             </View>
-            <OrderTabNavigator.Navigator style={{ paddingHorizontal: 10 }} tabBarPosition='top' tabBar={props =>
-                <OrderTabBar
-                    marginTop={Level1HeaderStats.HEADER_MAX_HEIGHT}
-                    props={props} />
-            }>
 
-                <OrderTabNavigator.Screen name="Recent" component={Order} options={{}} />
-                <OrderTabNavigator.Screen name="Ordered" component={Order} options={{}} />
+            <OrderTabNavigator.Navigator
+                style={{}}
+                tabBarPosition='top'
+                tabBar={props =>
+                    <OrderTabBar
+                        marginTop={Level1HeaderStats.HEADER_MAX_HEIGHT}
+                        props={props} />
+                }>
+                {
+                    stateProps.userType == 'user' ?
+                        <OrderTabNavigator.Group>
+                            <OrderTabNavigator.Screen name="Cart" component={Cart} options={{}} />
+                            <OrderTabNavigator.Screen name="Orders" component={Order} options={{}} />
+                        </OrderTabNavigator.Group>
+                        :
+                        <OrderTabNavigator.Group>
+                            <OrderTabNavigator.Screen name="Cart" component={Cart} options={{}} />
+                            <OrderTabNavigator.Screen name="Cart1" component={Cart} options={{}} />
+                            <OrderTabNavigator.Screen name="Cart2" component={Cart} options={{}} />
+                            <OrderTabNavigator.Screen name="Orders" component={Order} options={{}} />
+                        </OrderTabNavigator.Group>
+
+                }
+
             </OrderTabNavigator.Navigator>
         </View>
 
@@ -50,10 +72,11 @@ const OrderTabBar = React.memo((params: OrderTopBarParams) => {
             <View style={style.divider} />
             {params.props.state.routes.map((route, index) => {
                 const { options } = params.props.descriptors[route.key];
-                const title =
+                const title = useLanguage(
                     options.title !== undefined
                         ? options.title
-                        : route.name;
+                        : route.name
+                )
 
                 const isFocused = params.props.state.index === index;
                 const onPress = () => {
@@ -92,8 +115,8 @@ const OrderTabBar = React.memo((params: OrderTopBarParams) => {
 })
 
 export type OrderStackParamList = {
-    Recent: undefined;
-    Ordered: undefined
+    Cart: undefined;
+    Orders: undefined
 };
 
 type OrderTopBarParams = { props: MaterialTopTabBarProps, marginTop?: number }

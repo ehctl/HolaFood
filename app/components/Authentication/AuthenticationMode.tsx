@@ -1,4 +1,5 @@
 export enum AuthenticationMode {
     LOGIN,
-    SINGUP
+    SINGUP,
+    FORGOT_PASSWORD
 }

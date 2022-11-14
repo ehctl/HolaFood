@@ -2,7 +2,6 @@ import { AnimatedHeader } from "../../../base/AnimatedHeader"
 import { Level2Header, Level2HeaderStat } from "../../../base/Headers/Level2Header"
 import { TransparentView, View } from "../../../base/View"
 import { BText, I18NText, Text } from "../../../base/Text"
-import { DUMMY_TYPE } from "../../Home/DummyData"
 import { useCallback, useEffect, useState } from "react"
 import { wait } from "../../../utils/Utils"
 import { Image } from "../../../base/Image"
@@ -12,17 +11,18 @@ import { FlatList } from "react-native-gesture-handler"
 import { Pressable } from "react-native"
 import { FontAwesome } from "../../../base/FontAwesome"
 import { useNavigation } from '@react-navigation/native';
+import { FoodDetailData } from "../../FoodDetail/FoodDetailScreen"
 
 
 export const ShopFoodItem = (props: ShopFoodItemProps) => {
     const navigation = useNavigation()
 
-    const navigateToFoodDetail = (id: string) => {
+    const navigateToFoodDetail = (id: number) => {
         navigation.navigate('FoodDetail' as never, { itemId: id } as never)
     }
 
     return (
-        <TransparentView style={{ flex: 1 }} >
+        <TransparentView style={{ flex: 1 / 2 }} >
             <View style={{
                 flex: 1, marginVertical: 8,
                 marginHorizontal: 10,
@@ -42,18 +42,18 @@ export const ShopFoodItem = (props: ShopFoodItemProps) => {
                 <Pressable onPress={() => navigateToFoodDetail(props.data.id)} style={{ justifyContent: 'center', alignItems: 'center' }}>
                     <Image
                         source={{
-                            uri: 'https://img.freepik.com/premium-photo/big-hamburger-with-double-beef-french-fries_252907-8.jpg?w=2000'
+                            uri: props.data.productImgURL
                         }}
                         style={{ aspectRatio: 1, width: '100%', borderRadius: 15 }} />
                 </Pressable>
 
                 <Pressable
                     onPress={() => navigateToFoodDetail(props.data.id)}
-                    style={{ flexGrow: 1, flexShrink: 1, marginVertical: 5, justifyContent: 'center', alignItems: 'stretch' }}>
+                    style={{ flexGrow: 1, flexShrink: 1, marginVertical: 5, justifyContent: 'flex-start', alignItems: 'stretch' }}>
 
-                    <Text text={props.data.title} numberOfLines={2} style={{ flexGrow: 1, textAlign: 'left', fontWeight: '500', fontSize: 20, flexShrink: 1, marginTop: 5 }} />
+                    <Text text={props.data.productName} numberOfLines={2} style={{ textAlign: 'left', fontWeight: '500', fontSize: 18, flexShrink: 1, marginTop: 5 }} />
 
-                    <Text text={'Ngon ngon ngon'} numberOfLines={3} style={{ textAlign: 'left', fontSize: 16, flexShrink: 1, marginTop: 5 }} />
+                    <Text text={props.data.description} numberOfLines={3} style={{ textAlign: 'left', fontSize: 14, flexShrink: 1, marginTop: 5 }} />
                 </Pressable>
             </View>
 
@@ -71,5 +71,5 @@ export const ShopFoodItem = (props: ShopFoodItemProps) => {
 }
 
 export type ShopFoodItemProps = {
-    data: DUMMY_TYPE
+    data: FoodDetailData
 }

@@ -6,7 +6,7 @@ import { Animated, Pressable, TouchableOpacity } from 'react-native';
 import { MaterialTopTabBarProps } from '@react-navigation/material-top-tabs';
 import { StyleSheet } from 'react-native';
 import { View } from '../base/View';
-import { FontAwesome } from '@expo/vector-icons';
+import { FontAwesome, Ionicons } from '@expo/vector-icons';
 import { useSelector } from 'react-redux';
 import { AppState, setSelectedBottomTabIndex } from '../redux/Reducer';
 import Colors from '../constants/Colors';
@@ -14,9 +14,8 @@ import { FontAwesomeIconType } from '../constants/FontAwesomeIconType';
 import { MenuScreen as Menu } from '../components/Menu';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useLanguage } from '../base/Themed';
-import React, { useEffect, useRef } from 'react';
-import { HomeScreen } from '../components/Home/HomeScreen';
-import { OrderScreen as Order } from '../components/Order/Order';
+import React, { useEffect, useRef, useState } from 'react';
+import { HomeScreen } from '../components/Home';
 import { useDispatch } from 'react-redux';
 import { OrderTab } from './OrderTopBar';
 
@@ -42,13 +41,13 @@ export const BottomTabNavigator = React.memo(() => {
                 stateProps.userType == 'user' ?
                     <BottomTab.Group>
                         <BottomTab.Screen name="Home" component={HomeScreen} options={{}} />
-                        <BottomTab.Screen name="Order" component={OrderTab} options={{}} />
+                        <BottomTab.Screen name="Order" component={OrderTab} options={{ lazy: false }} />
                         <BottomTab.Screen name="Notification" component={Notifications} options={{}} />
                         <BottomTab.Screen name="Menu" component={Menu} options={{}} />
                     </BottomTab.Group>
                     :
                     <BottomTab.Group>
-                        <BottomTab.Screen name="Order" component={Order} options={{}} />
+                        <BottomTab.Screen name="Order" component={OrderTab} options={{ lazy: false }} />
                         <BottomTab.Screen name="Menu" component={Menu} options={{}} />
                     </BottomTab.Group>
             }
@@ -99,7 +98,6 @@ const BottomTabBar = React.memo((params: BottomBarParams) => {
                     outputRange: inputRange.map(i => (i === index ? 1 : 0.3)),
                 });
 
-                const AnimatedIcon = Animated.createAnimatedComponent(FontAwesome)
 
                 return (
                     <Pressable
@@ -114,14 +112,16 @@ const BottomTabBar = React.memo((params: BottomBarParams) => {
                         <Animated.View style={[style.divider, { opacity }]} />
                         <View style={style.tab_element_container}>
                             <View style={{ flexDirection: 'row', position: 'relative' }}>
-                                <AnimatedIcon name={params.iconList[index]} size={20} color={'#2a90c7'} style={{ opacity }} />
+                                <Animated.View  style={{ opacity }} >
+                                    <FontAwesome name={params.iconList[index]} size={28} color={'#2a90c7'}/>
+                                </Animated.View>
                                 {
                                     (route.name == 'Order' && props.newOrderNotification) ?
                                         <FontAwesome name='exclamation-circle' size={15} color={'#269437'} style={{ position: 'absolute', right: -10, top: -5 }} />
                                         : null
                                 }
                             </View>
-                            <Animated.Text style={[style.tab_element_text, { opacity, color: Colors[props.theme].text }]}>
+                            <Animated.Text style={[style.tab_element_text, { opacity, color: Colors[props.theme].text, fontSize: 10 }]}>
                                 {title}
                             </Animated.Text>
                         </View>
@@ -145,13 +145,13 @@ const style = StyleSheet.create({
         backgroundColor: '#2a90c7'
     },
     tab_element_container: {
-        paddingTop: 10,
+        paddingVertical: 5,
         alignItems: 'center',
         justifyContent: 'center'
     },
     tab_element_text: {
         textAlign: 'center',
-        fontWeight: '500'
+        fontWeight: '300'
     }
 })
 

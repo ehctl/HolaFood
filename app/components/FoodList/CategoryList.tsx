@@ -2,18 +2,21 @@ import { ScrollView } from "react-native-gesture-handler"
 import React, { useContext, useEffect, useRef, useState } from "react"
 import { FoodListScreenContext, FoodListType } from "./FoodListType"
 import { CategoryItem } from "../Home/CategoryList"
-import { getListCategory, getListIcon } from "../Home/CategoryList"
+import { useSelector } from "react-redux"
+import { AppState } from "../../redux/Reducer"
 
 
 export const CategoryList = React.memo(() => {
-    const iconList = useRef(getListIcon()).current
+    const stateProps = useSelector((state: AppState) => ({
+        categoryList: state.categoryList
+    }))
     const [dataSourceCords, setDataSourceCords] = useState({});
     const scrollViewRef = useRef<ScrollView>(null)
     const { foodListType, changeFoodListType } = useContext(FoodListScreenContext)
 
 
     useEffect(() => {
-        if (Object.keys(dataSourceCords).length == Object.keys(FoodListType).length + getListCategory().length) {
+        if (Object.keys(dataSourceCords).length == Object.keys(FoodListType).length + stateProps.categoryList.length) {
             scrollViewRef.current.scrollTo({
                 x: dataSourceCords[foodListType] - 10,
                 animated: true
@@ -31,6 +34,7 @@ export const CategoryList = React.memo(() => {
             {
                 Object.values(FoodListType).map((value: string, index: number) => (
                     <CategoryItem
+                        id={index}
                         key={index}
                         name={value}
                         iconSource={null}
@@ -52,23 +56,24 @@ export const CategoryList = React.memo(() => {
             }
 
             {
-                getListCategory().map((item, index) => (
+                stateProps.categoryList.map((item, index) => (
                     <CategoryItem
+                        id={item.id}
                         key={index + Object.values(FoodListType).length}
                         name={item.name}
-                        iconSource={iconList[index]}
+                        iconSource={null}
                         style={{
-                            backgroundColor: foodListType == item.name ? '#47bac4' : '#dad7de'
+                            backgroundColor: foodListType == item.id ? '#47bac4' : '#dad7de'
                         }}
                         onPress={() => {
                             scrollViewRef.current.scrollTo({
-                                x: dataSourceCords[item.name] - 10,
+                                x: dataSourceCords[item.id] - 10,
                                 animated: true
                             })
-                            changeFoodListType(item.name)
+                            changeFoodListType(item.id)
                         }}
                         onLayout={(event) => {
-                            dataSourceCords[item.name] = event.nativeEvent.layout.x;
+                            dataSourceCords[item.id] = event.nativeEvent.layout.x;
                             setDataSourceCords({...dataSourceCords});
                         }} />
                 ))

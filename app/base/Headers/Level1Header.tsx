@@ -4,16 +4,22 @@ import { TransparentView, View } from "../View"
 import { useNavigation } from '@react-navigation/native';
 import React from "react"
 import { FontAwesomeIconType } from "../../constants/FontAwesomeIconType";
-import { Text } from "../Text";
+import { I18NText, Text } from "../Text";
+import { useSelector } from "react-redux";
+import { AppState } from "../../redux/Reducer";
 
 
 export const Level1Header = React.memo((props: HomeHeaderProp) => {
     const navigation = useNavigation()
+    const appStateProps = useSelector((state: AppState) => ({
+        cartItems: state.cartItems,
+        orders: state.orders
+    }))
 
     return (
         <View style={[style.container, { height: Level1HeaderStats.HEADER_MAX_HEIGHT }]}>
             <TransparentView style={{ justifyContent: 'center', alignItems: 'center', marginLeft: 7 }}>
-                <Text text={props.text} style={{ fontSize: 22, fontWeight: '700', color: props.textColor }} />
+                <I18NText text={props.text} style={{ fontSize: 22, fontWeight: '700', color: props.textColor }} />
             </TransparentView>
 
             <TransparentView style={{ flexDirection: 'row' }}>
@@ -25,7 +31,16 @@ export const Level1Header = React.memo((props: HomeHeaderProp) => {
                             onPress={() => {
                                 navigation.navigate(props.leftIconsTarget[index] as never)
                             }} >
-                            <FontAwesome name={value} size={20} color={props.leftIconsColor[index]} />
+                            <TransparentView style={{ position: 'relative', margin: 10, }}>
+                                {
+                                    (appStateProps.cartItems.length + appStateProps.orders.length) > 0 && value == 'shopping-cart' ?
+                                        <View style={{ position: 'absolute', right: -13, top: -13, backgroundColor: '#029699', borderRadius: 20, padding: 3, zIndex: 1, aspectRatio: 1, height: 20, alignItems: 'center', justifyContent: 'center' }}>
+                                            <Text text={(appStateProps.cartItems.length + appStateProps.orders.length).toString()} style={{ fontWeight: '600', textAlign: 'right', fontSize: 12, color: 'white' }} />
+                                        </View> : null
+                                }
+                                <FontAwesome name={value} size={20} color={props.leftIconsColor[index]} />
+                            </TransparentView>
+
                         </Pressable>
                     ))
                 }
@@ -53,7 +68,6 @@ const style = StyleSheet.create({
     iconContainer: {
         borderRadius: 25,
         backgroundColor: '#d4d4d4',
-        padding: 10,
         marginRight: 5,
         marginLeft: 10
     }

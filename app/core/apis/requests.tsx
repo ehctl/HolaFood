@@ -1,7 +1,12 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios"
+import { FoodListType } from "../../components/FoodList/FoodListType";
+import { Constant } from "../../utils/Constant";
+import { DOMAIN, ORI_DOMAIN } from "./Constant";
 
 export const getSearchResult = (
     text: string,
+    pageIndex: number,
     success: (data: any) => void,
     failure: (error: any) => void,
     abortController?: AbortController,
@@ -9,22 +14,86 @@ export const getSearchResult = (
     const option = {
         method: 'GET',
         params: {
-            text: text
+            search: text,
+            index: pageIndex
         },
-        url: 'https://mocki.io/v1/1521c3a7-72d0-4148-b870-b854b5edd359',
-        signal: abortController.signal
+        url: DOMAIN + '/search/productandshop',
+        signal: abortController?.signal
     }
 
-    axios(option).then((response) => {
-        if (response.status === 200) {
-            success(response.data);
+
+    return addHeaderToken(option).
+        then((newOption) => {
+            axios(newOption)
+                .then((response) => {
+                    if (response.status === 200 && response.data.success) {
+                        success(response.data);
+                    } else {
+                        failure(response);
+                    }
+                })
+                .catch(((e) => {
+                    console.log(e)
+                }))
+        })
+        .catch((e) => {
+            failure(e)
+        })
+}
+
+export const getUserInfo = async () => {
+    const option = {
+        method: 'GET',
+        params: {
+        },
+        url: DOMAIN + '/user/getinfo',
+    }
+
+    try {
+        const newOption = await addHeaderToken(option)
+        const response = await axios(newOption)
+
+        if (response.status === 200 && response.data.user != undefined) {
+            return response.data;
         } else {
-            failure(response);
+            throw response.data;
         }
-    })
-    .catch((e) => {
-        console.log(e)
-    })
+    } catch (e) {
+        throw new Error(e);
+    }
+}
+
+export const updateUserInfo = (
+    firstName: string,
+    lastName: string,
+    phone: string,
+    success: (data: any) => Promise<void> | void,
+    failure: (error: any) => Promise<void> | void,
+) => {
+    const option = {
+        method: 'POST',
+        data: {
+            firstName: firstName,
+            lastName: lastName,
+            phone: phone
+        },
+        url: DOMAIN + '/user/updateuserinfo',
+    }
+
+    return addHeaderToken(option).
+        then((newOption) => {
+            axios(newOption)
+                .then((response) => {
+                    if (response.status === 200 && response.data.success) {
+                        success(response.data);
+                    } else {
+                        failure(response.data);
+                    }
+                })
+        })
+        .catch((e) => {
+            failure(e)
+        })
 }
 
 export const getShopInfo = (
@@ -37,19 +106,24 @@ export const getShopInfo = (
         params: {
             shopId: shopId
         },
-        url: 'https://mocki.io/v1/6ab0409e-5d8a-4e87-b11c-77f19914f3e2',
+        // url: 'https://mocki.io/v1/6ab0409e-5d8a-4e87-b11c-77f19914f3e2',
+        url: DOMAIN + '/shop/getinfoshop',
     }
 
-    axios(option).then((response) => {
-        if (response.status === 200) {
-            success(response.data);
-        } else {
-            failure(response);
-        }
-    })
-    .catch((e) => {
-        console.log(e)
-    })
+    return addHeaderToken(option).
+        then((newOption) => {
+            axios(newOption)
+                .then((response) => {
+                    if (response.status === 200 && response.data.success) {
+                        success(response.data);
+                    } else {
+                        failure(response.data);
+                    }
+                })
+        })
+        .catch((e) => {
+            failure(e)
+        })
 }
 
 export const getShopListFood = (
@@ -61,52 +135,158 @@ export const getShopListFood = (
     const option = {
         method: 'GET',
         params: {
-            shopId: shopId
+            searchBy: 'shopId',
+            id: shopId,
+            index: page,
         },
-        url: 'https://mocki.io/v1/1577d69d-5fbf-4af9-a9a0-9313e8a94198',
+        url: DOMAIN + '/product/getproductby',
     }
 
-    axios(option).then((response) => {
-        if (response.status === 200) {
-            success(response.data);
-        } else {
-            failure(response);
-        }
-    })
-    .catch((e) => {
-        console.log(e)
-    })
+    return addHeaderToken(option).
+        then((newOption) => {
+            axios(newOption)
+                .then((response) => {
+                    if (response.status === 200) {
+                        success(response.data);
+                    } else {
+                        failure(response);
+                    }
+                })
+        })
+        .catch((e) => {
+            failure(e)
+        })
 }
 
 export const getFoodList = (
-    userId: string,
+    value: any,
+    page: number,
+    success: (data: any) => void,
+    failure: (error: any) => void,
+    abortController?: AbortController,
+) => {
+    switch (value) {
+        case FoodListType.FAVORITE_FOOD:
+            return getFoodListByType('favorite', page, success, failure, abortController)
+        case FoodListType.NEW_FOOD:
+            return getFoodListByType('new', page, success, failure, abortController)
+        case FoodListType.POPULAR_FOOD:
+            return getPopularFood(success, failure, abortController)
+        default:
+            getFoodListByCategory(value as number, page, success, failure, abortController)
+    }
+
+}
+
+export const getFoodListByCategory = (
+    categoryId: number,
+    page: number,
+    success: (data: any) => void,
+    failure: (error: any) => void,
+    abortController?: AbortController,
+) => {
+    const option = {
+        method: 'GET',
+        params: {
+            searchBy: 'category',
+            id: categoryId,
+            index: page
+        },
+        // url: 'https://mocki.io/v1/c08ac5c9-78b3-4bc6-9afe-dd8e4dc4a3ca',
+        url: DOMAIN + '/product/getproductby',
+        signal: abortController?.signal
+    }
+
+    return addHeaderToken(option).
+        then((newOption) => {
+            axios(newOption)
+                .then((response) => {
+                    if (response.status === 200 && response.data.success) {
+                        success(response.data);
+                    } else {
+                        failure(response.data);
+                    }
+                })
+                .catch(((e) => {
+                    console.log(e)
+                }))
+        })
+        .catch((e) => {
+            failure(e)
+        })
+}
+
+export const getFoodListByType = (
     type: string,
     page: number,
     success: (data: any) => void,
     failure: (error: any) => void,
+    abortController?: AbortController,
 ) => {
     const option = {
         method: 'GET',
         params: {
-            type: type
+            searchBy: type,
+            id: 0,
+            index: page
         },
-        url: 'https://mocki.io/v1/1577d69d-5fbf-4af9-a9a0-9313e8a94198',
+        // url: 'https://mocki.io/v1/c08ac5c9-78b3-4bc6-9afe-dd8e4dc4a3ca',
+        url: DOMAIN + '/product/getproductby',
+        signal: abortController?.signal
     }
 
-    axios(option).then((response) => {
-        if (response.status === 200) {
-            success(response.data);
-        } else {
-            failure(response);
-        }
-    })
-    .catch((e) => {
-        console.log(e)
-    })
+    return addHeaderToken(option).
+        then((newOption) => {
+            axios(newOption)
+                .then((response) => {
+                    if (response.status === 200 && response.data.success) {
+                        success(response.data);
+                    } else {
+                        failure(response.data);
+                    }
+                })
+                .catch(((e) => {
+                    console.log(e)
+                }))
+        })
+        .catch((e) => {
+            failure(e)
+        })
+}
+
+export const getPopularFood = (
+    success: (data: any) => void,
+    failure: (error: any) => void,
+    abortController?: AbortController,
+) => {
+    const option = {
+        method: 'GET',
+        params: {
+        },
+        url: DOMAIN + '/product/getpopularproduct',
+        signal: abortController?.signal
+    }
+
+    return addHeaderToken(option).
+        then((newOption) => {
+            axios(newOption)
+                .then((response) => {
+                    if (response.status === 200 && response.data.success) {
+                        success(response.data);
+                    } else {
+                        failure(response.data);
+                    }
+                })
+                .catch(((e) => {
+                    console.log(e)
+                }))
+        })
+        .catch((e) => {
+            failure(e)
+        })
 }
 
 export const getFoodDetail = (
-    userId: string,
     foodId: string,
     success: (data: any) => void,
     failure: (error: any) => void,
@@ -114,53 +294,169 @@ export const getFoodDetail = (
     const option = {
         method: 'GET',
         params: {
-            foodId: foodId
+            searchBy: 'productId',
+            id: foodId,
+            index: 0
         },
-        url: 'https://mocki.io/v1/3650dac3-486d-4645-8255-ee2c8c96a36e',
+        // url: 'https://mocki.io/v1/3650dac3-486d-4645-8255-ee2c8c96a36e',
+        url: DOMAIN + '/product/getproductby',
     }
 
-    axios(option).then((response) => {
-        if (response.status === 200) {
-            success(response.data);
-        } else {
-            failure(response);
-        }
-    })
-    .catch((e) => {
-        console.log(e)
-    })
+    return addHeaderToken(option).
+        then((newOption) => {
+            axios(newOption)
+                .then((response) => {
+                    if (response.status === 200) {
+                        success(response.data);
+                    } else {
+                        failure(response.data);
+                    }
+                })
+                .catch(((e) => {
+                    console.log(e)
+                }))
+        })
+        .catch((e) => {
+            failure(e)
+        })
+}
+
+export const getFoodOption = (
+    foodId: string,
+    success: (data: any) => void,
+    failure: (error: any) => void,
+) => {
+    const option = {
+        method: 'GET',
+        params: {
+            productId: foodId
+        },
+        url: DOMAIN + '/option/getoptionbyproduct',
+    }
+
+    return addHeaderToken(option).
+        then((newOption) => {
+            axios(newOption)
+                .then((response) => {
+                    if (response.status === 200 && response.data.success) {
+                        success(response.data);
+                    } else {
+                        failure(response.data);
+                    }
+                })
+                .catch(((e) => {
+                    console.log(e)
+                }))
+        })
+        .catch((e) => {
+            failure(e)
+        })
 }
 
 
 export const getFoodReviews = (
-    userId: string,
-    foodId: string,
-    page: number,
+    foodId: number,
     success: (data: any) => void,
     failure: (error: any) => void,
 ) => {
     const option = {
         method: 'GET',
         params: {
-            foodId: foodId
+            productId: foodId
         },
-        url: 'https://mocki.io/v1/7c06a494-26c4-4210-beb8-13287eec3c74',
+        url: DOMAIN + '/review/getreviewbyproduct',
     }
 
-    axios(option).then((response) => {
-        if (response.status === 200) {
-            success(response.data);
-        } else {
-            failure(response);
-        }
-    })
-    .catch((e) => {
-        console.log(e)
-    })
+
+    return addHeaderToken(option).
+        then((newOption) => {
+            axios(newOption)
+                .then((response) => {
+                    if (response.status === 200) {
+                        success(response.data);
+                    } else {
+                        failure(response.data);
+                    }
+                })
+                .catch(((e) => {
+                    console.log(e)
+                }))
+        })
+        .catch((e) => {
+            failure(e)
+        })
+}
+
+export const addFoodReview = (
+    foodId: number,
+    review: string,
+    star: number,
+    success: (data: any) => void,
+    failure: (error: any) => void,
+) => {
+    const option = {
+        method: 'POST',
+        data: {
+            productId: foodId,
+            review: review,
+            star: star
+        },
+        // url: 'https://mocki.io/v1/7c06a494-26c4-4210-beb8-13287eec3c74',
+        url: DOMAIN + '/review/add'
+    }
+
+
+    return addHeaderToken(option).
+        then((newOption) => {
+            axios(newOption)
+                .then((response) => {
+                    if (response.status === 200) {
+                        success(response.data);
+                    } else {
+                        failure(response.data);
+                    }
+                })
+                .catch(((e) => {
+                    console.log(e)
+                }))
+        })
+        .catch((e) => {
+            failure(e)
+        })
+}
+
+export const getFoodCategory = (
+    success: (data: any) => void,
+    failure: (error: any) => void,
+) => {
+    const option = {
+        method: 'GET',
+        params: {
+        },
+        url: DOMAIN + '/category/getall',
+        // url: 'https://mocki.io/v1/6d124633-b665-45ee-8c02-21cbabc6ef50',
+    }
+
+    return addHeaderToken(option).
+        then((newOption) => {
+            axios(newOption)
+                .then((response) => {
+                    if (response.status === 200) {
+                        success(response.data);
+                    } else {
+                        failure(response.data);
+                    }
+                })
+                .catch(((e) => {
+                    console.log(e)
+                }))
+        })
+        .catch((e) => {
+            failure(e)
+        })
 }
 
 export const getListAddress = (
-    userId: string,
     success: (data: any) => void,
     failure: (error: any) => void
 ) => {
@@ -168,17 +464,357 @@ export const getListAddress = (
         method: 'GET',
         params: {
         },
-        url: 'https://mocki.io/v1/0fc2e3d9-e4bd-431a-9159-ca71adb563e3',
+        // url: 'https://mocki.io/v1/0fc2e3d9-e4bd-431a-9159-ca71adb563e3',
+        url: DOMAIN + '/address/getaddress',
     }
 
-    axios(option).then((response) => {
-        if (response.status === 200) {
-            success(response.data);
-        } else {
-            failure(response);
+    return addHeaderToken(option).
+        then((newOption) => {
+            axios(newOption)
+                .then((response) => {
+                    if (response.status === 200 && response.data.success) {
+                        success(response.data);
+                    } else {
+                        failure(response.data);
+                    }
+                })
+                .catch(((e) => {
+                    console.log(e)
+                }))
+        })
+        .catch((e) => {
+            failure(e)
+        })
+}
+
+export const addNewAddress = (
+    address: string,
+    success: (data: any) => void,
+    failure: (error: any) => void
+) => {
+    const option = {
+        method: 'POST',
+        data: {
+            address: address
+        },
+        // url: 'https://mocki.io/v1/0fc2e3d9-e4bd-431a-9159-ca71adb563e3',
+        url: DOMAIN + '/address/add',
+    }
+
+    return addHeaderToken(option).
+        then((newOption) => {
+            axios(newOption)
+                .then((response) => {
+                    if (response.status === 200 && response.data.success) {
+                        success(response.data);
+                    } else {
+                        failure(response.data);
+                    }
+                })
+                .catch(((e) => {
+                    console.log(e)
+                }))
+        })
+        .catch((e) => {
+            failure(e)
+        })
+}
+
+export const deleteAddress = (
+    id: number,
+    success: (data: any) => void,
+    failure: (error: any) => void
+) => {
+    const option = {
+        method: 'POST',
+        data: {
+            id: id
+        },
+        url: DOMAIN + '/address/delete',
+    }
+
+    return addHeaderToken(option).
+        then((newOption) => {
+            axios(newOption)
+                .then((response) => {
+                    if (response.status === 200 && response.data.success) {
+                        success(response.data);
+                    } else {
+                        failure(response.data);
+                    }
+                })
+                .catch(((e) => {
+                    console.log(e)
+                }))
+        })
+        .catch((e) => {
+            failure(e)
+        })
+}
+
+export const getListFAQ = (
+    success: (data: any) => void,
+    failure: (error: any) => void
+) => {
+    const option = {
+        method: 'GET',
+        params: {
+        },
+        url: DOMAIN + '/contact/getcontactbyuser',
+    }
+
+    return addHeaderToken(option).
+        then((newOption) => {
+            axios(newOption)
+                .then((response) => {
+                    if (response.status === 200) {
+                        success(response.data);
+                    } else {
+                        failure(response.data);
+                    }
+                })
+                .catch(((e) => {
+                    console.log(e)
+                }))
+        })
+        .catch((e) => {
+            failure(e)
+        })
+}
+
+export const addNewFAQ = (
+    userId: number,
+    question: string,
+    success: (data: any) => void,
+    failure: (error: any) => void
+) => {
+    const option = {
+        method: 'POST',
+        data: {
+            userID: userId,
+            question: question
+        },
+        url: DOMAIN + '/contact/addcontact',
+    }
+
+    return addHeaderToken(option).
+        then((newOption) => {
+            axios(newOption)
+                .then((response) => {
+                    if (response.status === 200) {
+                        success(response.data);
+                    } else {
+                        failure(response.data);
+                    }
+                })
+                .catch(((e) => {
+                    console.log(e)
+                }))
+        })
+        .catch((e) => {
+            failure(e)
+        })
+}
+
+export const updateProductFavorite = (
+    userId: number,
+    isFavorite: boolean,
+    productId: number,
+    success: (data: any) => void,
+    failure: (error: any) => void
+) => {
+    isFavorite ? addFavorite(userId, productId, success, failure) : deleteFavorite(userId, productId, success, failure)
+}
+
+export const addFavorite = (
+    userID: number,
+    productId: number,
+    success: (data: any) => void,
+    failure: (error: any) => void
+) => {
+    const option = {
+        method: 'POST',
+        data: {
+            userId: userID,
+            productId: productId
+        },
+        url: DOMAIN + '/favorite/add',
+    }
+
+    return addHeaderToken(option).
+        then((newOption) => {
+            axios(newOption)
+                .then((response) => {
+                    if (response.status === 200) {
+                        success(response.data);
+                    } else {
+                        failure(response.data);
+                    }
+                })
+                .catch(((e) => {
+                    console.log(e)
+                }))
+        })
+        .catch((e) => {
+            failure(e)
+        })
+}
+
+export const deleteFavorite = (
+    userID: number,
+    productId: number,
+    success: (data: any) => void,
+    failure: (error: any) => void
+) => {
+    const option = {
+        method: 'POST',
+        data: {
+            userId: userID,
+            productId: productId
+        },
+        url: DOMAIN + '/favorite/delete',
+    }
+
+    return addHeaderToken(option).
+        then((newOption) => {
+            axios(newOption).then((response) => {
+                if (response.status === 200) {
+                    success(response.data);
+                } else {
+                    failure(response.data);
+                }
+            })
+            .catch(((e) => {
+                console.log(e)
+            }))
+        })
+        .catch((e) => {
+            failure(e)
+        })
+}
+
+export const addHeaderToken = (option) => {
+    return AsyncStorage.getItem(Constant.APP_API_TOKEN).then((value: string) => {
+        option = {
+            ...option, ...{
+                headers: {
+                    Authorization: 'Bearer ' + value
+                }
+            }
         }
+
+        return option
     })
-    .catch((e) => {
-        console.log(e)
-    })
+}
+
+export const login = (
+    email: string,
+    password: string,
+    success: (data: any) => void,
+    failure: (error: any) => void
+) => {
+    const option = {
+        method: 'POST',
+        data: {
+            email: email,
+            password: password
+        },
+        url: DOMAIN + '/login',
+    }
+
+    axios(option)
+        .then((response) => {
+            if (response.status === 200 && response.data.success) {
+                success(response.data);
+            } else {
+                failure(response.data);
+            }
+        })
+        .catch((e) => {
+            failure(e)
+        })
+}
+
+export const logout = (
+    success: (data: any) => Promise<void> | void,
+    failure: (error: any) => Promise<void> | void
+) => {
+    const option = {
+        method: 'POST',
+        data: {
+        },
+        url: ORI_DOMAIN + '/logout',
+    }
+
+    axios(option)
+        .then((response) => {
+            if (response.status === 200) {
+                success(response.data);
+            } else {
+                failure(response.data);
+            }
+        })
+        .catch((e) => {
+            failure(e)
+        })
+}
+
+export const signup = (
+    firstName: string,
+    lastName: string,
+    password: string,
+    email: string,
+    success: (data: any) => Promise<void> | void,
+    failure: (error: any) => Promise<void> | void
+) => {
+    const option = {
+        method: 'POST',
+        data: {
+            firstName: firstName,
+            lastName: lastName,
+            password: password,
+            email: email,
+        },
+        url: 'http://swp490g52-env.eba-sk7m9gfw.ap-southeast-1.elasticbeanstalk.com/api/user/register',
+    }
+
+    axios(option)
+        .then((response) => {
+            if (response.status === 200 && response.data.success) {
+                success(response.data);
+            } else {
+                failure(response.data);
+            }
+        })
+        .catch((e) => {
+            failure(e)
+        })
+}
+
+export const changePassword = (
+    oldPassword: string,
+    newPassword: string,
+    success: (data: any) => Promise<void> | void,
+    failure: (error: any) => Promise<void> | void
+) => {
+    const option = {
+        method: 'POST',
+        data: {
+            oldPassword: oldPassword,
+            newPassword: newPassword
+        },
+        url: DOMAIN + '/user/changepass',
+    }
+
+    axios(option)
+        .then((response) => {
+            if (response.status === 200 && response.data.success) {
+                success(response.data);
+            } else {
+                failure(response.data);
+            }
+        })
+        .catch((e) => {
+            failure(e)
+        })
 }

@@ -9,7 +9,8 @@ import { useDispatch } from "react-redux"
 import { AppLanguage, changeLanguage } from "../../../redux/Reducer"
 import { useLocale } from "../../../base/Themed"
 import React from "react"
-
+import AsyncStorage from "@react-native-async-storage/async-storage"
+import { Constant } from "../../../utils/Constant"
 
 export const LanguageScreen = React.memo(({ navigation }: any) => {
     const dispatch = useDispatch()
@@ -31,6 +32,7 @@ export const LanguageScreen = React.memo(({ navigation }: any) => {
             <RadioButtonGroup
                 value={useLocale()}
                 valueChange={(value: string) => {
+                    AsyncStorage.setItem(Constant.APP_LOCALE, value)
                     dispatch(changeLanguage(value as AppLanguage))
                 }}>
                 <FlatList

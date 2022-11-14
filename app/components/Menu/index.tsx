@@ -50,12 +50,13 @@ export const MenuScreen = React.memo(({ navigation }: any) => {
                     onPress={() => navigation.navigate('FAQScreen')} />
 
                 <MenuItem
+                    text='Order History' iconName='history' iconColor='#5a996b'
+                    onPress={() => navigation.navigate('OrderHistory')} />
+
+                <MenuItem
                     text='About Us' iconName='info-circle' iconColor='#5a996b'
                     onPress={() => navigation.navigate('WebView', { uri: "https://google.com" })} />
                     
-                {/* <FoodItemShimmer visible={true} /> */}
-
-                {/* <View style={{ height: 80, backgroundColor: '#e8e8e8', marginHorizontal: -15 }} /> */}
                 <LinearGradient colors={['#89c1c4', 'grey']} start={[0, 0]} end={[1, 0]} style={{height: 80}}/>
 
                 <SettingSection />

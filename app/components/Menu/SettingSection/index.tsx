@@ -59,7 +59,7 @@ export const SettingSection = React.memo(() => {
 
                     <TransparentView style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
                         <FontAwesome2 name='format-color-fill' size={23} color='#a30f9e' style={{ width: 30 }} />
-                        <Text style={{ marginHorizontal: 10, fontWeight: '500' }} text='Dark Mode' />
+                        <I18NText style={{ marginHorizontal: 10, fontWeight: '500' }} text='Dark Mode' />
                     </TransparentView>
 
                     <Switch

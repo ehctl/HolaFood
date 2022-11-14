@@ -10,12 +10,15 @@ import { Info } from "../Info"
 import { Order } from "../Order"
 import { FoodDetailShimmer } from "../FoodDetailShimmer"
 import { wait } from "../../../utils/Utils"
-import { getFoodDetail } from "../../../core/apis/requests"
+import { getFoodDetail, getFoodOption } from "../../../core/apis/Requests"
+import { useLanguage } from "../../../base/Themed"
 
 export const FoodDetailScreen = React.memo(({ route }: any) => {
     const [foodData, setFoodData] = useState<FoodDetailData>(null)
     const [listItem, setListItem] = useState<ListItem[]>([])
     const [loading, setLoading] = useState(false)
+
+    const I18NLoading = useLanguage('Loading')
 
     const fetchData = useCallback(async () => {
         const itemId = route.params.itemId
@@ -23,17 +26,29 @@ export const FoodDetailScreen = React.memo(({ route }: any) => {
         setListItem([])
 
         await wait(2000)
-        
+
         getFoodDetail(
-            '1232131',
             itemId,
             (response) => {
-                const data = response.data
-                setFoodData(data)
-                setListItem(getListItem())
-                setLoading(false)
+                const data = response.data[0]
+                getFoodOption(
+                    itemId,
+                    (response1) => {
+                        const data1 = response1.data
+                        setFoodData(mapFoodDetailDataFromRequest(data, data1))
+                        setListItem(getListItem())
+                        setLoading(false)
+                    },
+                    (e) => {
+                        setFoodData(mapFoodDetailDataFromRequest(data, []))
+                        setListItem(getListItem())
+                        setLoading(false)
+                        console.log(e)
+                    }
+                )
             },
             (e) => {
+                setLoading(false)
                 console.log(e)
             }
         )
@@ -53,7 +68,7 @@ export const FoodDetailScreen = React.memo(({ route }: any) => {
                 return <Info {...foodData} />
             }
             case ListItem.REVIEW: {
-                return <Review foodId={foodData.id} />
+                return <Review {...foodData} />
             }
             case ListItem.ORDER: {
                 return <Order {...foodData} />
@@ -67,7 +82,9 @@ export const FoodDetailScreen = React.memo(({ route }: any) => {
         <View style={{ flex: 1 }}>
             <AnimatedHeader
                 headerProps={{
-                    header: <Level2Header title={foodData?.name ? foodData.name : 'Loading...'} />,
+                    header: <Level2Header
+                        title={foodData?.productName ? foodData.productName : `${I18NLoading}...`}
+                        canNavigateToOrderScreen={true} />,
                     headerHeight: Level2HeaderStat.HEADER_MAX_HEIGHT
                 }}
                 flatListProps={{
@@ -100,93 +117,34 @@ const getListItem = (): ListItem[] => {
     ]
 }
 
-const DUMMY: FoodDetailData = {
-    id: "1223",
-    name: "S-Golden Bubble Milk Tea",
-    description: "Trà Sữa Trân Châu Hoàng Kim - Size nhỏ",
-    price: 50000,
-    isFavorite: false,
-    images: [
-        "https://cdn.dayphache.edu.vn/wp-content/uploads/2020/02/mon-tra-sua-tran-chau.jpg",
-        "http://cdn.tgdd.vn/Files/2021/08/10/1374160/hoc-cach-pha-tra-sua-o-long-dai-loan-thom-ngon-chuan-vi-ai-cung-me-202108100039248020.jpg",
-    ],
-    rate: 4.5,
-    sellerId: "331123",
-    sellerName: "Koi The\" Hồ Tùng Mậu",
-    numOfReviews: 121,
-    reviews: [
-        {
-            id: "123123",
-            userId: "1231232",
-            userName: "Tuấn Linh",
-            content: "Uống bao nhiêu lần vẫn thấy ngon, ngọt vừa trân châu dài ăn rất thích",
-            createdAt: 1666399922523,
-            images: [
-                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZ7GVTybzHy0rJNYqWGa4-5hyjEyYmd7_d_qDc4tODAVfjC7mySQgoLCA2Yt10C8gkLiE&usqp=CAU"
-            ]
-        },
-        {
-            id: "1231231",
-            userId: "1231232",
-            userName: "Tuấn Linh",
-            content: "Uống bao nhiêu lần vẫn thấy ngon, ngọt vừa trân châu dài ăn rất thích",
-            createdAt: 1666399922523,
-            images: [
-                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZ7GVTybzHy0rJNYqWGa4-5hyjEyYmd7_d_qDc4tODAVfjC7mySQgoLCA2Yt10C8gkLiE&usqp=CAU"
-            ]
-        },
-        {
-            id: "12312312",
-            userId: "1231232",
-            userName: "Tuấn Linh",
-            content: "Uống bao nhiêu lần vẫn thấy ngon, ngọt vừa trân châu dài ăn rất thích",
-            createdAt: 1666399922523,
-            images: [
-                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZ7GVTybzHy0rJNYqWGa4-5hyjEyYmd7_d_qDc4tODAVfjC7mySQgoLCA2Yt10C8gkLiE&usqp=CAU"
-            ]
-        },
-        {
-            id: "123123123",
-            userId: "1231232",
-            userName: "Tuấn Linh",
-            content: "Uống bao nhiêu lần vẫn thấy ngon, ngọt vừa trân châu dài ăn rất thích",
-            createdAt: 1666399922523,
-            images: [
-                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZ7GVTybzHy0rJNYqWGa4-5hyjEyYmd7_d_qDc4tODAVfjC7mySQgoLCA2Yt10C8gkLiE&usqp=CAU"
-            ]
-        },
-        {
-            id: "123165",
-            userId: "1231232",
-            userName: "Tuấn Linh",
-            content: "Uống bao nhiêu lần vẫn thấy ngon, ngọt vừa trân châu dài ăn rất thích",
-            createdAt: 1666399922523,
-            images: [
-                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZ7GVTybzHy0rJNYqWGa4-5hyjEyYmd7_d_qDc4tODAVfjC7mySQgoLCA2Yt10C8gkLiE&usqp=CAU"
-            ]
-        },
-    ]
+export const mapFoodDetailDataFromRequest = (item: any, options: FoodOptionType[]) => {
+    item.isFavorite = item.isFavorite == 1
+    item.option = options
+    return item
 }
 
 export type FoodDetailData = {
-    id: string,
-    name: string,
+    id: number,
+    productName: string,
     description: string,
-    price: number,
+    sellPrice: number,
+    categoryID: number,
+    categoryName: string,
+    productImgURL: string,
+    statusSell: string,
+    shopID: number,
+    shopName: string,
+    shopAddress: string,
     isFavorite: boolean,
-    images: string[],
-    rate: number,
-    numOfReviews,
-    reviews: ReviewType[],
-    sellerName: string,
-    sellerId: string
+    star: number,
+    numberOfReview: number,
+    option: FoodOptionType[]
 }
 
-export type ReviewType = {
-    id: string,
-    userId: string,
-    userName: string,
-    content: string,
-    images: string[],
-    createdAt: number
+
+export type FoodOptionType = {
+    id: number,
+    optionName: string,
+    optionPrice: number,
+    productId: number,
 }

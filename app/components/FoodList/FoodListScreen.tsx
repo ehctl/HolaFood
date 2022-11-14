@@ -10,8 +10,9 @@ import { RouteProp } from '@react-navigation/core'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { GroupStackParamList } from '../../navigation/StackGroup';
 
+
 export const FoodListScreen = (props: FoodListScreenProps) => {
-    const [foodListType, setFoodListType] = useState(props.route.params?.type ?? FoodListType.POPULAR_FOOD)
+    const [foodListType, setFoodListType] = useState<string | number>(props.route.params?.type ?? FoodListType.POPULAR_FOOD)
 
     const renderItems = ({ item }: ListRenderItemInfo<ListItem>) => {
         switch (item) {
@@ -27,14 +28,15 @@ export const FoodListScreen = (props: FoodListScreenProps) => {
     }
 
     return (
-        <FoodListScreenContext.Provider value={{ foodListType: foodListType, changeFoodListType: setFoodListType }}>
-            <View style={{ flex: 1 }}>
+        <View style={{ flex: 1 }}>
+            <FoodListScreenContext.Provider value={{ foodListType: foodListType, changeFoodListType: setFoodListType }}>
                 <AnimatedHeader
                     headerProps={{
                         header: <Level2Header title='Foods' />,
                         headerHeight: Level2HeaderStat.HEADER_MAX_HEIGHT
                     }}
                     flatListProps={{
+                        contentContainerStyle: {flex: 1},
                         style: {},
                         renderItem: renderItems,
                         data: getListItem(),
@@ -42,8 +44,8 @@ export const FoodListScreen = (props: FoodListScreenProps) => {
                     }}
                     hideReload={true}
                 />
-            </View>
-        </FoodListScreenContext.Provider>
+            </FoodListScreenContext.Provider>
+        </View>
     )
 }
 

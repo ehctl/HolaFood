@@ -6,7 +6,7 @@ import React from "react"
 import { ShopInfo } from "./ShopInfo.tsx"
 import { ShopFoodList } from "./ShopFoodList"
 
-export const ShopDetail = React.memo((props: ShopDetailProps) => {
+export const ShopDetail = React.memo(({route} : any) => {
 
     return (
         <View style={{ flex: 1 }}>
@@ -20,11 +20,10 @@ export const ShopDetail = React.memo((props: ShopDetailProps) => {
                     renderItem: (_: any) => <View />,
                     ListFooterComponent:
                         <TransparentView style={{ flex: 1 }}>
-                            <ShopInfo shopId={props.shopId} />
-                            <I18NText text="Food" style={{ textAlign: 'left', fontSize: 30, fontWeight: '500', marginLeft: 10, marginTop: 30 }} />
-                            <ShopFoodList shopId={props.shopId} />
+                            <ShopInfo shopId={route.params?.shopId} />
+                            <I18NText text="Food" style={{ textAlign: 'left', fontSize: 26, fontWeight: '500', marginLeft: 10, marginTop: 30 }} />
+                            <ShopFoodList shopId={route.params?.shopId} />
                         </TransparentView>
-
                 }}
                 hideReload={true} >
 

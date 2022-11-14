@@ -1,16 +1,42 @@
-import React, { useRef } from "react"
-import { TransparentView, View } from "../../../base/View"
-import { I18NText, Text } from "../../../base/Text"
-import { FlatList } from "react-native-gesture-handler"
-import { FontAwesome } from "../../../base/FontAwesome"
-import { Image } from "../../../base/Image"
+import React, { useCallback, useEffect, useState } from "react"
+import { TransparentView } from "../../../base/View"
+import { BText, I18NText, Text } from "../../../base/Text"
 import { Image as DefaultView, LayoutChangeEvent, Pressable } from "react-native"
 import { ImageSourcePropType } from "react-native"
 import { useNavigation } from '@react-navigation/native';
+import { getFoodCategory } from "../../../core/apis/Requests"
+import { CategoryListShimmer } from "./CategoryListShimmer/CategoryListShimmer"
+import { AppState, setStateListCategory } from "../../../redux/Reducer"
+import { useDispatch } from "react-redux"
+import { useSelector } from "react-redux"
+import { mapFoodDetailDataFromRequest } from "../../FoodDetail/FoodDetailScreen"
 
 export const CategoryList = React.memo(() => {
-    const iconList = useRef(getListIcon()).current
+    const dispatch = useDispatch()
+    const stateProps = useSelector((state: AppState) => ({
+        categoryList: state.categoryList
+    }))
+    const [loading, setLoading] = useState(false)
 
+    const fetchData = useCallback(() => {
+        setLoading(true)
+        dispatch(setStateListCategory([]))
+        getFoodCategory(
+            (response) => {
+                const data = response.data
+                dispatch(setStateListCategory(data))
+                setLoading(false)
+            },
+            (e) => {
+                setLoading(false)
+                console.log(e)
+            }
+        )
+    }, [])
+
+    useEffect(() => {
+        fetchData()
+    }, [])
 
     return (
         <TransparentView style={{ marginTop: 20 }}>
@@ -18,16 +44,17 @@ export const CategoryList = React.memo(() => {
                 style={{ textAlign: 'left', fontWeight: '600', fontSize: 20, marginRight: 20 }}
                 text='Food Category' />
 
+            <CategoryListShimmer visible={loading} />
+
             <TransparentView style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
                 {
-                    getListCategory().map((item, index) => (
+                    stateProps.categoryList.map((item, index) => (
                         <CategoryItem
+                            id={item.id}
                             usedOnHomePage={true}
-                            key={index} {...item}
-                            iconSource={iconList[index]}
-                            onPress={() => {
-
-                            }} />
+                            key={index}
+                            name={item.name}
+                            iconSource={null} />
                     ))
                 }
             </TransparentView>
@@ -44,25 +71,26 @@ export const CategoryItem = React.memo((props: CategoryItemProps) => {
                 props.style]
             }
             onPress={() => {
-                props?.onPress()
-                props.usedOnHomePage ? navigation.navigate('FoodList' as never, { type: props.name } as never) : null
+                props.onPress?.()
+                props.usedOnHomePage ? navigation.navigate('FoodList' as never, { type: props.id } as never) : null
             }}
-            onLayout={(e) => {props?.onLayout?.(e)}} >
+            onLayout={(e) => { props?.onLayout?.(e) }} >
 
-            {
+            {/* {
                 props.iconSource != null ?
                     <Image
                         resizeMode="center"
                         source={props.iconSource}
                         style={{ width: 25, height: 25, borderRadius: 10, marginRight: 10 }} />
                     : null
-            }
-            <Text text={props.name} />
+            } */}
+            <BText text={props.name} />
         </Pressable>
     )
 })
 
 export type CategoryItemProps = {
+    id: number,
     name: string,
     usedOnHomePage?: boolean,
     iconSource: ImageSourcePropType,
@@ -71,45 +99,7 @@ export type CategoryItemProps = {
     onLayout?: (event: LayoutChangeEvent) => void
 }
 
-export const getListIcon = () => (
-    [
-        require('../../../../assets/images/pho.jpg'),
-        require('../../../../assets/images/milktea.jpg'),
-        require('../../../../assets/images/drink.jpg'),
-        require('../../../../assets/images/rice.jpg'),
-        require('../../../../assets/images/pho.jpg'),
-        require('../../../../assets/images/pho.jpg'),
-        require('../../../../assets/images/pho.jpg'),
-        require('../../../../assets/images/pho.jpg'),
-    ]
-)
-
-// dummy
-export const getListCategory = () => {
-    return [
-        {
-            "name": "Phở",
-        },
-        {
-            "name": "Trà sữa",
-        },
-        {
-            "name": "Đồ uống",
-        },
-        {
-            "name": "Cơm suất",
-        },
-        {
-            "name": "Hải sản",
-        },
-        {
-            "name": "Bún đậu",
-        },
-        {
-            "name": "Ốc ",
-        },
-        {
-            "name": "Thịt chó",
-        },
-    ]
+export type CategoryData = {
+    id: number,
+    name: string
 }

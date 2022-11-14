@@ -7,7 +7,7 @@ import { AppNavigation } from './app/navigation/AppNavigation';
 import Colors from './app/constants/Colors';
 import useColorScheme from './app/hooks/useColorScheme';
 import { createStore } from "redux";
-import { AppLanguage, changeApplicationState, changeLanguage, changeTheme, reducer } from './app/redux/Reducer';
+import { AppLanguage, changeApplicationState, changeLanguage, changeTheme, reducer, setUserInfo, UserInfo } from './app/redux/Reducer';
 import { Provider } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { AppState } from './app/redux/Reducer';
@@ -15,18 +15,19 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useDispatch } from 'react-redux';
 import { AppState as ApplicationState } from 'react-native';
 import { Constant } from './app/utils/Constant';
-import useCachedResources from './app/hooks/useCachedResources';
+import usePrefetchedData from './app/hooks/usePrefetchedData';
 import { getLocale } from './app/utils/Utils';
 import Warehouse from './app/utils/Warehouse';
 import React from 'react';
 import { NavigationContainer, useNavigationContainerRef, DefaultTheme, DarkTheme } from '@react-navigation/native';
+import { View, Image } from 'react-native'
+import * as SplashScreen from 'expo-splash-screen';
+import { Dimensions } from 'react-native';
 
-if (__DEV__) {
-  import('./ReactotronConfig').then(() => console.log('Reactotron Configured'))
-}
+
 
 export default function App() {
-  const isLoadingComplete = useCachedResources();
+  const { isLoadingComplete } = usePrefetchedData();
   const store = createStore(reducer)
 
   return (
@@ -65,9 +66,15 @@ const AppRoot = React.memo(() => {
 
         responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
           if (response.notification.request.content.data?.category == "order")
-            navigationRef.current.navigate('Order', { needRefresh: true })
+            navigationRef.current.navigate('Order' as never, { needRefresh: true } as never)
         });
 
+        try {
+          const userInfo = JSON.parse(await AsyncStorage.getItem(Constant.APP_USER_INFO))
+          dispatch(setUserInfo(userInfo))
+        } catch (e) {
+          dispatch(setUserInfo(undefined))
+        }
 
         // setup darkmode
         const value = await AsyncStorage.getItem(Constant.APP_THEME);
@@ -75,8 +82,8 @@ const AppRoot = React.memo(() => {
         dispatch(changeTheme(darkMode ? Constant.APP_DARK_THEME : Constant.APP_LIGHT_THEME))
 
         // setup locale
-        const locale = (await getLocale()).split('_')[0] as AppLanguage
-        dispatch(changeLanguage(locale))
+        const locale = await AsyncStorage.getItem(Constant.APP_LOCALE) ?? 'vi'
+        dispatch(changeLanguage(locale as AppLanguage))
 
         // tracking app state : [inactive(ios only), background, active]
         appStateListener.current = ApplicationState.addEventListener("change", nextAppState => {

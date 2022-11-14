@@ -6,7 +6,7 @@ import { Image } from "../../../base/Image"
 import React, { useCallback, useEffect, useState } from "react"
 import { ShopInfoShimmer } from "../ShopDetailShimmer.tsx"
 import { wait } from "../../../utils/Utils"
-import { getShopInfo } from "../../../core/apis/requests"
+import { getShopInfo } from "../../../core/apis/Requests"
 
 export const ShopInfo = React.memo((props: ShopInfoProps) => {
     const [shopData, setShopData] = useState<ShopData>(null)
@@ -25,20 +25,22 @@ export const ShopInfo = React.memo((props: ShopInfoProps) => {
     }, [])
 
     useEffect(() => {
-        fetchData()        
+        fetchData()
     }, [])
 
     return (
         shopData ?
-            <TransparentView style={{ flexDirection: 'row' }}>
-                <Image
-                    source={{ uri: 'https://images.foody.vn/res/g2/15853/s800/foody-123-zzo-pho-vong-894-637208138119392999.jpg' }}
-                    style={{ width: 100, aspectRatio: 1, borderRadius: 100 }}
-                />
-                <TransparentView style={{ marginHorizontal: 10, flexGrow: 1, flexShrink: 1 }}>
-                    <Text text={shopData.name} style={{ fontSize: 18, fontWeight: '500', textAlign: 'left' }} numberOfLines={3} />
-                    <Text text={shopData.location} style={{ marginTop: 10, fontSize: 14, fontWeight: '500', textAlign: 'left' }} numberOfLines={3} />
-                    <Text text={shopData.description} style={{ marginTop: 10, fontSize: 14, fontWeight: '500', textAlign: 'left', flexShrink: 1 }} numberOfLines={5} />
+            <TransparentView style={{ justifyContent: 'flex-start', alignItems: 'flex-start', marginHorizontal: 10 }}>
+                {/* <Text text={shopData.shopName + ' - ' + shopData.shopAddress} style={{ fontSize: 18, fontWeight: '500', textAlign: 'left' }} numberOfLines={3} /> */}
+                <TransparentView style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+                    <Image
+                        source={{ uri: shopData.urlImg }}
+                        style={{ width: 150, height: 150, borderRadius: 15 }}
+                    />
+                    <TransparentView style={{ marginHorizontal: 10, flexGrow: 1, flexShrink: 1 }}>
+                        <Text text={shopData.shopName + ' - ' + shopData.shopAddress} style={{ marginTop: 10, fontSize: 14, fontWeight: '500', textAlign: 'left' }} numberOfLines={3} />
+                        <Text text={shopData.description} style={{ marginTop: 10, fontSize: 14, textAlign: 'left', flexShrink: 1 }} numberOfLines={10} />
+                    </TransparentView>
                 </TransparentView>
             </TransparentView>
             : <ShopInfoShimmer visible={true} />
@@ -50,8 +52,10 @@ export type ShopInfoProps = {
 }
 
 export type ShopData = {
-    id: string,
-    name: string,
-    location: string,
+    id: number,
+    shopName: string,
+    shopAddress: string,
     description: string
+    urlImg: string,
+    userId: number
 }

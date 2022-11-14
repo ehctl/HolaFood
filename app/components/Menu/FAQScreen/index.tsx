@@ -1,29 +1,99 @@
 import React, { useCallback, useEffect, useRef, useState } from "react"
 import { AnimatedHeader } from "../../../base/AnimatedHeader"
 import { TransparentView, View } from "../../../base/View"
-import { Text } from "../../../base/Text"
+import { I18NText, Text } from "../../../base/Text"
 import { Level2Header, Level2HeaderStat } from "../../../base/Headers/Level2Header"
 import { FontAwesome, FontAwesome2 } from "../../../base/FontAwesome"
-import { Animated, Pressable } from "react-native"
+import { ActivityIndicator, Animated, Pressable } from "react-native"
 import { useTheme, useThemeColor } from "../../../base/Themed"
 import Colors from "../../../constants/Colors"
 import { PopupModal } from "../../../base/PopupModal"
 import { TextInput } from "react-native-gesture-handler"
 import { Button } from "../../../base/Button"
-
+import { addNewFAQ, getListFAQ } from "../../../core/apis/Requests"
+import { ShimmerGroup, ShimmerItem } from "../../../base/Shimmer"
+import { isValidNormalText } from "../../../validation/validate"
+import { useSelector } from "react-redux"
+import { AppState } from "../../../redux/Reducer"
 
 export const FAQScreen = React.memo(() => {
-    const [listFAQ, setListFAQ] = useState([])
+    const appStateProps = useSelector((state: AppState) => ({
+        userInfo: state.userInfo
+    }))
+    const [listFAQ, setListFAQ] = useState<FAQItemType[]>([])
     const [FAQContent, setFAQContent] = useState('')
+    const [loading, setLoading] = useState(true)
+    const [updating, setUpdating] = useState(false)
+    const [errorMsg, setErrorMsg] = useState('')
     const popupRef = useRef(null)
 
+    const fetchData = useCallback(() => {
+        setLoading(true)
+        getListFAQ(
+            (response) => {
+                const data = response.data
+                setListFAQ(data.reverse())
+                setLoading(false)
+            },
+            (e) => {
+                console.log(e)
+                setLoading(false)
+            }
+        )
+    }, [])
+
+    const addFAQContent = (value: string) => {
+        const result = isValidNormalText(value)
+        if (!result.qualify)
+            setErrorMsg(result.message)
+        else
+            setErrorMsg('')
+
+        setFAQContent(value)
+    }
+
+    const addFAQ = useCallback((question: string) => {
+        setUpdating(true)
+        addNewFAQ(
+            appStateProps.userInfo.id,
+            question,
+            (response) => {
+                popupRef.current.changeVisibility(false)
+                setListFAQ([
+                    {
+                        id: listFAQ.length == 0 ? 0 : (listFAQ[0].id + 1),
+                        question: question,
+                        status: 1,
+                        answer: null,
+                        userId: 1
+                    },
+                    ...listFAQ
+                ])
+                setUpdating(false)
+            },
+            (e) => {
+                console.log(e)
+                setUpdating(false)
+            }
+        )
+    }, [listFAQ])
+
     useEffect(() => {
-        setListFAQ(getFAQs())
+        fetchData()
     }, [])
 
     const renderItem = ({ item }: { item: FAQItemType }) => {
         return (
             <FAQItem {...item} />
+        )
+    }
+
+    const getFooterComp = () => {
+        return (
+            <TransparentView>
+                <FAQItemShimmer visible={loading} />
+                <View style={{ height: 80 }} />
+            </TransparentView>
         )
     }
 
@@ -39,7 +109,7 @@ export const FAQScreen = React.memo(() => {
                     renderItem: renderItem,
                     data: listFAQ,
                     keyExtractor: (_, index) => `${index}`,
-                    ListFooterComponent: <View style={{height: 80}}/>
+                    ListFooterComponent: getFooterComp()
                 }}
                 hideReload={true} />
             <TransparentView style={{ position: 'absolute', left: 10, bottom: 10 }}>
@@ -66,20 +136,34 @@ export const FAQScreen = React.memo(() => {
                         multiline={true}
                         style={{ fontSize: 18, paddingHorizontal: 10, paddingVertical: 20, paddingTop: 15, backgroundColor: '#cdd1d1', width: '100%', borderRadius: 10 }}
                         value={FAQContent}
-                        onChangeText={(v) => { setFAQContent(v) }} />
+                        onChangeText={(v) => { addFAQContent(v) }} />
                 </TransparentView>
+                {
+                    errorMsg.length != 0 ?
+                        <I18NText text={errorMsg} style={{ color: 'red', textAlign: 'left', width: '100%', marginTop: 10, marginBottom: 15 }} />
+                        : null
+                }
 
-                <Button
-                    text="Send FAQs"
+                <Pressable
                     style={{
-                        marginHorizontal: 15, borderRadius: 15, marginBottom: 20,
-                        marginTop: 15
+                        marginTop: 10, backgroundColor: '#6aabd9', paddingVertical: 10, borderRadius: 10, marginBottom: 15, shadowColor: "#000",
+                        shadowOffset: {
+                            width: 0,
+                            height: 2
+                        },
+                        shadowOpacity: 0.25,
+                        shadowRadius: 4,
+                        elevation: 5
                     }}
-                    textSize={20}
-                    onPress={() => {
-                        popupRef.current.changeVisibility(false)
-                        console.log('FAQS',)
-                    }} />
+                    onPress={() => addFAQ(FAQContent)} >
+
+                    <I18NText text='Send FAQs' />
+
+                    <ActivityIndicator
+                        animating={updating}
+                        color='black'
+                        style={{ position: 'absolute', zIndex: 1, top: 10, right: 10 }} />
+                </Pressable>
             </PopupModal>
         </View>
     )
@@ -92,7 +176,7 @@ export const FAQItem = React.memo((props: FAQItemType) => {
 
     const startAnimation = useCallback((isCollapse: boolean, height: number) => {
         Animated.timing(translateYAnim, {
-            useNativeDriver: false,
+            useNativeDriver: true,
             toValue: isCollapse ? height : 0,
             duration: 200
         }).start()
@@ -108,36 +192,35 @@ export const FAQItem = React.memo((props: FAQItemType) => {
         <TransparentView style={{ flexShrink: 1, overflow: 'hidden' }}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                 <TransparentView style={{ flex: 1, flexDirection: 'row', paddingVertical: 10, alignItems: 'center' }}>
-                    <TransparentView style={{width: 40, marginLeft: 10}}>
+                    <TransparentView style={{ width: 40, marginLeft: 10 }}>
                         <FontAwesome name="question-circle" size={24} color='#b80707' />
                     </TransparentView>
 
                     <Text text={props.question} style={{ marginLeft: 15, fontSize: 22, flexShrink: 1, textAlign: 'left' }} numberOfLines={3} />
                 </TransparentView>
-
                 <Pressable
                     style={{ padding: 10, justifyContent: 'center', alignItems: 'center' }}
                     onPress={() => { setIsCollapse(!isCollapse) }} >
                     <FontAwesome
                         name={isCollapse ? 'angle-down' : 'angle-up'}
-                        size={24} 
-                        color='grey'/>
+                        size={24}
+                        color='grey' />
                 </Pressable>
             </View>
 
             <Animated.View
-                style={{ marginBottom: 5, height: height == -1 ? null : translateYAnim, position: 'relative', zIndex: 1}}>
+                style={{ marginBottom: 5, height: height == -1 ? null : translateYAnim, position: 'relative', zIndex: 1 }}>
                 <TransparentView
-                    onLayout={(e) => { if (e.nativeEvent.layout.height > height) setHeight(e.nativeEvent.layout.height) }} 
-                    style={{flexDirection: 'row' , justifyContent: 'center', position: 'absolute', marginTop: 5, right: 0, left: 0 }}>
-                    <TransparentView style={{width: 40, marginLeft: 10}}>
-                        <FontAwesome2 name="question-answer" size={24} color='#067f91' style={{marginTop: 5}}/>
+                    onLayout={(e) => { if (e.nativeEvent.layout.height > height) setHeight(e.nativeEvent.layout.height) }}
+                    style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', position: 'absolute', marginTop: 5, right: 0, left: 0 }}>
+                    <TransparentView style={{ width: 40, marginLeft: 10 }}>
+                        <FontAwesome2 name="question-answer" size={24} color='#067f91' style={{ marginTop: 5 }} />
                     </TransparentView>
 
                     <Text
                         numberOfLines={10}
-                        text={props.answer + 'dsa kfjsdk;fjafj sd;fkjasdkfj skflsjdf ksjdfals kdfjsd kfjsdfksj f;dslk jfk;dsfj; akd sfj; lsjf'}
-                        style={{ flexShrink: 1, textAlign: 'left', fontSize: 22, marginLeft: 15,}} />
+                        text={props.answer ?? 'Waitting for admin to anwser'}
+                        style={{ flexShrink: 1, textAlign: 'left', fontSize: 22, marginLeft: 15, }} />
                 </TransparentView>
             </Animated.View>
 
@@ -148,60 +231,33 @@ export const FAQItem = React.memo((props: FAQItemType) => {
     )
 })
 
-export type FAQItemType = {
-    question: string,
-    answer: string
+export const FAQItemShimmer = React.memo((props: FAQItemShimmerType) => {
+    return (
+        <ShimmerGroup visible={props.visible}>
+            <TransparentView style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', margin: 5 }}>
+                <ShimmerItem style={{ height: 30, width: '10%', borderRadius: 15, margin: 5 }} />
+                <ShimmerItem style={{ height: 30, flexGrow: 1, borderRadius: 15, margin: 5 }} />
+            </TransparentView>
+            <TransparentView style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', margin: 5 }}>
+                <ShimmerItem style={{ height: 30, width: '10%', borderRadius: 15, margin: 5 }} />
+                <ShimmerItem style={{ height: 30, flexGrow: 1, borderRadius: 15, margin: 5 }} />
+            </TransparentView>
+            <TransparentView style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', margin: 5 }}>
+                <ShimmerItem style={{ height: 30, width: '10%', borderRadius: 15, margin: 5 }} />
+                <ShimmerItem style={{ height: 30, flexGrow: 1, borderRadius: 15, margin: 5 }} />
+            </TransparentView>
+        </ShimmerGroup>
+    )
+})
+
+export type FAQItemShimmerType = {
+    visible: boolean
 }
 
-
-// dummy
-const getFAQs = (): FAQItemType[] => [
-    {
-        question: "How are  you today",
-        answer: "I'm fine, thank you"
-    },
-    {
-        question: "How are  you today",
-        answer: "I'm fine, thank you"
-    },
-    {
-        question: "How are  you today",
-        answer: "I'm fine, thank you"
-    },
-    {
-        question: "How are  you today",
-        answer: "I'm fine, thank you"
-    },
-    {
-        question: "How are  you today",
-        answer: "I'm fine, thank you"
-    },
-    {
-        question: "How are  you today",
-        answer: "I'm fine, thank you"
-    },
-    {
-        question: "How are  you today",
-        answer: "I'm fine, thank you"
-    },
-    {
-        question: "How are  you today",
-        answer: "I'm fine, thank you"
-    },
-    {
-        question: "How are  you today",
-        answer: "I'm fine, thank you"
-    },
-    {
-        question: "How are  you today",
-        answer: "I'm fine, thank you"
-    },
-    {
-        question: "How are  you today",
-        answer: "I'm fine, thank you"
-    },
-    {
-        question: "How are  you today",
-        answer: "I'm fine, thank you"
-    },
-]
+export type FAQItemType = {
+    id: number,
+    userId: number,
+    question: string,
+    status: number,
+    answer: string
+}

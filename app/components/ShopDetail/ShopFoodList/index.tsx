@@ -1,14 +1,14 @@
 import React from "react"
 import { useCallback, useEffect, useState } from "react"
 import { FlatList } from "react-native"
-import { getShopListFood } from "../../../core/apis/requests"
+import { getShopListFood } from "../../../core/apis/Requests"
 import { wait } from "../../../utils/Utils"
-import { DUMMY_DATA, DUMMY_TYPE } from "../../Home/DummyData"
+import { FoodDetailData } from "../../FoodDetail/FoodDetailScreen"
 import { ShopFoodListShimmer } from "../ShopDetailShimmer.tsx"
 import { ShopFoodItem, ShopFoodItemProps } from "../ShopFoodItem"
 
 export const ShopFoodList = React.memo((props: ShopFoodListProps) => {
-    const [foodList, setFoodList] = useState<DUMMY_TYPE[]>([])
+    const [foodList, setFoodList] = useState<FoodDetailData[]>([])
     const [loading, setLoading] = useState(true)
     const [reachEndList, setReachEndList] = useState(false)
     const [pageIndex, setPageIndex] = useState(0)
@@ -16,7 +16,7 @@ export const ShopFoodList = React.memo((props: ShopFoodListProps) => {
     const fetchData = useCallback(async () => {
         setLoading(true)
         await wait(2000)
-        
+
         getShopListFood(
             props.shopId,
             pageIndex,
@@ -26,12 +26,14 @@ export const ShopFoodList = React.memo((props: ShopFoodListProps) => {
                     item.isFavorited = item.isFavorited == 1
                     item.isVerified = item.isVerified == 1
                 });
-
+                if (data.length < 10)
+                    setReachEndList(true)
                 setFoodList([...foodList, ...data])
                 setLoading(false)
             },
             (e) => {
                 console.log(e)
+                setLoading(false)
             }
         )
     }, [foodList])
@@ -52,6 +54,7 @@ export const ShopFoodList = React.memo((props: ShopFoodListProps) => {
             data={foodList}
             keyExtractor={(_, index) => `${index}`}
             numColumns={2}
+            columnWrapperStyle={{ justifyContent: 'space-between' }}
             scrollEnabled={false}
             onEndReachedThreshold={0.5}
             onEndReached={() => {

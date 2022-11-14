@@ -12,6 +12,6 @@ export const FoodListScreenContext = React.createContext<FoodListScreenContextTy
 });
 
 export type FoodListScreenContextType = {
-    foodListType: string,
-    changeFoodListType: (type: string) => void
+    foodListType: string | number,
+    changeFoodListType: (type: string | number) => void
 }

@@ -8,8 +8,8 @@ import { FontAwesome } from "@expo/vector-icons";
 
 export const SelectGroupContext = React.createContext<SelectGroupContextProps>({
     value: [],
-    addValue: (_: string) => { },
-    removeValue: (_: string) => { }
+    addValue: (_: any) => { },
+    removeValue: (_: any) => { }
 });
 
 export const SelectContext = React.createContext<{ isSelected: boolean }>({
@@ -21,11 +21,13 @@ export const SelectGroup = React.memo((props: SelectGroupProps) => {
 
     const addValue = useCallback((value: string) => {
         setValueList([...valueList, value])
-        props?.valueChange(valueList)
     }, [valueList])
 
     const removeValue = useCallback((value: string) => {
         setValueList(valueList.filter((v) => v != value))
+    }, [valueList])
+    
+    useEffect(() => {
         props?.valueChange(valueList)
     }, [valueList])
 
@@ -47,7 +49,7 @@ export const Select = React.memo((props: SelectProps) => {
     return (
         <SelectGroupContext.Consumer>
             {({ value, addValue, removeValue }) => {
-                const isSelected = value.findIndex((v) => v == props.value) != -1
+                const isSelected = value.findIndex((v) => v === props.value) != -1
                 return (
                     <SelectContext.Provider value={{ isSelected: isSelected }}>
                         <Pressable
@@ -109,22 +111,22 @@ export type RadioButtonIconProps = {
 }
 
 export type SelectProps = {
-    value: string,
+    value: any,
     style?: DefaultView['props']['style']
     children?: React.ReactNode[] | React.ReactNode,
 }
 
 export type SelectGroupContextProps = {
-    value: string[],
-    addValue: (value: string) => void,
-    removeValue: (value: string) => void,
+    value: any[],
+    addValue: (value: any) => void,
+    removeValue: (value: any) => void,
     defaultColor?: ColorValue,
     selectedColor?: ColorValue,
 }
 
 export type SelectGroupProps = {
-    value?: string[],
-    valueChange: (value: string[]) => void,
+    value?: any[],
+    valueChange: (value: any[]) => void,
     defaultColor?: ColorValue,
     selectedColor?: ColorValue,
     children?: React.ReactNode[] | React.ReactNode

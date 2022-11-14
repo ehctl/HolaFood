@@ -21,12 +21,13 @@ export function useThemeColor(
 }
 
 export const useLanguage = (text: string | undefined): string => {
-  if (!text)
-    return ''
-
   const props = useSelector((state: AppState) => ({
     language: state.language
   }), shallowEqual)
+
+  if (!text)
+    return ''
+
   return loadI18N(props.language, text)
 }
 

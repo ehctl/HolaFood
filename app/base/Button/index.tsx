@@ -1,5 +1,5 @@
 import { ButtonProps, Pressable, PressableProps, StyleProp, StyleSheet, ViewStyle } from "react-native"
-import { Text } from "../Text"
+import { I18NText, Text } from "../Text"
 import { Style } from "../../../assets/css/Style"
 import Warehouse from "../../utils/Warehouse"
 import { getStyle } from "../../utils/Utils"
@@ -18,7 +18,7 @@ export const Button = React.memo((params: ButtonParams) => {
                     : null
             }
             <View style={[{ flexGrow: 1, backgroundColor: 'transparent' }]}>
-                <Text style={{ fontSize: params.textSize ? params.textSize : 16 }} text={params.text} />
+                <I18NText style={{ fontSize: params.textSize ? params.textSize : 16 }} text={params.text} />
             </View>
         </Pressable>
     )

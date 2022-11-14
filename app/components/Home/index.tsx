@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { Level1Header, Level1HeaderStats } from "../../base/Headers/Level1Header"
 import { AnimatedHeader } from "../../base/AnimatedHeader"
 import React from "react"
@@ -8,9 +8,14 @@ import { HomeFoodList } from "./HomeFoodList"
 import { View } from "../../base/View"
 import { FoodListType } from "../FoodList/FoodListType"
 import { CategoryList } from "./CategoryList"
+import { addNewAddress, getListAddress } from "../../core/apis/Requests"
+import { mapUserAddressFromResponse } from "../Menu/AccountScreen/Address"
+import { useDispatch } from "react-redux"
+import { setUserAddressList } from "../../redux/Reducer"
 
 
 export const HomeScreen = React.memo(({ navigation }: any) => {
+    const dispatch = useDispatch()
     const renderItem = ({ item }: { item: HomeItem }) => {
         // draft item in list :~:
         switch (item) {
@@ -27,14 +32,21 @@ export const HomeScreen = React.memo(({ navigation }: any) => {
         }
     }
 
-    const [itemList, setItemList] = useState([
-        HomeItem.NEWS,
-        HomeItem.LOCATION,
-        HomeItem.CATEGORY_LIST,
-        HomeItem.FOOD_LIST
-    ])
+    const [itemList, _] = useState(getListItem())
+    const [refresh, setRefresh] = useState(false)
+    const extractor = (item: HomeItem, index: number) => `${index + String(refresh)}`
 
-    const extractor = (item: HomeItem, index: number) => `${index}`
+    useEffect(() => {
+        getListAddress(
+            (response) => {
+                const data = mapUserAddressFromResponse(response.data)
+                dispatch(setUserAddressList(data))
+            },
+            (e) => {
+                console.log(e)
+            }
+        )
+    }, [refresh])
 
     return (
         <View style={{ flex: 1 }}>
@@ -53,11 +65,24 @@ export const HomeScreen = React.memo(({ navigation }: any) => {
                     renderItem: renderItem,
                     data: itemList,
                     keyExtractor: extractor,
+                    extraData: refresh
+                }}
+                onRefresh={() => {
+                    setRefresh(!refresh)
                 }}
             />
         </View>
     )
 })
+
+const getListItem = () => (
+    [
+        HomeItem.NEWS,
+        HomeItem.LOCATION,
+        HomeItem.CATEGORY_LIST,
+        HomeItem.FOOD_LIST
+    ]
+)
 
 enum HomeItem {
     NEWS,

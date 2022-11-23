@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { Animated, NativeModules, Platform, Pressable } from "react-native"
-import { AppLanguage, UserInfo } from "../redux/Reducer"
+import { AppLanguage, UserInfo, UserType } from "../redux/Reducer"
 import { Constant } from "./Constant"
 import Warehouse from "./Warehouse"
 import { useEffect, useState } from 'react';
@@ -87,7 +87,7 @@ export const formatMoney = (price: number) => {
   return format(price, 0, 3, '.', '')
 }
 
-export const deleteInfoBeforeLogout = async () => {
+export const deleteSavedInfoBeforeLogout = async () => {
   await AsyncStorage.setItem(Constant.APP_API_TOKEN, '')
   await AsyncStorage.setItem(Constant.APP_USER_INFO, '')
 }
@@ -101,16 +101,21 @@ export const saveApiTokenInfoLocalStorage = async (token: string) => {
   await AsyncStorage.setItem(Constant.APP_API_TOKEN, token)
 }
 
+export const reformatDateTime = (time: string) => {
+  return time.slice(0, 19).replace(/-/g, "-").replace("T", " ")
+}
+
 export const formatDateTimeFromData = (time: string) => {
-  return time.split(' ')[0]
+  const timeArr = time.split(' ')[0].split('-')
+  return `${timeArr[2]}-${timeArr[1]}-${timeArr[0]}` 
 }
 
 export const formatCreatedDateType = (time: Date) => {
-  return `${time.getFullYear()}-${time.getMonth()}-${time.getDate()} ${time.getHours()}:${time.getMinutes()}:${time.getSeconds()}`
+  return `${time.getFullYear()}-${time.getMonth() + 1}-${time.getDate()} ${time.getHours()}:${time.getMinutes()}:${time.getSeconds()}`
 }
 
 export const formatAccountRole = (role: string) => {
-  switch(role) {
+  switch (role) {
     case 'ROLE_CUSTOMER':
       return 'Customer'
     case 'ROLE_SHIPPER':
@@ -120,8 +125,44 @@ export const formatAccountRole = (role: string) => {
   }
 }
 
+export const calculateShipFee = (distance: number) => {
+  const distanceKM = distance / 1000
+
+  if (0 < distanceKM && distanceKM <= 3) 
+    return 15000
+  else if (3 < distanceKM && distanceKM <= 4)
+    return 20000
+  else if (4 < distanceKM && distanceKM <= 5)
+    return 25000
+  else 
+    return 25000 + Math.ceil(distanceKM - 5) * 6500
+}
+
+export const getUserRole = (role: string): UserType => {
+  if (role == 'ROLE_CUSTOMER')
+    return 'customer'
+  else if (role == 'ROLE_SHIPPER')
+    return 'shipper'
+  else {
+    console.log('Unsupported user role')
+  }
+}
+
+export const getUserRoleById = (role: number): string => {
+  switch (role) {
+    case 1:
+      return 'Admin'
+    case 2:
+      return 'Customer'
+    case 3:
+      return 'Shop'
+    case 4:
+      return 'Shipper'
+  }
+}
+
 export const shuffleArray = (array) => {
-  let currentIndex = array.length,  randomIndex;
+  let currentIndex = array.length, randomIndex;
 
   // While there remain elements to shuffle.
   while (currentIndex != 0) {

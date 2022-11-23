@@ -14,9 +14,13 @@ import { FontAwesome } from "../../base/FontAwesome";
 import { I18NText, Text } from "../../base/Text";
 import { SettingSection } from "./SettingSection";
 import { LinearGradient } from "expo-linear-gradient";
+import { useSelector } from "react-redux";
+import { AppState } from "../../redux/Reducer";
 
 export const MenuScreen = React.memo(({ navigation }: any) => {
-    const title = useLanguage('Menu')
+    const appStateProps = useSelector((state: AppState) => ({
+        userType: state.userType
+    }))
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('tabPress', (e: any) => {
@@ -50,7 +54,7 @@ export const MenuScreen = React.memo(({ navigation }: any) => {
                     onPress={() => navigation.navigate('FAQScreen')} />
 
                 <MenuItem
-                    text='Order History' iconName='history' iconColor='#5a996b'
+                    text={appStateProps.userType == 'customer' ? 'Order History' : 'Shipping History'} iconName='history' iconColor='#5a996b'
                     onPress={() => navigation.navigate('OrderHistory')} />
 
                 <MenuItem

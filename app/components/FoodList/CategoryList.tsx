@@ -61,7 +61,7 @@ export const CategoryList = React.memo(() => {
                         id={item.id}
                         key={index + Object.values(FoodListType).length}
                         name={item.name}
-                        iconSource={null}
+                        iconSource={item.imageCategory}
                         style={{
                             backgroundColor: foodListType == item.id ? '#47bac4' : '#dad7de'
                         }}

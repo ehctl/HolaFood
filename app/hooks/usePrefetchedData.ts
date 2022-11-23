@@ -53,18 +53,18 @@ export const mapResponseToUserInfo = (response): UserInfo => {
     lastName: response.lastName,
     email: response.email,
     phone: response.phone ?? '',
-    role: response.roles[0].name
+    role: mapUserRole(response.roleId)
   }
 }
 
-// function cacheImages(images) {
-//   return images.map(image => {
-//     if (typeof image === 'string') {
-//       return Image.prefetch(image);
-//     } else {
-//     }
-//   });
-// }
+export const mapUserRole = (role: number): string => {
+  switch (role) {
+    case 2:
+      return 'ROLE_CUSTOMER'
+    case 4:
+      return 'ROLE_SHIPPER'
+  }
+}
 
 function cacheImages(images) {
   return images.map(image => {

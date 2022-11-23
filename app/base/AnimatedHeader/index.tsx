@@ -62,8 +62,8 @@ export const AnimatedHeader = React.memo((props: AnimatedHeaderScreenProps) => {
     return (
         <View style={getStyle().AnimatedHeader_container}>
             <KeyboardAvoidingView
-                behavior={Platform.OS === "ios" ? "position" : "height"}
-                style={{ flex: 1, }} >
+                behavior={Platform.OS === "ios" ? "padding" : "height"}
+                style={{ flex: 1 }} >
                 <AnimatedPressable style={[
                     getStyle().AnimatedHeader_header,
                     {

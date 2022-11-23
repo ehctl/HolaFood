@@ -32,13 +32,13 @@ export const BottomTabNavigator = React.memo(() => {
             <BottomTabBar
                 props={props}
                 iconList={
-                    stateProps.userType == 'user' ?
+                    stateProps.userType == 'customer' ?
                         ['home', 'shopping-cart', 'bell', 'ellipsis-h'] :
                         ['shopping-cart', 'ellipsis-h']
                 } />
         }>
             {
-                stateProps.userType == 'user' ?
+                stateProps.userType == 'customer' ?
                     <BottomTab.Group>
                         <BottomTab.Screen name="Home" component={HomeScreen} options={{}} />
                         <BottomTab.Screen name="Order" component={OrderTab} options={{ lazy: false }} />
@@ -112,8 +112,8 @@ const BottomTabBar = React.memo((params: BottomBarParams) => {
                         <Animated.View style={[style.divider, { opacity }]} />
                         <View style={style.tab_element_container}>
                             <View style={{ flexDirection: 'row', position: 'relative' }}>
-                                <Animated.View  style={{ opacity }} >
-                                    <FontAwesome name={params.iconList[index]} size={28} color={'#2a90c7'}/>
+                                <Animated.View style={{ opacity }} >
+                                    <FontAwesome name={params.iconList[index]} size={28} color={'#2a90c7'} />
                                 </Animated.View>
                                 {
                                     (route.name == 'Order' && props.newOrderNotification) ?
@@ -121,7 +121,7 @@ const BottomTabBar = React.memo((params: BottomBarParams) => {
                                         : null
                                 }
                             </View>
-                            <Animated.Text style={[style.tab_element_text, { opacity, color: Colors[props.theme].text, fontSize: 10 }]}>
+                            <Animated.Text style={[style.tab_element_text, { opacity, color: Colors[props.theme].text, fontSize: 10, fontWeight: '500' }]}>
                                 {title}
                             </Animated.Text>
                         </View>
@@ -145,7 +145,7 @@ const style = StyleSheet.create({
         backgroundColor: '#2a90c7'
     },
     tab_element_container: {
-        paddingVertical: 5,
+        paddingVertical: 3,
         alignItems: 'center',
         justifyContent: 'center'
     },

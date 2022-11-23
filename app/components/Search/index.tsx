@@ -82,12 +82,12 @@ export const SearchScreen = React.memo((props: SearchScreenProp) => {
         return <SearchItem index={index} removeRecentSearchOnClick={removeRecentSearch} itemOnClick={itemOnClick}  {...item} />
     }
 
-    const getFooter = () => {
+    const getFooter = useCallback(() => {
         return (
             searchData.length == 0 && !loading ?
                 <I18NText text="No Result" /> : null
         )
-    }
+    }, [searchData])
 
     const searchTextChange = useCallback(async (text: string) => {
         setSearchText(text)

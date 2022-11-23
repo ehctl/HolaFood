@@ -1,23 +1,21 @@
-import React, { useCallback, useRef, useState } from "react"
+import React, { useCallback, useEffect, useRef, useState } from "react"
 import { useSelector } from "react-redux"
 import { Button } from "../../../base/Button"
 import { TransparentView, View } from "../../../base/View"
-import { addOrders, AppState, deleteCartItems } from "../../../redux/Reducer"
+import { AppState, setCartItems } from "../../../redux/Reducer"
 import { FoodDetailData, FoodOptionType } from "../../FoodDetail/FoodDetailScreen"
-import { I18NText, Text } from "../../../base/Text"
-import { Alert, FlatList, ListRenderItemInfo, RefreshControl } from "react-native"
-import { OrderStatus } from "../OrderItem"
-import { OrderItemShimmer } from "../OrderItemShimmer"
+import { BText, I18NText } from "../../../base/Text"
+import { Alert, FlatList, ListRenderItemInfo, Pressable, RefreshControl } from "react-native"
 import { SelectGroup } from "../../../base/SellectGroup"
-import { AddToCartScreen } from "../../FoodDetail/AddToCartScreen"
 import { CartItem } from "./CartItem"
 import { useDispatch } from "react-redux"
-import { PopupModal } from "../../../base/PopupModal"
 import { useLanguage } from "../../../base/Themed"
-import { formatCreatedDateType } from "../../../utils/Utils"
+import { getCartItems } from "../../../core/apis/Requests"
+import { CartItemShimmer } from "./CartItemShimmer.tsx"
 
 
 export const Cart = React.memo(({ navigation }: any) => {
+    const dispatch = useDispatch()
     const appStateProps = useSelector((state: AppState) => ({
         cartItems: state.cartItems
     }))
@@ -38,46 +36,54 @@ export const Cart = React.memo(({ navigation }: any) => {
 
     const renderLoadMore = () => {
         return (
-            <OrderItemShimmer visible={loading || refreshing} />
+            <CartItemShimmer visible={loading || refreshing} />
         )
     }
 
-    // const categorizeNewOrders = useCallback((arr: number[]): CartItemData[][] => {
-    //     if (arr.length == 0)
-    //         return []
+    const fetchData = useCallback(() => {
+        getCartItems(
+            (response) => {
+                const data = response.data.map((i) => mapCartItemFromResponse(i))
+                dispatch(setCartItems(data))
+                setRefreshing(false)
+            },
+            (e) => {
+                console.log(e)
+                setRefreshing(false)
+            }
+        )
+    }, [])
 
-    //     const hashMap = {}
-    //     const dict = {}
+    const onRefresh = useCallback(() => {
+        setRefreshing(true)
+        setSelectedCartItems([])
+        dispatch(setCartItems([]))
+        fetchData()
+    }, [setSelectedCartItems])
 
-    //     appStateProps.cartItems.forEach((item, _) => {
-    //         hashMap[item.id] = item
-    //     })
-
-    //     arr.forEach((v, _) => {
-    //         if (hashMap[v]) {
-    //             if (dict[hashMap[v].productDetail.shopID]) {
-    //                 dict[hashMap[v].productDetail.shopID].push(hashMap[v])
-    //             }
-    //             else {
-    //                 dict[hashMap[v].productDetail.shopID] = [hashMap[v]]
-    //             }
-    //         }
-    //     })
-
-    //     return Object.values(dict)
-    // }, [appStateProps.cartItems])
+    useEffect(() => {
+        fetchData()
+    }, [])
 
     const getListSelectedItems = useCallback(() => {
         const hashMap = {}
+        const output = []
         appStateProps.cartItems.forEach((i) => {
             hashMap[i.id] = i
         })
 
-        return selectedCartItems.map((i) => hashMap[i])
-    }, [selectedCartItems])
+        selectedCartItems.forEach((i) => {
+            if (hashMap[i])
+                output.push(hashMap[i])
+        })
+
+        return output
+    }, [selectedCartItems, appStateProps.cartItems])
 
     const onOrder = useCallback(() => {
-        if (selectedCartItems.length == 0) {
+        const orders = getListSelectedItems()
+
+        if (orders.length == 0) {
             Alert.alert(
                 I18NOrder,
                 I18NSelectFood,
@@ -87,49 +93,62 @@ export const Cart = React.memo(({ navigation }: any) => {
                         onPress: () => console.log("Cancel Pressed"),
                         style: "cancel"
                     },
-                    { text: I18NOk, onPress: () => { appStateProps.cartItems.length == 0 ? navigation.navigate('FoodList' as never) : null}}
+                    { text: I18NOk, onPress: () => { appStateProps.cartItems.length == 0 ? navigation.navigate('FoodList' as never) : null } }
                 ]
             );
         } else {
             const orders = getListSelectedItems()
 
             navigation.navigate('AddToOrder' as never, {
-                cartItems: orders
+                cartItems: orders,
+                usingNewCartItem: false
             })
         }
-    }, [selectedCartItems, appStateProps.cartItems])
+    }, [selectedCartItems, appStateProps.cartItems, getListSelectedItems])
 
     return (
-        <View style={{ flex: 1, justifyContent: 'space-between', paddingTop: 5 }}>
-            <SelectGroup valueChange={(v) => { setSelectedCartItems(v) }}>
-                <FlatList
-                    refreshControl={
-                        <RefreshControl
-                            refreshing={false}
-                            onRefresh={() => {
-                                // setRefreshing(true); wait(2000).then(() => setRefreshing(false)) 
-                            }}
-                        />
-                    }
-                    renderItem={renderItems}
-                    data={appStateProps.cartItems}
-                    keyExtractor={(_, index) => `${index}`}
-                    ListEmptyComponent={<I18NText text='Did not have new orders' />}
-                    ListFooterComponent={() => renderLoadMore()} />
-            </SelectGroup>
-
-            <TransparentView>
-                <Button
-                    text="Order"
-                    textSize={15}
-                    style={{
-                        marginHorizontal: 10, borderRadius: 10, marginBottom: 5, marginTop: 15
-                    }}
-                    onPress={() => onOrder()} />
+        <View style={{ flex: 1, justifyContent: 'space-between', paddingTop: 5, position: 'relative' }}>
+            <TransparentView style={{ marginBottom: 40, flex: 1 }}>
+                <SelectGroup valueChange={(v) => { setSelectedCartItems(v) }}>
+                    <FlatList
+                        refreshControl={
+                            <RefreshControl
+                                refreshing={false}
+                                onRefresh={() => onRefresh()}
+                            />
+                        }
+                        renderItem={renderItems}
+                        data={appStateProps.cartItems}
+                        keyExtractor={(_, index) => `${index}`}
+                        ListEmptyComponent={!(loading || refreshing) ? <I18NText text='Did not have new orders' /> : null}
+                        ListFooterComponent={() => renderLoadMore()} />
+                </SelectGroup>
             </TransparentView>
+
+            <Pressable
+                style={{ position: 'absolute', bottom: 0, right: 0, left: 0, backgroundColor: '#d7d7d9', paddingHorizontal: 10, paddingVertical: 5, height: 40, justifyContent: 'center', alignItems: 'center' }}
+                onPress={() => onOrder()}>
+
+                <BText text="Order" style={{ fontSize: 16, fontWeight: '500' }} />
+            </Pressable>
         </View>
     )
 })
+
+export const mapCartItemFromResponse = (cart): CartItemData => {
+    const item = {
+        id: cart.id,
+        productDetail: cart.productDetail,
+        quantity: cart.quantity,
+        option: cart.option ?? [],
+        price: cart.price,
+        note: cart.note ?? ''
+    }
+
+    item.productDetail.option = cart.defaultOption
+
+    return item
+}
 
 export type CartItemData = {
     id: number,

@@ -65,10 +65,10 @@ export const FoodDetailScreen = React.memo(({ route }: any) => {
                 return <ImageHeader {...foodData} />
             }
             case ListItem.INFO: {
-                return <Info {...foodData} />
+                return <Info data={foodData} onDataChange={(d) => setFoodData(d)}/>
             }
             case ListItem.REVIEW: {
-                return <Review {...foodData} />
+                return <Review data={foodData} onDataChange={(d) => setFoodData(d)} />
             }
             case ListItem.ORDER: {
                 return <Order {...foodData} />

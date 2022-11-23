@@ -1,8 +1,10 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios"
 import { FoodListType } from "../../components/FoodList/FoodListType";
+import { CartItemData } from "../../components/Order/Cart";
+import { OrderData } from "../../components/Order/OrderItem";
 import { Constant } from "../../utils/Constant";
-import { DOMAIN, ORI_DOMAIN } from "./Constant";
+import { DOMAIN, GOOGLE_DISTANCE_API_KEY, GOOGLE_DISTANCE_API_URL, GOOGLE_MAP_SUGGEST_ADDRESS_API_URL, ORI_DOMAIN } from "./Constant";
 
 export const getSearchResult = (
     text: string,
@@ -401,8 +403,44 @@ export const addFoodReview = (
             review: review,
             star: star
         },
-        // url: 'https://mocki.io/v1/7c06a494-26c4-4210-beb8-13287eec3c74',
         url: DOMAIN + '/review/add'
+    }
+
+
+    return addHeaderToken(option).
+        then((newOption) => {
+            axios(newOption)
+                .then((response) => {
+                    if (response.status === 200) {
+                        success(response.data);
+                    } else {
+                        failure(response.data);
+                    }
+                })
+                .catch(((e) => {
+                    console.log(e)
+                }))
+        })
+        .catch((e) => {
+            failure(e)
+        })
+}
+
+export const updateFoodReview = (
+    foodId: number,
+    review: string,
+    star: number,
+    success: (data: any) => void,
+    failure: (error: any) => void,
+) => {
+    const option = {
+        method: 'POST',
+        data: {
+            id: foodId,
+            review: review,
+            star: star
+        },
+        url: DOMAIN + '/review/update'
     }
 
 
@@ -486,6 +524,432 @@ export const getListAddress = (
             failure(e)
         })
 }
+
+
+export const getCartItems = (
+    success: (data: any) => void,
+    failure: (error: any) => void
+) => {
+    const option = {
+        method: 'GET',
+        params: {
+        },
+        url: DOMAIN + '/cart/getcart',
+    }
+
+    return addHeaderToken(option).
+        then((newOption) => {
+            axios(newOption)
+                .then((response) => {
+                    if (response.status === 200 && response.data.success) {
+                        success(response.data);
+                    } else {
+                        failure(response.data);
+                    }
+                })
+                .catch(((e) => {
+                    failure(e)
+                    console.log(e)
+                }))
+        })
+        .catch((e) => {
+            failure(e)
+        })
+}
+
+export const addCart = (
+    cartItem: CartItemData,
+    success: (data: any) => void,
+    failure: (error: any) => void
+) => {
+    const option = {
+        method: 'POST',
+        data: {
+            amount: cartItem.quantity,
+            productid: cartItem.productDetail.id,
+            note: cartItem.note,
+            price: cartItem.price,
+            option: cartItem.option.map((i) => ({
+                id: i.id
+            }))
+        },
+        url: DOMAIN + '/cart/add',
+    }
+
+    return addHeaderToken(option).
+        then((newOption) => {
+            axios(newOption).then((response) => {
+                if (response.status === 200 && response.data.success) {
+                    success(response.data);
+                } else {
+                    failure(response.data);
+                }
+            })
+                .catch(((e) => {
+                    console.log(e)
+                }))
+        })
+        .catch((e) => {
+            failure(e)
+        })
+}
+
+export const updateCart = (
+    cartItem: CartItemData,
+    success: (data: any) => void,
+    failure: (error: any) => void
+) => {
+    const option = {
+        method: 'POST',
+        data: {
+            id: cartItem.id,
+            amount: cartItem.quantity,
+            productid: cartItem.productDetail.id,
+            note: cartItem.note,
+            price: cartItem.price,
+            option: cartItem.option.map((i) => ({
+                id: i.id
+            }))
+        },
+        url: DOMAIN + '/cart/update',
+    }
+
+    return addHeaderToken(option).
+        then((newOption) => {
+            axios(newOption).then((response) => {
+                if (response.status === 200 && response.data.success) {
+                    success(response.data);
+                } else {
+                    failure(response.data);
+                }
+            })
+                .catch(((e) => {
+                    console.log(e)
+                }))
+        })
+        .catch((e) => {
+            failure(e)
+        })
+}
+
+
+export const deleteCart = (
+    cartItemId: number,
+    success: (data: any) => void,
+    failure: (error: any) => void
+) => {
+    const option = {
+        method: 'POST',
+        data: {
+            id: cartItemId,
+        },
+        url: DOMAIN + '/cart/delete',
+    }
+
+    return addHeaderToken(option).
+        then((newOption) => {
+            axios(newOption).then((response) => {
+                if (response.status === 200 && response.data.success) {
+                    success(response.data);
+                } else {
+                    failure(response.data);
+                }
+            })
+                .catch(((e) => {
+                    console.log(e)
+                }))
+        })
+        .catch((e) => {
+            failure(e)
+        })
+}
+
+export const getShipperOrderQueue = (
+    shopId: number,
+    success: (data: any) => void,
+    failure: (error: any) => void
+) => {
+    return getOrders(1, shopId, 0, success, failure)
+}
+
+// get status 6, 3
+export const getShipperProgressingOrder = (
+    success: (data: any) => void,
+    failure: (error: any) => void
+) => {
+    return getOrders(9, 0, 0, success, failure)
+}
+
+// get status 1, 2, 3, 6
+export const getActiveOrders = (
+    success: (data: any) => void,
+    failure: (error: any) => void
+) => {
+    return getOrders(8, 0, 0, success, failure)
+}
+
+// get status 4, 5
+export const getInactiveOrders = (
+    pageIndex: number,
+    success: (data: any) => void,
+    failure: (error: any) => void
+) => {
+    return getOrders(7, 0, pageIndex, success, failure)
+}
+
+export const getOrders = (
+    status: number,
+    shopId: number,
+    index: number,
+    success: (data: any) => void,
+    failure: (error: any) => void
+) => {
+    const option = {
+        method: 'GET',
+        params: {
+            status: status,
+            shopId: shopId,
+            index: index
+        },
+        url: DOMAIN + '/order/getorder',
+    }
+
+    return addHeaderToken(option).
+        then((newOption) => {
+            axios(newOption).then((response) => {
+                if (response.status === 200 && response.data.success) {
+                    success(response.data);
+                } else {
+                    failure(response.data);
+                }
+            })
+                .catch(((e) => {
+                    failure(e)
+                }))
+        })
+        .catch((e) => {
+            failure(e)
+        })
+}
+
+export const addOrdersWithCartId = (
+    orders: OrderData[],
+    success: (data: any) => void,
+    failure: (error: any) => void
+) => {
+    const option = {
+        method: 'POST',
+        data: orders.map((i) => ({
+            price: i.price,
+            shipPrice: i.shipFee,
+            address: i.address,
+            cartDTO: i.items.map((cartItem) => ({
+                id: cartItem.id
+            }))
+        })),
+        url: DOMAIN + '/order/add',
+    }
+
+    return addHeaderToken(option).
+        then((newOption) => {
+            axios(newOption).then((response) => {
+                if (response.status === 200 && response.data.success) {
+                    success(response.data);
+                } else {
+                    failure(response.data);
+                }
+            })
+                .catch(((e) => {
+                    console.log(e)
+                }))
+        })
+        .catch((e) => {
+            failure(e)
+        })
+}
+
+export const addOrdersWithCardData = (
+    orders: OrderData[],
+    success: (data: any) => void,
+    failure: (error: any) => void
+) => {
+    const option = {
+        method: 'POST',
+        data: orders.map((i) => ({
+            price: i.price,
+            shipPrice: i.shipFee,
+            address: i.address,
+            cartDTO: i.items.map((cartItem) => ({
+                amount: cartItem.quantity,
+                productid: cartItem.productDetail.id,
+                note: cartItem.note,
+                price: cartItem.price,
+                option: cartItem.option.map((i) => ({
+                    id: i.id
+                }))
+            }))
+        })),
+        url: DOMAIN + '/order/add',
+    }
+
+    return addHeaderToken(option).
+        then((newOption) => {
+            console.log(newOption)
+            axios(newOption).then((response) => {
+                if (response.status === 200 && response.data.success) {
+                    success(response.data);
+                } else {
+                    failure(response.data);
+                }
+            })
+                .catch(((e) => {
+                    console.log(e)
+                }))
+        })
+        .catch((e) => {
+            failure(e)
+        })
+}
+
+export const updateOrder = (
+    orderId: number,
+    orderStatus: number,
+    success: (data: any) => void,
+    failure: (error: any) => void,
+) => {
+    const option = {
+        method: 'POST',
+        data: {
+            id: orderId,
+            orderStatus: orderStatus
+        },
+        url: DOMAIN + '/order/update',
+    }
+
+    return addHeaderToken(option).
+        then((newOption) => {
+            console.log(newOption)
+            axios(newOption).then((response) => {
+                if (response.status === 200 && response.data.success) {
+                    success(response.data);
+                } else {
+                    failure(response.data);
+                }
+            })
+                .catch(((e) => {
+                    console.log(e)
+                }))
+        })
+        .catch((e) => {
+            failure(e)
+        })
+}
+
+export const cancelOrder = (
+    orderId: number,
+    cancelReason: string,
+    success: (data: any) => void,
+    failure: (error: any) => void,
+) => {
+    const option = {
+        method: 'POST',
+        data: {
+            id: orderId,
+            orderStatus: 5,
+            noteCancel: cancelReason
+        },
+        url: DOMAIN + '/order/update',
+    }
+
+    return addHeaderToken(option).
+        then((newOption) => {
+            console.log(newOption)
+            axios(newOption).then((response) => {
+                if (response.status === 200 && response.data.success) {
+                    success(response.data);
+                } else {
+                    failure(response.data);
+                }
+            })
+                .catch(((e) => {
+                    console.log(e)
+                }))
+        })
+        .catch((e) => {
+            failure(e)
+        })
+}
+
+export const getSuggestAddress = (
+    text: string,
+    success: (data: any) => void,
+    failure: (error: any) => void,
+    abortController?: AbortController,
+) => {
+    const option = {
+        method: 'GET',
+        params: {
+            query: text,
+            key: GOOGLE_DISTANCE_API_KEY
+        },
+        url: GOOGLE_MAP_SUGGEST_ADDRESS_API_URL,
+        signal: abortController?.signal
+    }
+
+    return addHeaderToken(option).
+        then((newOption) => {
+            axios(newOption).then((response) => {
+                if (response.status === 200 && response.data.status == "OK") {
+                    success(response.data);
+                } else {
+                    failure(response.data);
+                }
+            })
+                .catch(((e) => {
+                    console.log(e)
+                }))
+        })
+        .catch((e) => {
+            failure(e)
+        })
+}
+
+export const getDistance = (
+    origin: string,
+    destination: string,
+    success: (data: any) => void,
+    failure: (error: any) => void
+) => {
+    const option = {
+        method: 'GET',
+        params: {
+            origins: origin,
+            destinations: destination,
+            mode: 'driving',
+            region: 'vi',
+            key: GOOGLE_DISTANCE_API_KEY
+        },
+        url: GOOGLE_DISTANCE_API_URL,
+    }
+
+    return addHeaderToken(option).
+        then((newOption) => {
+            axios(newOption).then((response) => {
+                if (response.status === 200 && response.data.status == "OK") {
+                    success(response.data);
+                } else {
+                    failure(response.data);
+                }
+            })
+                .catch(((e) => {
+                    console.log(e)
+                }))
+        })
+        .catch((e) => {
+            failure(e)
+        })
+}
+
 
 export const addNewAddress = (
     address: string,
@@ -684,9 +1148,9 @@ export const deleteFavorite = (
                     failure(response.data);
                 }
             })
-            .catch(((e) => {
-                console.log(e)
-            }))
+                .catch(((e) => {
+                    console.log(e)
+                }))
         })
         .catch((e) => {
             failure(e)
@@ -764,6 +1228,7 @@ export const signup = (
     lastName: string,
     password: string,
     email: string,
+    phone: string,
     success: (data: any) => Promise<void> | void,
     failure: (error: any) => Promise<void> | void
 ) => {
@@ -774,6 +1239,7 @@ export const signup = (
             lastName: lastName,
             password: password,
             email: email,
+            phone: phone,
         },
         url: 'http://swp490g52-env.eba-sk7m9gfw.ap-southeast-1.elasticbeanstalk.com/api/user/register',
     }
@@ -804,6 +1270,58 @@ export const changePassword = (
             newPassword: newPassword
         },
         url: DOMAIN + '/user/changepass',
+    }
+
+    axios(option)
+        .then((response) => {
+            if (response.status === 200 && response.data.success) {
+                success(response.data);
+            } else {
+                failure(response.data);
+            }
+        })
+        .catch((e) => {
+            failure(e)
+        })
+}
+
+export const resetPassword = (
+    email: string,
+    success: (data: any) => Promise<void> | void,
+    failure: (error: any) => Promise<void> | void
+) => {
+    const option = {
+        method: 'GET',
+        params: {
+            email: email
+        },
+        url: DOMAIN + '/resetpassword',
+    }
+
+    axios(option)
+        .then((response) => {
+            if (response.status === 200 && response.data.success) {
+                success(response.data);
+            } else {
+                failure(response.data);
+            }
+        })
+        .catch((e) => {
+            failure(e)
+        })
+}
+
+export const verifyEmail = (
+    email: string,
+    success: (data: any) => Promise<void> | void,
+    failure: (error: any) => Promise<void> | void
+) => {
+    const option = {
+        method: 'GET',
+        params: {
+            email: email
+        },
+        url: DOMAIN + '/user/sendotp',
     }
 
     axios(option)

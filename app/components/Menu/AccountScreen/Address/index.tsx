@@ -13,48 +13,24 @@ import { AppState, deleteUserAddress, setUserAddressList, UserAddress } from "..
 import { useDispatch } from "react-redux"
 import { isValidNormalText } from "../../../../validation/validate"
 import { useLanguage } from "../../../../base/Themed"
+import { useNavigation } from '@react-navigation/native';
+
+
 
 export const Address = React.memo(() => {
     const dispatch = useDispatch()
+    const navigation = useNavigation()
     const appStateProps = useSelector((appState: AppState) => ({
         addressList: appState.userAddressList
     }))
-    const [newAddress, setNewAddress] = useState('')
-    const [loading, setLoading] = useState(false)
+
     const [loadingDelete, setLoadingDelete] = useState(false)
-    const [addressValidationMsg, setAddressValidationMsg] = useState('')
-    const popupModal = useRef(null)
 
     const I18NCancel = useLanguage("Cancel")
     const I18NDelete = useLanguage("Delete")
     const I18NDeleteAddress = useLanguage("Delete Address")
     const I18NDeleteAddressConfirm = useLanguage("Are you sure you want to delete this address")
-
-    const onAddNewAddress = useCallback(() => {
-        const newAddressValidate = isValidNormalText(newAddress)
-        if (!newAddressValidate.qualify) {
-            setAddressValidationMsg(newAddressValidate.message)
-        } else {
-            setLoading(true)
-            addNewAddress(
-                newAddress,
-                (response) => {
-                    const list = [...appStateProps.addressList]
-                    list.push({
-                        id: response?.address?.id,
-                        address: newAddress
-                    })
-                    dispatch(setUserAddressList(list))
-                    popupModal.current.changeVisibility(false)
-                    setLoading(false)
-                },
-                (e) => {
-                    setAddressValidationMsg(e)
-                    setLoading(false)
-                }
-            )
-        }
-    }, [newAddress])
+    const I18NMaxAddressWarning = useLanguage("You Can Have Maximum 5 Addressess")
 
     const onDeleteAddress = useCallback((id: number) => {
         setLoadingDelete(true)
@@ -123,46 +99,17 @@ export const Address = React.memo(() => {
                 <Pressable
                     style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}
                     onPress={() => {
-                        popupModal.current.changeVisibility(true)
+                        if (appStateProps.addressList.length >= 5) {
+                            Alert.alert(I18NMaxAddressWarning)
+                        } else {
+                            navigation.navigate('AddAddress' as never)
+                        }
                     }}>
                     <FontAwesome name="plus-square-o" size={20} color='#288c26' />
                     <I18NText text="Add Address" style={{ textAlign: 'left', color: '#288c26', fontSize: 20, marginLeft: 10 }} />
                 </Pressable>
             </TransparentView>
 
-            <PopupModal title="Address" ref={popupModal} shouldAvoidKeyboard={true}>
-                <TransparentView>
-                    <TextInput
-                        placeholder="Address"
-                        multiline={true}
-                        style={{ backgroundColor: '#ebebeb', marginTop: 20, paddingTop: 15, paddingBottom: 15, paddingHorizontal: 10, fontSize: 22, borderRadius: 10 }}
-                        onChangeText={(v) => { setNewAddress(v), setAddressValidationMsg('') }} />
-
-                    <I18NText text={addressValidationMsg} style={{ color: '#cc1818', marginBottom: 20, marginTop: 10, textAlign: 'left' }} />
-
-                    <Pressable
-                        style={{
-                            marginTop: 10, backgroundColor: '#6aabd9', paddingVertical: 10, borderRadius: 10, marginBottom: 15, shadowColor: "#000",
-                            shadowOffset: {
-                                width: 0,
-                                height: 2
-                            },
-                            shadowOpacity: 0.25,
-                            shadowRadius: 4,
-                            elevation: 5
-                        }}
-                        onPress={() => onAddNewAddress()} >
-
-                        <I18NText text='Add' />
-
-                        <ActivityIndicator
-                            animating={loading}
-                            color='black'
-                            style={{ position: 'absolute', zIndex: 1, top: 10, right: 10 }} />
-                    </Pressable>
-
-                </TransparentView>
-            </PopupModal>
         </TransparentView>
     )
 })

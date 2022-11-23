@@ -5,12 +5,12 @@ import { PopupModal } from "../../../../base/PopupModal"
 import { useCallback, useRef, useState } from "react"
 import { ActivityIndicator, Pressable, TextInput } from "react-native"
 import { useSelector } from "react-redux"
-import { AppState, setUserInfo } from "../../../../redux/Reducer"
+import { AppState, clearUserInfo, setUserInfo } from "../../../../redux/Reducer"
 import { useLanguage } from "../../../../base/Themed"
 import React from "react"
 import { isValidNormalText, isValidPassword, isValidPhoneNumber } from "../../../../validation/validate"
 import { changePassword, updateUserInfo } from "../../../../core/apis/Requests"
-import { deleteInfoBeforeLogout, formatAccountRole, saveUserInfoLocalStorage } from "../../../../utils/Utils"
+import { deleteSavedInfoBeforeLogout, formatAccountRole, saveUserInfoLocalStorage } from "../../../../utils/Utils"
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch } from "react-redux"
 
@@ -91,7 +91,7 @@ export const Info = React.memo(() => {
                                 <I18NText text="Email" style={{ textAlign: 'left', color: '#a19e9d', fontSize: 18 }} />
                                 <Text text=" ﹡ " style={{ color: 'red', textAlign: 'left', fontSize: 18 }} />
                             </TransparentView>
-                            <Text text={appStateProps.userInfo?.email?.trim() ?? ''} style={{ fontSize: 18, fontWeight: '500', marginTop: 5, textAlign: 'left' }} />
+                            <Text text={appStateProps.userInfo?.email?.trim() ?? ''} style={{ fontSize: 18, color: '#757575', fontWeight: '500', marginTop: 5, textAlign: 'left' }} />
                         </TransparentView>
                     </TransparentView>
                     <View style={{ backgroundColor: 'grey', height: 1, marginLeft: -10 }} />
@@ -104,7 +104,7 @@ export const Info = React.memo(() => {
                                 <I18NText text="Role" style={{ textAlign: 'left', color: '#a19e9d', fontSize: 18 }} />
                                 <Text text=" ﹡ " style={{ color: 'red', textAlign: 'left', fontSize: 18 }} />
                             </TransparentView>
-                            <Text text={formatAccountRole(appStateProps.userInfo?.role ?? '')} style={{ fontSize: 18, fontWeight: '500', marginTop: 5, textAlign: 'left' }} />
+                            <Text text={formatAccountRole(appStateProps.userInfo?.role ?? '')} style={{ fontSize: 18, color: '#757575', fontWeight: '500', marginTop: 5, textAlign: 'left' }} />
                         </TransparentView>
                     </TransparentView>
                     <View style={{ backgroundColor: 'grey', height: 1, marginLeft: -10 }} />
@@ -155,7 +155,10 @@ export const Info = React.memo(() => {
                 <TransparentView style={{ marginTop: 5 }}>
                     <TransparentView style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingTop: 5, paddingBottom: 10 }}>
                         <TransparentView>
-                            <I18NText text="Phone Number" style={{ textAlign: 'left', color: '#a19e9d', fontSize: 18 }} />
+                            <TransparentView style={{ flexDirection: 'row' }}>
+                                <I18NText text="Phone Number" style={{ textAlign: 'left', color: '#a19e9d', fontSize: 18 }} />
+                                <Text text=" ﹡ " style={{ color: 'red', textAlign: 'left', fontSize: 18 }} />
+                            </TransparentView>
                             <Text text={appStateProps.userInfo?.phone?.trim() ?? ''} style={{ fontSize: 18, fontWeight: '500', marginTop: 5, textAlign: 'left' }} />
                         </TransparentView>
                         <FontAwesome2
@@ -176,7 +179,7 @@ export const Info = React.memo(() => {
                                 <I18NText text="Password" style={{ textAlign: 'left', color: '#a19e9d', fontSize: 18 }} />
                                 <Text text=" ﹡ " style={{ color: 'red', textAlign: 'left', fontSize: 18 }} />
                             </TransparentView>
-                            
+
                             <Text text="" style={{ fontSize: 18, marginTop: 5 }} />
                         </TransparentView>
                         <FontAwesome2
@@ -248,6 +251,7 @@ export const UpdatePhone = (props: { phoneNumber: string, callback: (value: stri
 
     const onSubmit = useCallback(() => {
         const nameValidate = isValidPhoneNumber(phoneNumber)
+        console.log(nameValidate, phoneNumber)
         if (phoneNumber == props.phoneNumber) {
             setErrorMsg('Value was not changed')
         } else if (!nameValidate.qualify) {
@@ -286,6 +290,7 @@ export const UpdatePhone = (props: { phoneNumber: string, callback: (value: stri
 }
 
 export const UpdatePassword = () => {
+    const dispatch = useDispatch()
     const navigation = useNavigation<any>()
     const I18NOldPassword = useLanguage('Old Password')
     const I18NNewPassword = useLanguage('New Password')
@@ -313,7 +318,8 @@ export const UpdatePassword = () => {
                 oldPassword,
                 newPassword,
                 async (response) => {
-                    await deleteInfoBeforeLogout()
+                    await deleteSavedInfoBeforeLogout()
+                    dispatch(clearUserInfo())
                     navigation.replace('Authentication')
                 },
                 (e) => {

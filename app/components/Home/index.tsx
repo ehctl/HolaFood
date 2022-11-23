@@ -49,7 +49,7 @@ export const HomeScreen = React.memo(({ navigation }: any) => {
     }, [refresh])
 
     return (
-        <View style={{ flex: 1 }}>
+        <View style={{ flex: 1}}>
             <AnimatedHeader
                 headerProps={{
                     header: <Level1Header

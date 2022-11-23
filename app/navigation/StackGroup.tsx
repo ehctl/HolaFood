@@ -18,7 +18,8 @@ import { OrderHistoryScreen } from '../components/Menu/OrderHistoryScreen';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 import { AppState } from '../redux/Reducer';
-import { AddToOrder } from '../components/FoodDetail/AddToOrder';
+import { AddToOrderScreen } from '../components/FoodDetail/AddToOrderScreen';
+import { AddAddressScreen } from '../components/Menu/AccountScreen/AddAddressScreen';
 
 
 const Stack = createNativeStackNavigator<GroupStackParamList>();
@@ -40,9 +41,10 @@ export const Root = React.memo(() => {
             <Stack.Screen name='ShopDetail' component={ShopDetail} options={{ animation: 'slide_from_right', headerShown: false }} />
             <Stack.Screen name='FAQScreen' component={FAQScreen} options={{ animation: 'slide_from_right', headerShown: false }} />
             <Stack.Screen name='AddToCart' component={AddToCartScreen} options={{ animation: 'slide_from_bottom', headerShown: false }} />
-            <Stack.Screen name='AddToOrder' component={AddToOrder} options={{ animation: 'slide_from_bottom', headerShown: false }} />
+            <Stack.Screen name='AddToOrder' component={AddToOrderScreen} options={{ animation: 'slide_from_bottom', headerShown: false }} />
             <Stack.Screen name='OrderDetail' component={OrderDetail} options={{ animation: 'slide_from_right', headerShown: false }} />
-            <Stack.Screen name='OrderHistory' component={OrderHistoryScreen} options={{ animation: 'slide_from_right', headerShown: false }} />
+            <Stack.Screen name='OrderHistory' component={OrderHistoryScreen} options={{ animation: 'slide_from_right' }} />
+            <Stack.Screen name='AddAddress' component={AddAddressScreen} options={{ animation: 'slide_from_bottom', headerShown: false }} />
         </Stack.Navigator>
     )
 })
@@ -73,13 +75,16 @@ export type GroupStackParamList = {
     };
 
     AddToOrder: {
-        cartItems: CartItemData[]
+        cartItems: CartItemData[],
+        usingNewCartItem: boolean,
     };
 
     OrderDetail: {
         data: OrderData
     };
 
-    OrderHistory: undefined
+    OrderHistory: undefined,
+
+    AddAddress: undefined
 };
 

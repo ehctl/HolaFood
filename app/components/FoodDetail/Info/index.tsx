@@ -15,26 +15,29 @@ import { AppState } from "../../../redux/Reducer"
 
 
 
-export const Info = React.memo((props: FoodDetailData) => {
+export const Info = React.memo((props: InfoType) => {
     const appStateProps = useSelector((state: AppState) => ({
         userInfo: state.userInfo
     }))
     const navigation = useNavigation()
-    const [isFavorite, setIsFavorite] = useState(props.isFavorite)
+    const [isFavorite, setIsFavorite] = useState(props.data.isFavorite)
 
     const updateFavorite = useCallback((value: boolean) => {
         updateProductFavorite(
             appStateProps.userInfo.id,
             value,
-            props.id,
+            props.data.id,
             (response) => {
                 setIsFavorite(value)
+                const newData = {...props.data}
+                newData.isFavorite = value  
+                props.onDataChange(newData)
             },
             (e) => {
                 console.log(e)
             }
         )
-    }, [])
+    }, [appStateProps.userInfo, props.data])
 
     const setFoodFavorite = useCallback((value: boolean) => {
         updateFavorite(value)
@@ -52,10 +55,10 @@ export const Info = React.memo((props: FoodDetailData) => {
                 <View style={{ flexDirection: 'column', flexShrink: 1 }}>
                     <Text
                         style={{ textAlign: 'left', fontSize: 18, fontWeight: '700' }}
-                        text={props.productName} />
+                        text={props.data.productName} />
                     <Text
                         style={{ marginTop: 5, textAlign: 'left', fontSize: 14, fontWeight: '400' }}
-                        text={props.description}
+                        text={props.data.description}
                         numberOfLines={10} />
                 </View>
                 <Pressable style={{ padding: 10 }} onPress={() => { setFoodFavorite(!isFavorite) }}>
@@ -64,16 +67,21 @@ export const Info = React.memo((props: FoodDetailData) => {
             </View>
 
             <View style={{ marginTop: 10, justifyContent: 'center' }}>
-                <Text text={`${formatMoney(props.sellPrice)}đ`} style={{ textAlign: 'left', color: 'red' }} />
+                <Text text={`${formatMoney(props.data.sellPrice)}đ`} style={{ textAlign: 'left', color: 'red' }} />
             </View>
 
-            <Rate {...props} />
+            <Rate {...props.data} />
 
             <Pressable
                 style={{ paddingVertical: 10 }}
-                onPress={() => navigateToShopDetail(props.shopID)}>
-                <Text text={props.shopName} style={{ textAlign: 'left', fontSize: 16, fontWeight: '500' }} />
+                onPress={() => navigateToShopDetail(props.data.shopID)}>
+                <Text text={props.data.shopName} style={{ textAlign: 'left', fontSize: 16, fontWeight: '500' }} />
             </Pressable>
         </View>
     )
 })
+
+export type InfoType = {
+    data: FoodDetailData,
+    onDataChange: (data: FoodDetailData) => void
+}

@@ -8,7 +8,7 @@ import { TransparentView } from "../../../base/View"
 import { ReviewStar } from "../Rate"
 import { Button } from "../../../base/Button"
 import { PopupModal } from "../../../base/PopupModal"
-import { addFoodReview, getFoodReviews } from "../../../core/apis/Requests"
+import { addFoodReview, getFoodReviews, updateFoodReview } from "../../../core/apis/Requests"
 import { ShimmerGroup, ShimmerItem } from "../../../base/Shimmer"
 import { formatCreatedDateType, formatDateTimeFromData, wait } from "../../../utils/Utils"
 import { useLanguage } from "../../../base/Themed"
@@ -16,22 +16,24 @@ import { FoodDetailData } from "../FoodDetailScreen"
 import { useSelector } from "react-redux"
 import { AppState } from "../../../redux/Reducer"
 
-
-export const Review = React.memo((props: FoodDetailData) => {
+export const Review = React.memo((props: ReviewType) => {
     const appStateProps = useSelector((state: AppState) => ({
         userInfo: state.userInfo
     }))
 
     const [isCollapse, setIsCollapse] = useState(false)
     const [loading, setLoading] = useState(false)
-    const [reviewList, setReviewList] = useState<ReviewType[]>([])
+    const [updating, setUpdating] = useState(false)
+    const [reviewList, setReviewList] = useState<ReviewItemType[]>([])
     const updatePopupModal = useRef(null)
     const popupRateRef = useRef(null)
 
     const [starVoted, setStarVoted] = useState(5)
     const [review, setReview] = useState('')
+    const [reviewErrorMsg, setReviewErrorMsg] = useState('')
 
     const [updateReview, setUpdateReview] = useState('')
+    const [updateReviewErrorMsg, setUpdateReviewErrorMsg] = useState('')
     const [selectedReviewId, setSelectedReviewId] = useState(null)
 
     const I18NReason = useLanguage('Reason')
@@ -46,15 +48,15 @@ export const Review = React.memo((props: FoodDetailData) => {
         setIsCollapse(!isCollapse)
     }, [isCollapse])
 
-
     const fetchData = useCallback(async () => {
         setLoading(true)
 
         getFoodReviews(
-            props.id,
+            props.data.id,
             (response) => {
                 const data = response.data
-                setReviewList([...reviewList, ...data])
+                // setReviewList([...reviewList, ...data])
+                setReviewList(data)
                 setLoading(false)
             },
             (e) => {
@@ -65,8 +67,27 @@ export const Review = React.memo((props: FoodDetailData) => {
     }, [reviewList])
 
     const onUpdateReview = useCallback(() => {
-
-    }, [updateReview])
+        if (reviewList.filter((i) => i.id == selectedReviewId)[0].review == updateReview) {
+            setUpdateReviewErrorMsg('Value was not changed')
+        } else {
+            setUpdating(true)
+            updateFoodReview(
+                props.data.id,
+                updateReview,
+                props.data.star,
+                (response) => {
+                    reviewList.filter((i) => i.id == selectedReviewId)[0].review = updateReview
+                    setReviewList([...reviewList])
+                    setUpdating(false)
+                    updatePopupModal.current.changeVisibility(false)
+                },
+                (e) => {
+                    console.log(e)
+                    setUpdating(false)
+                }
+            )
+        }
+    }, [updateReview, reviewList, selectedReviewId])
 
     useEffect(() => {
         if (selectedReviewId) {
@@ -74,25 +95,38 @@ export const Review = React.memo((props: FoodDetailData) => {
         }
     }, [selectedReviewId])
 
-    const addReview = useCallback(() => {
+    const onAddReview = useCallback(() => {
+        setUpdating(true)
         const time = new Date()
         addFoodReview(
-            props.id,
+            props.data.id,
             review,
             starVoted,
             (response) => {
+                // udpate review in review section
                 setReviewList([...[{
-                    productName: props.productName,
+                    productName: props.data.productName,
                     userId: appStateProps.userInfo.id,
                     review: review,
                     userReview: appStateProps.userInfo.firstName + ' ' + appStateProps.userInfo.lastName,
                     createdDate: formatCreatedDateType(time),
-                    id: response?.review?.id
+                    id: response?.review?.id,
+                    star: starVoted,
                 }], ...reviewList])
+                setUpdating(false)
+
+                // update star of main food detail page
+                const newAvrStar = (props.data.star * props.data.numberOfReview + starVoted) / (props.data.numberOfReview + 1)
+                const newData = { ...props.data }
+                newData.star = newAvrStar
+                newData.numberOfReview += 1
+                props.onDataChange(newData)
                 popupRateRef.current.changeVisibility(false)
             },
             (e) => {
                 console.log(e)
+                setReviewErrorMsg(e.message)
+                setUpdating(false)
             }
         )
     }, [starVoted, review])
@@ -122,11 +156,11 @@ export const Review = React.memo((props: FoodDetailData) => {
             </TransparentView>
             {
                 isCollapse ?
-                    <View style={{ width: '100%', backgroundColor: '#c0c6cf', borderRadius: 10 }}>
+                    <View style={{ width: '100%', borderRadius: 10 }}>
                         <FlatList
                             data={reviewList}
                             renderItem={renderItem}
-                            keyExtractor={(_, index) => `${index}`}
+                            keyExtractor={(_, index) => `${Math.random()}`}
                             ListFooterComponent={<ReviewItemShimmer visible={loading} />} />
                     </View> : null
             }
@@ -139,6 +173,7 @@ export const Review = React.memo((props: FoodDetailData) => {
                     value={updateReview}
                     onChangeText={(v) => setUpdateReview(v)}
                     style={{ paddingHorizontal: 10, backgroundColor: '#bab0af', fontSize: 14, borderRadius: 10, paddingTop: 15, paddingBottom: 15, marginTop: 20 }} />
+                <I18NText text={updateReviewErrorMsg} style={{ color: 'red', textAlign: 'left', marginTop: 5 }} />
 
                 <Pressable
                     style={{
@@ -156,7 +191,7 @@ export const Review = React.memo((props: FoodDetailData) => {
                     <I18NText text='Update' />
 
                     <ActivityIndicator
-                        animating={loading}
+                        animating={updating}
                         color='black'
                         style={{ position: 'absolute', zIndex: 1, top: 10, right: 10 }} />
                 </Pressable>
@@ -175,15 +210,24 @@ export const Review = React.memo((props: FoodDetailData) => {
                     placeholder={I18NOptional}
                     multiline={true}
                     onChangeText={(v) => setReview(v)}
-                    style={{ paddingHorizontal: 10, backgroundColor: '#bab0af', fontSize: 14, borderRadius: 10, paddingTop: 15, paddingBottom: 15, marginTop: 20 }} />
+                    style={{ paddingHorizontal: 10, backgroundColor: '#c0c6cf', fontSize: 14, borderRadius: 10, paddingTop: 15, paddingBottom: 15, marginTop: 20 }} />
 
-                <Button
-                    text="Rate"
-                    style={{
-                        marginHorizontal: 15, borderRadius: 15, marginBottom: 20, marginTop: 15
-                    }}
-                    textSize={20}
-                    onPress={() => addReview()} />
+                {
+                    reviewErrorMsg.length ?
+                        <I18NText text={reviewErrorMsg} style={{color: 'red', textAlign: 'left'}}/>
+                        : null
+                }
+
+                <Pressable
+                    style={{ marginTop: 40, marginBottom: 20, backgroundColor: '#c0c6cf', padding: 10, borderRadius: 10 }}
+                    onPress={() => onAddReview()}>
+
+                    <I18NText text="Rate" />
+                    <ActivityIndicator
+                        animating={updating}
+                        color='black'
+                        style={{ position: 'absolute', zIndex: 1, top: 10, right: 10 }} />
+                </Pressable>
             </PopupModal>
         </View>
     )
@@ -193,9 +237,9 @@ export const ReviewItemShimmer = React.memo((props: FoodDetailShimmerType) => {
     return (
         <ShimmerGroup visible={props.visible}>
             <TransparentView style={{ justifyContent: 'flex-start', alignItems: 'flex-start', margin: 5 }}>
-                <ShimmerItem style={{ height: 25, width: 150, borderRadius: 15, margin: 5 }} />
-                <ShimmerItem style={{ height: 25, width: 250, borderRadius: 15, margin: 5 }} />
-                <ShimmerItem style={{ height: 25, width: '100%', borderRadius: 15, margin: 5 }} />
+                <ShimmerItem style={{ height: 15, width: 150, borderRadius: 15, margin: 5 }} />
+                <ShimmerItem style={{ height: 15, width: 250, borderRadius: 15, margin: 5 }} />
+                <ShimmerItem style={{ height: 15, width: '100%', borderRadius: 15, margin: 5 }} />
             </TransparentView>
         </ShimmerGroup>
     )
@@ -219,8 +263,12 @@ export const ReviewItem = React.memo((props: ReviewItemProps) => {
                     </TransparentView>
 
                     <TransparentView style={{ marginHorizontal: 10, marginBottom: 5, marginTop: 5, flexGrow: 1 }}>
-                        <ReviewStar num={4} size={13} showNumber={false} />
-                        <Text text={props.data.review} numberOfLines={3} style={{ textAlign: 'left', marginTop: 2 }} />
+                        <ReviewStar num={props.data.star} size={13} showNumber={false} />
+                        {
+                            props.data.review ?
+                                <Text text={props.data.review} numberOfLines={3} style={{ textAlign: 'left', marginTop: 2 }} />
+                                : null
+                        }
                     </TransparentView>
                 </TransparentView>
                 <TransparentView>
@@ -231,7 +279,6 @@ export const ReviewItem = React.memo((props: ReviewItemProps) => {
                                     <FontAwesome name="pencil" size={18} />
                                 </Pressable> : null
                         }
-
                     </TransparentView>
                 </TransparentView>
             </TransparentView>
@@ -240,17 +287,23 @@ export const ReviewItem = React.memo((props: ReviewItemProps) => {
     )
 })
 
+export type ReviewType = {
+    data: FoodDetailData,
+    onDataChange: (data: FoodDetailData) => void
+}
+
 export type ReviewItemProps = {
-    data: ReviewType,
+    data: ReviewItemType,
     updatePopupModalRef: React.MutableRefObject<any>
     setSelectedReviewId: (id: number) => void
 }
 
-export type ReviewType = {
+export type ReviewItemType = {
     id: number,
     userId: number,
     productName: string,
     userReview: string,
     review: string,
-    createdDate: string
+    createdDate: string,
+    star: number,
 }

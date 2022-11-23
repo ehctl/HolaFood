@@ -4,8 +4,8 @@ import { Button } from '../../base/Button';
 import { FontAwesome } from '../../base/FontAwesome';
 import { I18NText, Text } from '../../base/Text';
 import { TransparentView, View } from '../../base/View';
-import { setUserApiToken, setUserInfo, UserType } from '../../redux/Reducer';
-import { getStyle, saveApiTokenInfoLocalStorage, saveUserInfoLocalStorage } from '../../utils/Utils';
+import { setUserApiToken, setUserInfo, setUserType, UserType } from '../../redux/Reducer';
+import { getStyle, getUserRole, saveApiTokenInfoLocalStorage, saveUserInfoLocalStorage } from '../../utils/Utils';
 import { AuthenticationMode } from './AuthenticationMode';
 import { TextInput } from 'react-native'
 import { useLanguage } from '../../base/Themed';
@@ -21,6 +21,9 @@ export const Login = (props: LoginScreenProp) => {
     const dispatch = useDispatch()
     const [email, setEmail] = useState('tuanlinh29718@gmail.com')
     const [password, setPassword] = useState('123')
+    // const [email, setEmail] = useState('dungkaka2000tq@gmail.com')
+    // const [email, setEmail] = useState('giaohang@gmail.com')
+    // const [password, setPassword] = useState('321')
     const [loading, setLoading] = useState(false)
     const [hidePassword, setHidePassword] = useState(true)
     const [errorMsg, setErroMsg] = useState('')
@@ -30,11 +33,13 @@ export const Login = (props: LoginScreenProp) => {
     const onLoginSuccess = useCallback(async (response) => {
         const token = response.token
         const userInfo = mapResponseToUserInfo(response.data)
+        const userType = getUserRole(userInfo.role)
+        dispatch(setUserType(userType))
         dispatch(setUserApiToken(token))
         dispatch(setUserInfo(userInfo))
         saveApiTokenInfoLocalStorage(token)
         saveUserInfoLocalStorage(userInfo)
-        props.onSuccess('user')
+        props.onSuccess(userType)
     }, [])
 
     const onLogin = useCallback(() => {
@@ -47,7 +52,8 @@ export const Login = (props: LoginScreenProp) => {
                 setLoading(false)
             },
             (e) => {
-                setErroMsg('Email or Password is invalid')
+                console.log(e)
+                setErroMsg('Email or Password Is Invalid')
                 setLoading(false)
             }
         )
@@ -57,7 +63,7 @@ export const Login = (props: LoginScreenProp) => {
     return (
 
         <View style={{
-            backgroundColor: 'grey', borderRadius: 15, paddingHorizontal: 10, paddingBottom: 40, paddingTop: 5, shadowColor: "#000",
+            backgroundColor: '#7a7a79', borderRadius: 15, paddingHorizontal: 10, paddingBottom: 40, paddingTop: 5, shadowColor: "#000",
             shadowOffset: {
                 width: 0,
                 height: 2
@@ -67,6 +73,10 @@ export const Login = (props: LoginScreenProp) => {
             elevation: 5,
             opacity: 0.98
         }}>
+            <TransparentView style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', width: '100%', marginBottom: 10, paddingVertical: 5 }}>
+                <I18NText text='Login' style={{ alignSelf: 'center', color: 'white', fontSize: 22, fontWeight: '500' }} />
+            </TransparentView>
+
             <TransparentView style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
                 <FontAwesome name='envelope' color='#62c7db' size={17} style={{ marginLeft: 5 }} />
                 <TextInput
@@ -92,14 +102,14 @@ export const Login = (props: LoginScreenProp) => {
                     style={{ flexGrow: 1, backgroundColor: 'transparent', borderWidth: 0, padding: 10, fontSize: 18, color: 'white' }} />
 
                 <Pressable onPress={() => setHidePassword(!hidePassword)} style={{ padding: 5 }}>
-                    <FontAwesome name={hidePassword ? 'eye-slash' : 'eye'} color='#0793a8' size={16} />
+                    <FontAwesome name={hidePassword ? 'eye-slash' : 'eye'} size={16} />
                 </Pressable>
             </TransparentView>
 
             <View style={{ height: 0.5, backgroundColor: '#62c7db' }} />
             {
                 errorMsg ?
-                    <Text text={errorMsg} style={{ color: '#cc1818', textAlign: 'left', marginTop: 5 }} /> : null
+                    <I18NText text={errorMsg} style={{ color: '#cc1818', textAlign: 'left', marginTop: 5 }} /> : null
             }
 
             <Pressable
@@ -112,7 +122,7 @@ export const Login = (props: LoginScreenProp) => {
 
             <Pressable
                 style={{
-                    position: 'relative', marginTop: 45, backgroundColor: '#6aabd9', paddingVertical: 10, borderRadius: 10, shadowColor: "#000",
+                    position: 'relative', marginTop: 45, backgroundColor: '#3199ad', paddingVertical: 10, borderRadius: 10, shadowColor: "#000",
                     shadowOffset: {
                         width: 0,
                         height: 2
@@ -123,7 +133,7 @@ export const Login = (props: LoginScreenProp) => {
                 }}
                 onPress={() => onLogin()} >
 
-                <I18NText text='Login as User' />
+                <I18NText text='Login' style={{ color: 'white' }} />
 
                 <ActivityIndicator
                     animating={loading}
@@ -131,9 +141,15 @@ export const Login = (props: LoginScreenProp) => {
                     style={{ position: 'absolute', zIndex: 1, top: 10, right: 10 }} />
             </Pressable>
 
+            <TransparentView style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 25 }}>
+                <View style={{ height: 0.5, flexGrow: 0.5 }} />
+                <I18NText text='or' style={{ marginHorizontal: 5, color: 'white' }} />
+                <View style={{ height: 0.5, flexGrow: 0.5 }} />
+            </TransparentView>
+
             <Pressable
                 style={{
-                    marginTop: 10, backgroundColor: '#6aabd9', paddingVertical: 10, borderRadius: 10, shadowColor: "#000",
+                    position: 'relative', marginTop: 25, backgroundColor: 'grey', paddingVertical: 10, borderRadius: 10, shadowColor: "#000",
                     shadowOffset: {
                         width: 0,
                         height: 2
@@ -142,23 +158,11 @@ export const Login = (props: LoginScreenProp) => {
                     shadowRadius: 4,
                     elevation: 5
                 }}
-                onPress={() => { props.onSuccess('shipper') }} >
+                onPress={() => props.changeMode(AuthenticationMode.SINGUP)} >
 
-                <I18NText text='Login as Shipper' />
+                <I18NText text='Sign Up' style={{ color: 'white' }} />
+
             </Pressable>
-
-            <TransparentView style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 10 }}>
-                <View style={{ height: 0.5, flexGrow: 0.5 }} />
-                <I18NText text='or' style={{ marginHorizontal: 5 }} />
-                <View style={{ height: 0.5, flexGrow: 0.5 }} />
-            </TransparentView>
-
-            <Button
-                onPress={() => {
-                    props.changeMode(AuthenticationMode.SINGUP)
-                }}
-                text='Sign Up'
-                style={{ alignSelf: 'center', marginTop: 20, backgroundColor: 'grey' }} />
         </View>
     )
 }

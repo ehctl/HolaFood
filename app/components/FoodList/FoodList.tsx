@@ -97,7 +97,7 @@ export const FoodList = React.memo((props: FoodListProps) => {
                     renderItem={renderItem}
                     onEndReachedThreshold={0.5}
                     onEndReached={() => {
-                        if (!reachListEnd) {
+                        if (!reachListEnd && loadingMore) {
                             fetchMoreData(pageIndex + 1)
                             setPageIndex(pageIndex + 1)
                         }

@@ -16,6 +16,7 @@ import { isValidNormalText } from "../../../validation/validate"
 import { useSelector } from "react-redux"
 import { AppState } from "../../../redux/Reducer"
 
+
 export const FAQScreen = React.memo(() => {
     const appStateProps = useSelector((state: AppState) => ({
         userInfo: state.userInfo
@@ -42,41 +43,38 @@ export const FAQScreen = React.memo(() => {
         )
     }, [])
 
-    const addFAQContent = (value: string) => {
-        const result = isValidNormalText(value)
-        if (!result.qualify)
+    const addFAQ = useCallback(() => {
+        const result = isValidNormalText(FAQContent.trim())
+
+        if (!result.qualify) {
             setErrorMsg(result.message)
-        else
-            setErrorMsg('')
+        } else {
+            setUpdating(true)
+            addNewFAQ(
+                appStateProps.userInfo.id,
+                FAQContent.trim(),
+                (response) => {
+                    popupRef.current.changeVisibility(false)
+                    setListFAQ([
+                        {
+                            id: listFAQ.length == 0 ? 0 : (listFAQ[0].id + 1),
+                            question: FAQContent.trim(),
+                            status: 1,
+                            answer: null,
+                            userId: 1
+                        },
+                        ...listFAQ
+                    ])
+                    setUpdating(false)
+                },
+                (e) => {
+                    console.log(e)
+                    setUpdating(false)
+                }
+            )
+        }
 
-        setFAQContent(value)
-    }
-
-    const addFAQ = useCallback((question: string) => {
-        setUpdating(true)
-        addNewFAQ(
-            appStateProps.userInfo.id,
-            question,
-            (response) => {
-                popupRef.current.changeVisibility(false)
-                setListFAQ([
-                    {
-                        id: listFAQ.length == 0 ? 0 : (listFAQ[0].id + 1),
-                        question: question,
-                        status: 1,
-                        answer: null,
-                        userId: 1
-                    },
-                    ...listFAQ
-                ])
-                setUpdating(false)
-            },
-            (e) => {
-                console.log(e)
-                setUpdating(false)
-            }
-        )
-    }, [listFAQ])
+    }, [listFAQ, FAQContent])
 
     useEffect(() => {
         fetchData()
@@ -109,6 +107,12 @@ export const FAQScreen = React.memo(() => {
                     renderItem: renderItem,
                     data: listFAQ,
                     keyExtractor: (_, index) => `${index}`,
+                    ListEmptyComponent:
+                        !loading ?
+                        <I18NText
+                            text='FAQs List Is Empty. Create New One If You Have Any Question For Us'
+                            style={{}}
+                            numberOfLines={3} /> : null,
                     ListFooterComponent: getFooterComp()
                 }}
                 hideReload={true} />
@@ -136,7 +140,7 @@ export const FAQScreen = React.memo(() => {
                         multiline={true}
                         style={{ fontSize: 18, paddingHorizontal: 10, paddingVertical: 20, paddingTop: 15, backgroundColor: '#cdd1d1', width: '100%', borderRadius: 10 }}
                         value={FAQContent}
-                        onChangeText={(v) => { addFAQContent(v) }} />
+                        onChangeText={(v) => { setFAQContent(v) }} />
                 </TransparentView>
                 {
                     errorMsg.length != 0 ?
@@ -155,7 +159,7 @@ export const FAQScreen = React.memo(() => {
                         shadowRadius: 4,
                         elevation: 5
                     }}
-                    onPress={() => addFAQ(FAQContent)} >
+                    onPress={() => addFAQ()} >
 
                     <I18NText text='Send FAQs' />
 
@@ -176,7 +180,7 @@ export const FAQItem = React.memo((props: FAQItemType) => {
 
     const startAnimation = useCallback((isCollapse: boolean, height: number) => {
         Animated.timing(translateYAnim, {
-            useNativeDriver: true,
+            useNativeDriver: false,
             toValue: isCollapse ? height : 0,
             duration: 200
         }).start()
@@ -196,7 +200,7 @@ export const FAQItem = React.memo((props: FAQItemType) => {
                         <FontAwesome name="question-circle" size={24} color='#b80707' />
                     </TransparentView>
 
-                    <Text text={props.question} style={{ marginLeft: 15, fontSize: 22, flexShrink: 1, textAlign: 'left' }} numberOfLines={3} />
+                    <Text text={props.question} style={{ fontSize: 22, flexShrink: 1, textAlign: 'left' }} numberOfLines={3} />
                 </TransparentView>
                 <Pressable
                     style={{ padding: 10, justifyContent: 'center', alignItems: 'center' }}

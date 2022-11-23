@@ -7,7 +7,7 @@ import { AppNavigation } from './app/navigation/AppNavigation';
 import Colors from './app/constants/Colors';
 import useColorScheme from './app/hooks/useColorScheme';
 import { createStore } from "redux";
-import { AppLanguage, changeApplicationState, changeLanguage, changeTheme, reducer, setUserInfo, UserInfo } from './app/redux/Reducer';
+import { AppLanguage, changeApplicationState, changeLanguage, changeTheme, reducer, setUserInfo, setUserType, UserInfo } from './app/redux/Reducer';
 import { Provider } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { AppState } from './app/redux/Reducer';
@@ -16,7 +16,7 @@ import { useDispatch } from 'react-redux';
 import { AppState as ApplicationState } from 'react-native';
 import { Constant } from './app/utils/Constant';
 import usePrefetchedData from './app/hooks/usePrefetchedData';
-import { getLocale } from './app/utils/Utils';
+import { getLocale, getUserRole } from './app/utils/Utils';
 import Warehouse from './app/utils/Warehouse';
 import React from 'react';
 import { NavigationContainer, useNavigationContainerRef, DefaultTheme, DarkTheme } from '@react-navigation/native';
@@ -72,6 +72,8 @@ const AppRoot = React.memo(() => {
         try {
           const userInfo = JSON.parse(await AsyncStorage.getItem(Constant.APP_USER_INFO))
           dispatch(setUserInfo(userInfo))
+          if (userInfo.role)
+            dispatch(setUserType(getUserRole(userInfo.role)))
         } catch (e) {
           dispatch(setUserInfo(undefined))
         }

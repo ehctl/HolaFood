@@ -1,44 +1,74 @@
-import { View } from "../../base/View"
-import { RefreshControl } from 'react-native';
-import { getStyle, wait } from "../../utils/Utils";
-import { useEffect, useState } from "react";
+import { TransparentView, View } from "../../base/View"
+import { ActivityIndicator, Pressable, RefreshControl, TextInput } from 'react-native';
+import { formatCreatedDateType, formatDateTimeFromData, getStyle, reformatDateTime, wait } from "../../utils/Utils";
+import { useCallback, useEffect, useRef, useState } from "react";
 import React from "react";
 import { useSelector } from "react-redux";
-import { AppState, setNewOrderNotification } from "../../redux/Reducer";
+import { AppState, removeOrder, setNewOrderNotification, setOrderQueue, setOrders } from "../../redux/Reducer";
 import { useDispatch } from "react-redux";
 import { FlatList } from "react-native-gesture-handler";
 import { BottomStackParamList } from "../../navigation/BottomTabBar";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RouteProp } from '@react-navigation/core'
-import { OrderItem } from "./OrderItem";
+import { OrderData, OrderItem, OrderStatus } from "./OrderItem";
 import { OrderItemShimmer } from "./OrderItemShimmer";
-import { Text } from "../../base/Text";
+import { I18NText, Text } from "../../base/Text";
+import { cancelOrder, getActiveOrders, getShipperOrderQueue, getShipperProgressingOrder, updateOrder } from "../../core/apis/Requests";
+import { mapCartItemFromResponse } from "./Cart";
+import { PopupModal } from "../../base/PopupModal";
+import { isValidNormalText } from "../../validation/validate";
+import { useLanguage } from "../../base/Themed";
 
 
 export const OrderScreen = React.memo((props: OrderViewProp) => {
+    const dispatch = useDispatch()
     const stateProps = useSelector((state: AppState) => ({
         appState: state.applicationState,
         newOrderNotification: state.newOrderNotification,
         selectedBottomTabIndex: state.selectedBottomTabIndex,
-        orders: state.orders
+        orders: state.orders,
+        userType: state.userType
     }))
-    const dispatch = useDispatch()
+
     const [loading, setLoading] = useState(false)
     const [refreshing, setRefreshing] = useState(false)
+    const cancelOrderPopupRef = useRef(null)
+
+    const [orderToCancelId, setOrderToCancelId] = useState<number>(null)
+    const [cancelReason, setCancelReason] = useState('')
+    const [reasonErrorMsg, setReasonErrorMsg] = useState('')
+    const [cancelingOrder, setCancelingOrder] = useState(false)
+
+    const I18NReasonToCancel = useLanguage('Reason To Cancel This Order')
 
     useEffect(() => {
+        fetchData()
+    }, [])
 
-    }, [stateProps.appState])
+    const fetchData = useCallback(() => {
+        setLoading(true)
+        dispatch(setOrders([]))
 
+        const fetchOrderFn = stateProps.userType == 'customer' ? getActiveOrders : getShipperProgressingOrder
 
-    useEffect(() => {
-        if (stateProps.newOrderNotification && stateProps.selectedBottomTabIndex == 1)
-            dispatch(setNewOrderNotification(false))
-    }, [stateProps.newOrderNotification, stateProps.selectedBottomTabIndex])
+        fetchOrderFn(
+            (response) => {
+                const orderDataFromResponse = response.data
+                const orders = orderDataFromResponse.map((i) => mapOrderDataFromResponse(i))
+                dispatch(setOrders(orders))
+                setLoading(false)
+            },
+            (e) => {
+                setLoading(false)
+                console.log(e)
+            }
+        )
+
+    }, [stateProps.userType])
 
     const renderItems = ({ item }) => {
         return (
-            <OrderItem {...item} />
+            <OrderItem item={item} cancelOrderCallback={cancelOrderCallback} />
         )
     }
 
@@ -48,23 +78,109 @@ export const OrderScreen = React.memo((props: OrderViewProp) => {
         )
     }
 
+    const onCancelOrder = useCallback(() => {
+        const cancelReasonValidate = isValidNormalText(cancelReason.trim())
+
+        if (!cancelReasonValidate.qualify) {
+            setReasonErrorMsg(cancelReasonValidate.message)
+        } else {
+            setCancelingOrder(true)
+            cancelOrder(
+                orderToCancelId,
+                cancelReason.trim(),
+                (response) => {
+                    setCancelingOrder(false)
+                    dispatch(removeOrder(orderToCancelId))
+                    cancelOrderPopupRef.current.changeVisibility(false)
+                },
+                (e) => {
+                    setCancelingOrder(false)
+                    console.log(e)
+                }
+            )
+        }
+    }, [orderToCancelId, cancelReason])
+
+    const cancelOrderCallback = useCallback((orderId: number) => {
+        setOrderToCancelId(orderId)
+        cancelOrderPopupRef.current.changeVisibility(true)
+    }, [])
+
     return (
         <View style={[getStyle().flex_c_s, { paddingTop: 5 }]}>
             <FlatList
                 refreshControl={
                     <RefreshControl
                         refreshing={false}
-                        onRefresh={() => { setRefreshing(true); wait(2000).then(() => setRefreshing(false)) }}
+                        onRefresh={() => { fetchData() }}
                     />
                 }
                 renderItem={renderItems}
                 data={stateProps.orders}
                 keyExtractor={(_, index) => `${index}`}
-                ListEmptyComponent={<Text text='Chưa có order mới.' />}
+                ListEmptyComponent={(!loading && !refreshing) ? <Text text='Chưa có order mới.' /> : null}
                 ListFooterComponent={() => renderLoadMore()} />
+
+            <PopupModal
+                ref={cancelOrderPopupRef}
+                title="Cancel Order" >
+                <TransparentView style={{ flexDirection: 'row', marginTop: 15 }}>
+                    <TextInput
+                        placeholder={I18NReasonToCancel}
+                        multiline={true}
+                        style={{ fontSize: 18, paddingHorizontal: 10, paddingVertical: 20, paddingTop: 15, backgroundColor: '#cdd1d1', width: '100%', borderRadius: 10 }}
+                        value={cancelReason}
+                        onChangeText={(v) => { setCancelReason(v) }} />
+                </TransparentView>
+                {
+                    reasonErrorMsg.length != 0 ?
+                        <I18NText text={reasonErrorMsg} style={{ color: 'red', textAlign: 'left', width: '100%', marginTop: 10, marginBottom: 15 }} />
+                        : null
+                }
+
+                <Pressable
+                    style={{
+                        marginTop: 10, backgroundColor: '#6aabd9', paddingVertical: 10, borderRadius: 10, marginBottom: 15, shadowColor: "#000",
+                        shadowOffset: {
+                            width: 0,
+                            height: 2
+                        },
+                        shadowOpacity: 0.25,
+                        shadowRadius: 4,
+                        elevation: 5
+                    }}
+                    onPress={() => onCancelOrder()} >
+
+                    <I18NText text='Cancel Order' />
+
+                    <ActivityIndicator
+                        animating={cancelingOrder}
+                        color='black'
+                        style={{ position: 'absolute', zIndex: 1, top: 10, right: 10 }} />
+                </Pressable>
+
+
+            </PopupModal>
         </View>
     )
 })
+
+export const mapOrderDataFromResponse = (data: any): OrderData => {
+    const items = data.cart.map((i) => mapCartItemFromResponse(i))
+
+    return {
+        id: data.id,
+        address: data.address,
+        items: items,
+        status: data.orderStatus,
+        price: data.price,
+        shipFee: data.shipPrice,
+        createdDate: reformatDateTime(data.createdDate),
+        phone: data.phone,
+        roleCancel: data.roleCancel,
+        noteCancel: data.noteCancel ?? ''
+    }
+}
 
 export interface OrderViewProp {
     navigation: NativeStackNavigationProp<BottomStackParamList, 'Order'>;

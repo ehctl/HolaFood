@@ -5,7 +5,7 @@ import React from "react"
 import { FontAwesome, FontAwesome1, FontAwesome2 } from "../../../base/FontAwesome"
 import { Button } from "../../../base/Button"
 import { TextInput } from "react-native-gesture-handler"
-import { Pressable } from "react-native"
+import { ActivityIndicator, Pressable } from "react-native"
 import { Select, SelectGroup, SelectIcon } from "../../../base/SellectGroup"
 import { useDispatch } from "react-redux"
 import { addCartItems, AppState, updateCartItem } from "../../../redux/Reducer"
@@ -17,6 +17,7 @@ import { GroupStackParamList } from "../../../navigation/StackGroup"
 import { AnimatedHeader } from "../../../base/AnimatedHeader"
 import { Level2Header, Level2HeaderStat } from "../../../base/Headers/Level2Header"
 import { formatMoney } from "../../../utils/Utils"
+import { addCart, updateCart } from "../../../core/apis/Requests"
 
 export const AddToCartScreen = React.memo((props: AddToCartType) => {
     const navigation = useNavigation()
@@ -27,6 +28,9 @@ export const AddToCartScreen = React.memo((props: AddToCartType) => {
     const [price, setPrice] = useState(props.route.params?.isUpdateMode ? props.route.params?.cartItemDetail.price : 0)
     const [note, setNote] = useState(props.route.params?.isUpdateMode ? props.route.params?.cartItemDetail.note : '')
     const [itemData, setItemData] = useState(props.route.params?.isUpdateMode ? props.route.params?.cartItemDetail.productDetail : props.route.params?.foodDetail)
+
+    const [addingToCart, setAddingToCart] = useState(false)
+    const [addingToOrder, setAddingToOrder] = useState(false)
 
     const I18NNote = useLanguage('Ghi chú')
 
@@ -51,44 +55,69 @@ export const AddToCartScreen = React.memo((props: AddToCartType) => {
     }, [quantity, option])
 
 
-    const onClick = useCallback(() => {
-        dispatch(
-            props.route.params?.isUpdateMode ?
-                updateCartItem({
-                    id: props.route.params?.cartItemDetail.id,
-                    productDetail: itemData,
-                    quantity: quantity,
-                    option: option.map((optionId) => itemData.option.filter((item) => item.id === optionId)[0]),
-                    note: note,
-                    price: price,
-                }) :
-                addCartItems([{
-                    id: Math.floor(Math.random() * 1000),
-                    productDetail: itemData,
-                    quantity: quantity,
-                    option: option.map((optionId) => itemData.option.filter((item) => item.id === optionId)[0]),
-                    note: note,
-                    price: price,
-                }])
-        )
-        navigation.goBack()
-
+    const genCartItem = useCallback(() => {
+        return props.route.params?.isUpdateMode ?
+            {
+                id: props.route.params?.cartItemDetail.id,
+                productDetail: itemData,
+                quantity: quantity,
+                option: option.map((optionId) => itemData.option.filter((item) => item.id === optionId)[0]),
+                note: note,
+                price: price,
+            }
+            :
+            {
+                id: Math.floor(Math.random() * 1000),
+                productDetail: itemData,
+                quantity: quantity,
+                option: option.map((optionId) => itemData.option.filter((item) => item.id === optionId)[0]),
+                note: note,
+                price: price,
+            }
     }, [quantity, itemData, option, note, price])
+
+    const onAddToCart = useCallback(() => {
+        setAddingToCart(true)
+        const cartItem = genCartItem()
+
+        props.route.params?.isUpdateMode ?
+            updateCart(
+                cartItem,
+                (response) => {
+                    dispatch(updateCartItem(cartItem))
+                    setAddingToCart(false)
+                    navigation.goBack()
+                },
+                (e) => {
+                    setAddingToCart(false)
+                    console.log(e)
+                }
+            )
+            :
+            addCart(
+                cartItem,
+                (response) => {
+                    cartItem.id = response.data.id
+                    dispatch(addCartItems([cartItem]))
+                    setAddingToCart(false)
+                    navigation.goBack()
+                },
+                (e) => {
+                    setAddingToCart(false)
+                    console.log(e)
+                }
+            )
+    }, [genCartItem])
 
     const onAddToOrder = useCallback(() => {
+        const cartItem = genCartItem()
+
         navigation.navigate('AddToOrder' as never, {
-            cartItems: [
-                {
-                    id: Math.floor(Math.random() * 1000),
-                    productDetail: itemData,
-                    quantity: quantity,
-                    option: option.map((optionId) => itemData.option.filter((item) => item.id === optionId)[0]),
-                    note: note,
-                    price: price,
-                }
-            ]
+            cartItems: [cartItem],
+            usingNewCartItem: true
         } as never)
-    }, [quantity, itemData, option, note, price])
+
+    }, [genCartItem])
 
     return (
         <AnimatedHeader
@@ -172,25 +201,50 @@ export const AddToCartScreen = React.memo((props: AddToCartType) => {
                     placeholder={I18NNote} />
             </TransparentView>
 
-            <Button
-                text={props.route.params?.isUpdateMode ? "Update" : "Add To Cart"}
-                textSize={20}
+            <Pressable
                 style={{
-                    marginHorizontal: 15, borderRadius: 10,
-                    marginTop: 20
+                    marginHorizontal: 10, marginTop: 30, backgroundColor: '#6aabd9', paddingVertical: 10, borderRadius: 10, marginBottom: 15, shadowColor: "#000",
+                    shadowOffset: {
+                        width: 0,
+                        height: 2
+                    },
+                    shadowOpacity: 0.25,
+                    shadowRadius: 4,
+                    elevation: 5
                 }}
-                onPress={() => { onClick() }} />
+                onPress={() => onAddToCart()} >
+
+                <I18NText text={props.route.params?.isUpdateMode ? 'Update' : 'Add To Cart'} />
+
+                <ActivityIndicator
+                    animating={addingToCart}
+                    color='black'
+                    style={{ position: 'absolute', zIndex: 1, top: 10, right: 10 }} />
+            </Pressable>
+
             {
                 props.route.params?.isUpdateMode ?
                     null :
-                    <Button
-                        text={"Order Now"}
-                        textSize={20}
+                    <Pressable
                         style={{
-                            marginHorizontal: 15, borderRadius: 10, marginBottom: 20,
-                            marginTop: 5
+                            marginHorizontal: 10, backgroundColor: '#6aabd9', paddingVertical: 10, borderRadius: 10, marginBottom: 15, shadowColor: "#000",
+                            shadowOffset: {
+                                width: 0,
+                                height: 2
+                            },
+                            shadowOpacity: 0.25,
+                            shadowRadius: 4,
+                            elevation: 5
                         }}
-                        onPress={() => onAddToOrder()} />
+                        onPress={() => onAddToOrder()} >
+
+                        <I18NText text='Order Now' />
+
+                        <ActivityIndicator
+                            animating={addingToOrder}
+                            color='black'
+                            style={{ position: 'absolute', zIndex: 1, top: 10, right: 10 }} />
+                    </Pressable>
             }
 
         </AnimatedHeader>

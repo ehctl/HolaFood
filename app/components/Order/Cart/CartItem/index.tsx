@@ -1,8 +1,8 @@
-import React from "react";
-import { BText } from "../../../../base/Text";
+import React, { useState } from "react";
+import { BText, I18NText } from "../../../../base/Text";
 import { TransparentView, View } from "../../../../base/View";
 import { FoodDetailData } from "../../../FoodDetail/FoodDetailScreen"
-import { Alert, Image } from 'react-native';
+import { ActivityIndicator, Alert, Image } from 'react-native';
 import { Pressable } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
 import { useCallback } from "react";
@@ -13,17 +13,33 @@ import { CartItemData } from "..";
 import { deleteCartItems } from "../../../../redux/Reducer";
 import { useDispatch } from "react-redux";
 import { formatMoney } from "../../../../utils/Utils";
-
+import { deleteCart } from "../../../../core/apis/Requests";
+import { Text } from "../../../../base/Text";
 
 export const CartItem = (props: CartItemType) => {
     const dispatch = useDispatch()
     const navigation = useNavigation()
-
     const I18NCart = useLanguage('Cancel')
     const I18NDelete = useLanguage('Delete')
     const I18NDeleteCartItem = useLanguage('Delete Item In Cart')
     const I18NDeleteCartItemConfirm = useLanguage('Do you want to delete this item from cart?')
 
+    const [deletingCart, setDeletingCart] = useState(false)
+
+    const onDeletingCart = useCallback((id: number) => {
+        setDeletingCart(true)
+        deleteCart(
+            id,
+            (response) => {
+                dispatch(deleteCartItems([id]))
+                setDeletingCart(false)
+            },
+            (e) => {
+                console.log(e)
+                setDeletingCart(false)
+            }
+        )
+    }, [])
 
     const openAlert = useCallback((id: number) => {
         Alert.alert(
@@ -35,16 +51,21 @@ export const CartItem = (props: CartItemType) => {
                     onPress: () => console.log("Cancel Pressed"),
                     style: "cancel"
                 },
-                { text: I18NDelete, onPress: () => dispatch(deleteCartItems([id])) }
+                { text: I18NDelete, onPress: () => onDeletingCart(id) }
             ]
         );
     }, [])
 
     return (
-        <View style={{ borderRadius: 15, marginHorizontal: 5, padding: 10, marginBottom: 10 }}>
+        <View style={{ borderRadius: 15, marginHorizontal: 5, padding: 5, marginBottom: 10 }}>
             <TransparentView
                 style={{ width: '100%', alignItems: 'flex-end' }}>
-                <TransparentView style={{ flexDirection: 'row' }}>
+                <TransparentView style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <ActivityIndicator
+                        animating={deletingCart}
+                        color='black'
+                        style={{ marginRight: 20 }} />
+
                     <Pressable
                         onPress={() => {
                             navigation.navigate('AddToCart' as never, { isUpdateMode: true, cartItemDetail: props.item } as never)
@@ -92,25 +113,28 @@ export const CartInnerItem = (props: CartItemType) => {
 
     return (
         <TransparentView style={{ flexDirection: 'row', flexShrink: 1 }}>
-            <TransparentView style={{ justifyContent: 'center', marginLeft: 10 }}>
+            <Pressable
+                onPress={() => { navigateToFoodDetail(props.item.productDetail.id) }}
+                style={{ justifyContent: 'center', marginLeft: 10 }}>
+                
                 <Image source={{ uri: props.item.productDetail.productImgURL }} style={{ height: 125, aspectRatio: 1, borderRadius: 10 }} />
-            </TransparentView>
+            </Pressable>
 
             <TransparentView style={{ marginHorizontal: 10, flexGrow: 1, flexShrink: 1 }}>
                 <Pressable onPress={() => { navigateToFoodDetail(props.item.productDetail.id) }}>
-                    <BText text={props.item.productDetail.productName.trim()} style={{ textAlign: 'left', fontSize: 20 }} numberOfLines={2} />
+                    <Text text={props.item.productDetail.productName.trim()} style={{ textAlign: 'left', fontSize: 20 }} numberOfLines={2} />
                 </Pressable>
 
                 <Pressable
                     style={{ marginTop: 5 }}
                     onPress={() => { navigateToShopDetail(props.item.productDetail.shopID) }}>
-                    <BText text={props.item.productDetail.shopName.trim()} style={{ fontSize: 16, paddingRight: 5 }} numberOfLines={2} />
+                    <Text text={props.item.productDetail.shopName.trim()} style={{ fontSize: 16, paddingRight: 5, fontWeight: '500', textAlign: 'left' }} numberOfLines={2} />
                 </Pressable>
 
                 {
                     props.item.option.length !== 0 ?
-                        <TransparentView style={{ flexDirection: 'row' }}>
-                            <BText
+                        <TransparentView style={{ flexDirection: 'row', marginTop: 5 }}>
+                            <Text
                                 text={`${I18NOption}: ${props.item.option.map((item) => ' ' + item.optionName)}`}
                                 style={{ fontSize: 16, flexShrink: 1, textAlign: 'left' }}
                                 numberOfLines={5} />
@@ -118,20 +142,20 @@ export const CartInnerItem = (props: CartItemType) => {
                 }
 
                 <TransparentView style={{ flexDirection: 'row', marginTop: 8 }}>
-                    <BText text="Quantity" style={{ fontSize: 16 }} />
-                    <BText text={`: ${props.item.quantity}`} style={{ fontSize: 16 }} />
+                    <I18NText text="Quantity" style={{ fontSize: 16 }} />
+                    <Text text={`: ${props.item.quantity}`} style={{ fontSize: 16 }} />
                 </TransparentView>
 
                 {
                     props.item.note.length != 0 ?
                         <TransparentView style={{ flexDirection: 'row', marginTop: 8 }}>
-                            <BText text="Note" />
-                            <BText text={`: ${props.item.note}`} style={{}} />
+                            <I18NText text="Note" />
+                            <Text text={`: ${props.item.note}`} style={{}} />
                         </TransparentView> : null
                 }
 
                 <TransparentView style={{ flexDirection: 'row', marginTop: 10 }}>
-                    <BText text={`${formatMoney(props.item.price)} đ`} style={{ color: '#f50045', fontWeight: '500', fontSize: 18 }} />
+                    <Text text={`${formatMoney(props.item.price)} đ`} style={{ color: '#f50045', fontWeight: '500', fontSize: 18 }} />
                 </TransparentView>
 
             </TransparentView>

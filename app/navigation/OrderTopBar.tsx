@@ -12,6 +12,7 @@ import { getStyle } from '../utils/Utils';
 import { Level1Header, Level1HeaderStats } from '../base/Headers/Level1Header';
 import { Cart } from '../components/Order/Cart';
 import { useLanguage } from '../base/Themed';
+import { OrderQueueScreen } from '../components/Order/OrderQueueScreen';
 
 
 const OrderTabNavigator = createMaterialTopTabNavigator<OrderStackParamList>()
@@ -41,16 +42,14 @@ export const OrderTab = React.memo(() => {
                         props={props} />
                 }>
                 {
-                    stateProps.userType == 'user' ?
+                    stateProps.userType == 'customer' ?
                         <OrderTabNavigator.Group>
                             <OrderTabNavigator.Screen name="Cart" component={Cart} options={{}} />
                             <OrderTabNavigator.Screen name="Orders" component={Order} options={{}} />
                         </OrderTabNavigator.Group>
                         :
                         <OrderTabNavigator.Group>
-                            <OrderTabNavigator.Screen name="Cart" component={Cart} options={{}} />
-                            <OrderTabNavigator.Screen name="Cart1" component={Cart} options={{}} />
-                            <OrderTabNavigator.Screen name="Cart2" component={Cart} options={{}} />
+                            <OrderTabNavigator.Screen name="Order Queue" component={OrderQueueScreen} options={{}} />
                             <OrderTabNavigator.Screen name="Orders" component={Order} options={{}} />
                         </OrderTabNavigator.Group>
 
@@ -116,7 +115,12 @@ const OrderTabBar = React.memo((params: OrderTopBarParams) => {
 
 export type OrderStackParamList = {
     Cart: undefined;
-    Orders: undefined
+
+    Orders: undefined;
+
+    'Order Queue': {
+        isShipperOrderQueue: boolean
+    };
 };
 
 type OrderTopBarParams = { props: MaterialTopTabBarProps, marginTop?: number }

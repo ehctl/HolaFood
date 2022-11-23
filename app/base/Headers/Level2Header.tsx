@@ -15,6 +15,7 @@ export const Level2Header = React.memo((props: Level2HeaderProps) => {
         cartItems: state.cartItems,
         orders: state.orders
     }))
+
     return (
         <SafeAreaView style={{ height: Level2HeaderStat.HEADER_MAX_HEIGHT, justifyContent: 'center', alignItems: 'center' }}>
             <TransparentView style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', position: 'relative' }}>

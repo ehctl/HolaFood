@@ -17,13 +17,19 @@ export type AppState = {
     categoryList: CategoryData[],
     cartItems: CartItemData[],
     orders: OrderData[],
+    shipperOrderQueue: OrderData[],
     userInfo: UserInfo | undefined,
     userAddressList: UserAddress[]
 }
 
 export type AppTheme = "dark" | "light"
 export type AppLanguage = "en" | "vi"
-export type UserType = "user" | "shipper"
+
+// admin 1
+// customer 2
+// shop 3
+// shipper 4
+export type UserType = "customer" | "shipper"
 export type UserInfo = {
     id: number,
     firstName: string,
@@ -43,12 +49,13 @@ const initalStates: AppState = {
     applicationState: "unknown",
     theme: "light",
     language: "vi",
-    userType: 'user',
+    userType: 'customer',
     newOrderNotification: false,
     selectedBottomTabIndex: 0,
     categoryList: [],
     cartItems: [],
     orders: [],
+    shipperOrderQueue: [],
     userInfo: undefined,
     userAddressList: []
 }
@@ -91,7 +98,7 @@ const MainAppReducer = createSlice({
         setOrders: (state, action: PayloadAction<OrderData[]>) => { state.orders = action.payload; return state },
         addOrders: (state, action: PayloadAction<OrderData[]>) => { state.orders = [...action.payload, ...state.orders]; return state },
         updateOrder: (state, action: PayloadAction<OrderData>) => {
-            const index = state.cartItems.findIndex((i) => i.id == action.payload.id);
+            const index = state.orders.findIndex((i) => i.id == action.payload.id);
             if (index != -1) {
                 state.orders[index] = action.payload
                 state.cartItems = [...state.cartItems];
@@ -99,8 +106,22 @@ const MainAppReducer = createSlice({
 
             return state
         },
+        removeOrder: (state, action: PayloadAction<number>) => { state.orders = state.orders.filter((item) => item.id != action.payload); return state },
+        setOrderQueue: (state, action: PayloadAction<OrderData[]>) => { state.shipperOrderQueue = action.payload; return state },
+        removeOrderFromOrderQueue: (state, action: PayloadAction<number>) => { state.shipperOrderQueue = state.shipperOrderQueue.filter((item) => item.id != action.payload); return state },
+        addOrderToOrderQueue: (state, action: PayloadAction<OrderData[]>) => { state.shipperOrderQueue = [...action.payload, ...state.shipperOrderQueue]; return state },
         setUserAddressList: (state, action: PayloadAction<UserAddress[]>) => { state.userAddressList = action.payload; return state },
         deleteUserAddress: (state, action: PayloadAction<number>) => { state.userAddressList = [...state.userAddressList.filter((i) => i.id != action.payload)]; return state },
+        clearUserInfo: (state, action: PayloadAction<null>) => { 
+            state.cartItems = []
+            state.categoryList = []
+            state.orders = []
+            state.shipperOrderQueue = []
+            state.userInfo = undefined
+            state.userAddressList = []
+
+            return state
+         }
     }
 })
 
@@ -120,8 +141,14 @@ export const {
     deleteCartItems,
     setOrders,
     addOrders,
+    removeOrder,
+    updateOrder,
+    setOrderQueue,
+    removeOrderFromOrderQueue,
+    addOrderToOrderQueue,
     setUserAddressList,
     deleteUserAddress,
+    clearUserInfo
 } = MainAppReducer.actions
 
 export const reducer = MainAppReducer.reducer

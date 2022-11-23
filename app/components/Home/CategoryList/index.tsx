@@ -10,6 +10,8 @@ import { AppState, setStateListCategory } from "../../../redux/Reducer"
 import { useDispatch } from "react-redux"
 import { useSelector } from "react-redux"
 import { mapFoodDetailDataFromRequest } from "../../FoodDetail/FoodDetailScreen"
+import { Image } from "../../../base/Image"
+
 
 export const CategoryList = React.memo(() => {
     const dispatch = useDispatch()
@@ -54,7 +56,7 @@ export const CategoryList = React.memo(() => {
                             usedOnHomePage={true}
                             key={index}
                             name={item.name}
-                            iconSource={null} />
+                            iconSource={item.imageCategory} />
                     ))
                 }
             </TransparentView>
@@ -76,14 +78,16 @@ export const CategoryItem = React.memo((props: CategoryItemProps) => {
             }}
             onLayout={(e) => { props?.onLayout?.(e) }} >
 
-            {/* {
+            {
                 props.iconSource != null ?
                     <Image
                         resizeMode="center"
-                        source={props.iconSource}
+                        source={{
+                            uri: props.iconSource
+                        }}
                         style={{ width: 25, height: 25, borderRadius: 10, marginRight: 10 }} />
                     : null
-            } */}
+            }
             <BText text={props.name} />
         </Pressable>
     )
@@ -93,7 +97,7 @@ export type CategoryItemProps = {
     id: number,
     name: string,
     usedOnHomePage?: boolean,
-    iconSource: ImageSourcePropType,
+    iconSource: string,
     style?: DefaultView['props']['style'],
     onPress?: () => void,
     onLayout?: (event: LayoutChangeEvent) => void
@@ -101,5 +105,6 @@ export type CategoryItemProps = {
 
 export type CategoryData = {
     id: number,
-    name: string
+    name: string,
+    imageCategory: string
 }

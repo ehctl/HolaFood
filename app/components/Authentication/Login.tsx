@@ -1,20 +1,18 @@
 import { useCallback, useState } from 'react';
-import { ActivityIndicator, ImageBackground, Platform, KeyboardAvoidingView, Pressable } from 'react-native';
-import { Button } from '../../base/Button';
+import { ActivityIndicator, Pressable } from 'react-native';
 import { FontAwesome } from '../../base/FontAwesome';
-import { I18NText, Text } from '../../base/Text';
+import { I18NText } from '../../base/Text';
 import { TransparentView, View } from '../../base/View';
 import { setUserApiToken, setUserInfo, setUserType, UserType } from '../../redux/Reducer';
-import { getStyle, getUserRole, saveApiTokenInfoLocalStorage, saveUserInfoLocalStorage } from '../../utils/Utils';
+import { getUserRole, saveApiTokenInfoLocalStorage, saveUserInfoLocalStorage } from '../../utils/Utils';
 import { AuthenticationMode } from './AuthenticationMode';
 import { TextInput } from 'react-native'
 import { useLanguage } from '../../base/Themed';
-import { validateLoginInfo } from '../../validation/validate';
-import { login } from '../../core/apis/Requests';
+import { addNotificationToken, login } from '../../core/apis/Requests';
 import { useDispatch } from 'react-redux';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Constant } from '../../utils/Constant';
 import { mapResponseToUserInfo } from '../../hooks/usePrefetchedData';
+import { Constant } from '../../utils/Constant';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 export const Login = (props: LoginScreenProp) => {
@@ -34,11 +32,26 @@ export const Login = (props: LoginScreenProp) => {
         const token = response.token
         const userInfo = mapResponseToUserInfo(response.data)
         const userType = getUserRole(userInfo.role)
+        const notiToken = (await AsyncStorage.getItem(Constant.APP_NOTIFICATION_TOKEN)) ?? ''
+
         dispatch(setUserType(userType))
         dispatch(setUserApiToken(token))
         dispatch(setUserInfo(userInfo))
         saveApiTokenInfoLocalStorage(token)
         saveUserInfoLocalStorage(userInfo)
+        
+        if (userType == 'customer' && notiToken.length > 0) {
+            addNotificationToken(
+                notiToken,
+                (response) => {
+                    console.log('Add notification token success')
+                },
+                (e) => {
+                    console.log(e)
+                }
+            )
+        }
+
         props.onSuccess(userType)
     }, [])
 

@@ -15,6 +15,8 @@ import { useDispatch } from "react-redux";
 import { formatMoney } from "../../../../utils/Utils";
 import { deleteCart } from "../../../../core/apis/Requests";
 import { Text } from "../../../../base/Text";
+import { Constant } from "../../../../utils/Constant";
+import { useToast } from "../../../../base/Toast";
 
 export const CartItem = (props: CartItemType) => {
     const dispatch = useDispatch()
@@ -26,6 +28,8 @@ export const CartItem = (props: CartItemType) => {
 
     const [deletingCart, setDeletingCart] = useState(false)
 
+    const showToast = useToast()
+
     const onDeletingCart = useCallback((id: number) => {
         setDeletingCart(true)
         deleteCart(
@@ -36,6 +40,7 @@ export const CartItem = (props: CartItemType) => {
             },
             (e) => {
                 console.log(e)
+                showToast(Constant.API_ERROR_OCCURRED)
                 setDeletingCart(false)
             }
         )

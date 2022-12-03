@@ -12,31 +12,45 @@ import { AppState, clearUserInfo } from "../../../redux/Reducer"
 import { useCallback, useState } from "react"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { Constant } from "../../../utils/Constant"
-import { logout } from "../../../core/apis/Requests"
+import { deleteNotificationToken, logout } from "../../../core/apis/Requests"
 import { ActivityIndicator } from 'react-native';
-import { deleteSavedInfoBeforeLogout } from "../../../utils/Utils"
+import { deleteInfoBeforeLogout } from "../../../utils/Utils"
+import { useToast } from "../../../base/Toast"
 
 
 export const AccountScreen = () => {
     const dispatch = useDispatch()
     const navigation = useNavigation<any>()
     const stateProps = useSelector((state: AppState) => ({
-        userType: state.userType
+        userType: state.userType,
+        userInfo: state.userInfo
     }))
 
     const [loading, setLoading] = useState(false)
 
+    const showToast = useToast()
+
     const onLogout = useCallback(async () => {
         setLoading(true)
+        const notiToken = (await AsyncStorage.getItem(Constant.APP_NOTIFICATION_TOKEN)) ?? ''
 
-        logout(
-            async (response) => {
-                await deleteSavedInfoBeforeLogout()
-                dispatch(clearUserInfo())
-                navigation.replace('Authentication')
-            },
+        deleteNotificationToken(
+            notiToken,
+            (response) => {
+                logout(
+                    async (response) => {
+                        await deleteInfoBeforeLogout()
+                        dispatch(clearUserInfo())
+                        navigation.replace('Authentication')
+                    },
+                    (e) => {
+                        showToast(Constant.API_ERROR_OCCURRED)
+                        setLoading(false)
+                    }
+                )
+            }, 
             (e) => {
-                setLoading(false)
+                showToast(Constant.API_ERROR_OCCURRED)
             }
         )
     }, [])

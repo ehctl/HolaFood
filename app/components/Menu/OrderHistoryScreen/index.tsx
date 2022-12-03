@@ -15,6 +15,8 @@ import { AppState } from "../../../redux/Reducer";
 import { Text } from "../../../base/Text";
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackHeaderProps } from "@react-navigation/native-stack";
+import { Constant } from "../../../utils/Constant";
+import { useToast } from "../../../base/Toast";
 
 
 export const OrderHistoryScreen = React.memo(() => {
@@ -27,6 +29,8 @@ export const OrderHistoryScreen = React.memo(() => {
     const [loading, setLoading] = useState(false)
     const [pageIndex, setPageIndex] = useState(0)
     const [reachedEndList, setReachedEndList] = useState(false)
+
+    const showToast = useToast()
 
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -71,15 +75,15 @@ export const OrderHistoryScreen = React.memo(() => {
             (response) => {
                 const orderDataFromResponse = response.data
                 const orders = orderDataFromResponse.map((i) => mapOrderDataFromResponse(i))
-                console.log(orders.length, pageIndex)
                 if (orders.length < 10)
                     setReachedEndList(true)
                 setListOrder(categorizeOrderByDate(orders, pageIndex == 0))
                 setLoading(false)
             },
             (e) => {
-                setLoading(false)
                 console.log(e)
+                showToast(Constant.API_ERROR_OCCURRED)
+                setLoading(false)
             }
         )
     }, [categorizeOrderByDate])

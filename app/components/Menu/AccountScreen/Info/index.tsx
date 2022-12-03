@@ -10,9 +10,11 @@ import { useLanguage } from "../../../../base/Themed"
 import React from "react"
 import { isValidNormalText, isValidPassword, isValidPhoneNumber } from "../../../../validation/validate"
 import { changePassword, updateUserInfo } from "../../../../core/apis/Requests"
-import { deleteSavedInfoBeforeLogout, formatAccountRole, saveUserInfoLocalStorage } from "../../../../utils/Utils"
+import { deleteInfoBeforeLogout, formatAccountRole, saveUserInfoLocalStorage } from "../../../../utils/Utils"
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch } from "react-redux"
+import { Constant } from "../../../../utils/Constant"
+import { useToast } from "../../../../base/Toast"
 
 
 export const Info = React.memo(() => {
@@ -22,6 +24,7 @@ export const Info = React.memo(() => {
     }))
     const [updateMode, setUpdateMode] = useState(null)
     const updateModal = useRef(null)
+    const showToast = useToast()
 
     const updateAllUserInfo = (
         firstName: string,
@@ -50,6 +53,7 @@ export const Info = React.memo(() => {
             (e) => {
                 console.log(e)
                 updateModal.current.changeVisibility(false)
+                showToast(Constant.API_ERROR_OCCURRED)
             }
         )
     }
@@ -91,7 +95,7 @@ export const Info = React.memo(() => {
                                 <I18NText text="Email" style={{ textAlign: 'left', color: '#a19e9d', fontSize: 18 }} />
                                 <Text text=" ﹡ " style={{ color: 'red', textAlign: 'left', fontSize: 18 }} />
                             </TransparentView>
-                            <Text text={appStateProps.userInfo?.email?.trim() ?? ''} style={{ fontSize: 18, color: '#757575', fontWeight: '500', marginTop: 5, textAlign: 'left' }} />
+                            <Text text={appStateProps.userInfo?.email?.trim() ?? ''} style={{ fontSize: 18, color: '#757575', fontWeight: '500', marginTop: 5, textAlign: 'left' }} numberOfLines={5}/>
                         </TransparentView>
                     </TransparentView>
                     <View style={{ backgroundColor: 'grey', height: 1, marginLeft: -10 }} />
@@ -104,7 +108,7 @@ export const Info = React.memo(() => {
                                 <I18NText text="Role" style={{ textAlign: 'left', color: '#a19e9d', fontSize: 18 }} />
                                 <Text text=" ﹡ " style={{ color: 'red', textAlign: 'left', fontSize: 18 }} />
                             </TransparentView>
-                            <Text text={formatAccountRole(appStateProps.userInfo?.role ?? '')} style={{ fontSize: 18, color: '#757575', fontWeight: '500', marginTop: 5, textAlign: 'left' }} />
+                            <I18NText text={formatAccountRole(appStateProps.userInfo?.role ?? '')} style={{ fontSize: 18, color: '#757575', fontWeight: '500', marginTop: 5, textAlign: 'left' }} numberOfLines={5}/>
                         </TransparentView>
                     </TransparentView>
                     <View style={{ backgroundColor: 'grey', height: 1, marginLeft: -10 }} />
@@ -112,13 +116,13 @@ export const Info = React.memo(() => {
 
                 <TransparentView style={{ marginTop: 5 }}>
                     <TransparentView style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingTop: 5, paddingBottom: 10 }}>
-                        <TransparentView>
+                        <TransparentView style={{flexShrink: 1}}>
                             <TransparentView style={{ flexDirection: 'row' }}>
                                 <I18NText text="First Name" style={{ textAlign: 'left', color: '#a19e9d', fontSize: 18 }} />
                                 <Text text=" ﹡ " style={{ color: 'red', textAlign: 'left', fontSize: 18 }} />
                             </TransparentView>
 
-                            <Text text={appStateProps.userInfo?.firstName?.trim() ?? ''} style={{ fontSize: 18, fontWeight: '500', marginTop: 5, textAlign: 'left' }} />
+                            <Text text={appStateProps.userInfo?.firstName?.trim() ?? ''} style={{ fontSize: 18, fontWeight: '500', marginTop: 5, textAlign: 'left' }} numberOfLines={5}/>
                         </TransparentView>
                         <FontAwesome2
                             name="auto-fix-high" size={24} color='grey'
@@ -133,13 +137,13 @@ export const Info = React.memo(() => {
 
                 <TransparentView style={{ marginTop: 5 }}>
                     <TransparentView style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingTop: 5, paddingBottom: 10 }}>
-                        <TransparentView>
+                        <TransparentView style={{flexShrink: 1}}>
                             <TransparentView style={{ flexDirection: 'row' }}>
                                 <I18NText text="Last Name" style={{ textAlign: 'left', color: '#a19e9d', fontSize: 18 }} />
                                 <Text text=" ﹡ " style={{ color: 'red', textAlign: 'left', fontSize: 18 }} />
                             </TransparentView>
 
-                            <Text text={appStateProps.userInfo?.lastName?.trim() ?? ''} style={{ fontSize: 18, fontWeight: '500', marginTop: 5, textAlign: 'left' }} />
+                            <Text text={appStateProps.userInfo?.lastName?.trim() ?? ''} style={{ fontSize: 18, fontWeight: '500', marginTop: 5, textAlign: 'left' }} numberOfLines={5}/>
                         </TransparentView>
                         <FontAwesome2
                             name="auto-fix-high" size={24} color='grey'
@@ -154,12 +158,13 @@ export const Info = React.memo(() => {
 
                 <TransparentView style={{ marginTop: 5 }}>
                     <TransparentView style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingTop: 5, paddingBottom: 10 }}>
-                        <TransparentView>
+                        <TransparentView style={{flexShrink: 1}}>
                             <TransparentView style={{ flexDirection: 'row' }}>
                                 <I18NText text="Phone Number" style={{ textAlign: 'left', color: '#a19e9d', fontSize: 18 }} />
                                 <Text text=" ﹡ " style={{ color: 'red', textAlign: 'left', fontSize: 18 }} />
                             </TransparentView>
-                            <Text text={appStateProps.userInfo?.phone?.trim() ?? ''} style={{ fontSize: 18, fontWeight: '500', marginTop: 5, textAlign: 'left' }} />
+                            
+                            <Text text={appStateProps.userInfo?.phone?.trim() ?? ''} style={{ fontSize: 18, fontWeight: '500', marginTop: 5, textAlign: 'left' }} numberOfLines={5}/>
                         </TransparentView>
                         <FontAwesome2
                             name="auto-fix-high" size={24} color='grey'
@@ -174,7 +179,7 @@ export const Info = React.memo(() => {
 
                 <TransparentView style={{ marginTop: 5 }}>
                     <TransparentView style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingTop: 5, paddingBottom: 10 }}>
-                        <TransparentView>
+                        <TransparentView style={{flexShrink: 1}}>
                             <TransparentView style={{ flexDirection: 'row' }}>
                                 <I18NText text="Password" style={{ textAlign: 'left', color: '#a19e9d', fontSize: 18 }} />
                                 <Text text=" ﹡ " style={{ color: 'red', textAlign: 'left', fontSize: 18 }} />
@@ -251,7 +256,6 @@ export const UpdatePhone = (props: { phoneNumber: string, callback: (value: stri
 
     const onSubmit = useCallback(() => {
         const nameValidate = isValidPhoneNumber(phoneNumber)
-        console.log(nameValidate, phoneNumber)
         if (phoneNumber == props.phoneNumber) {
             setErrorMsg('Value was not changed')
         } else if (!nameValidate.qualify) {
@@ -305,6 +309,8 @@ export const UpdatePassword = () => {
 
     const [loading, setLoading] = useState(false)
 
+    const [errorResponseMsg, setErrorResponseMsg] = useState('')
+
     const onChangePassword = useCallback(() => {
         const oldPasswordValidate = isValidNormalText(oldPassword)
         const newPasswordValidate = isValidPassword(newPassword)
@@ -318,14 +324,16 @@ export const UpdatePassword = () => {
                 oldPassword,
                 newPassword,
                 async (response) => {
-                    await deleteSavedInfoBeforeLogout()
+                    await deleteInfoBeforeLogout()
                     dispatch(clearUserInfo())
                     navigation.replace('Authentication')
                 },
                 (e) => {
                     console.log(e)
                     setLoading(false)
-                    setNewPasswordErrorMsg(e.message ?? 'Password is not valid')
+                    setErrorResponseMsg(e.message ?? 'Password is not valid')
+                    setOldPasswordErrorMsg('')
+                    setNewPasswordErrorMsg('')
                 }
             )
         }
@@ -335,17 +343,17 @@ export const UpdatePassword = () => {
         <TransparentView>
             <TransparentView style={{ marginTop: 15, alignItems: 'stretch' }}>
                 <I18NText text="Password" style={{ textAlign: 'left', fontSize: 22 }} />
-                <View style={{ flexDirection: 'row', backgroundColor: '#cacecf', justifyContent: 'space-between', alignItems: 'center', flexShrink: 1, borderRadius: 10 }}>
+                <View style={{ flexDirection: 'row', backgroundColor: '#cacecf', justifyContent: 'space-between', alignItems: 'center', flexShrink: 1, borderRadius: 10, marginTop: 10 }}>
                     <TextInput
                         placeholder={I18NOldPassword}
                         secureTextEntry={hideOldPassword}
                         onChangeText={(v) => setOldPassword(v)}
                         style={{ textAlign: 'left', fontSize: 18, fontWeight: '500', marginTop: 5, padding: 10, flexGrow: 1, flexShrink: 1 }} />
-                    <I18NText text={oldPasswordErrorMsg} style={{ color: '#cc1818', textAlign: 'left', marginTop: 3 }} />
                     <Pressable onPress={() => setHideOldPassword(!hideOldPassword)} style={{ padding: 5 }}>
                         <FontAwesome name={hideOldPassword ? 'eye-slash' : 'eye'} color='#0793a8' size={18} />
                     </Pressable>
                 </View>
+                <I18NText text={oldPasswordErrorMsg} style={{ color: '#cc1818', textAlign: 'left', marginTop: 3 }} />
 
                 <View style={{ flexDirection: 'row', backgroundColor: '#cacecf', justifyContent: 'space-between', alignItems: 'center', flexShrink: 1, borderRadius: 10, marginTop: 10 }}>
                     <TextInput
@@ -353,12 +361,24 @@ export const UpdatePassword = () => {
                         secureTextEntry={hideNewPassword}
                         onChangeText={(v) => setNewPassword(v)}
                         style={{ textAlign: 'left', fontSize: 18, fontWeight: '500', marginTop: 5, padding: 10, borderRadius: 10, flexGrow: 1, flexShrink: 1 }} />
-                    <I18NText text={newPasswordErrorMsg} style={{ color: '#cc1818', textAlign: 'left', marginTop: 3 }} />
 
                     <Pressable onPress={() => setHideNewPassword(!hideNewPassword)} style={{ padding: 5 }}>
                         <FontAwesome name={hideNewPassword ? 'eye-slash' : 'eye'} color='#0793a8' size={18} />
                     </Pressable>
                 </View>
+                {
+                    newPasswordErrorMsg.length > 0 ?
+                        <TransparentView>
+                            <I18NText text={newPasswordErrorMsg} style={{ color: '#cc1818', textAlign: 'left', marginTop: 3 }} />
+                            <I18NText text='· Password need atleast 8 character' style={{ color: '#cc1818', textAlign: 'left', marginTop: 3 }} />
+                            <I18NText text='· Password need atleast 1 upper character' style={{ color: '#cc1818', textAlign: 'left', marginTop: 3 }} />
+                            <I18NText text='· Password need atleast 1 number' style={{ color: '#cc1818', textAlign: 'left', marginTop: 3 }} />
+                        </TransparentView>
+                        : null
+                }
+
+
+                <I18NText text={errorResponseMsg} style={{ color: '#cc1818', textAlign: 'left', marginTop: 3 }} />
             </TransparentView>
 
             <Pressable

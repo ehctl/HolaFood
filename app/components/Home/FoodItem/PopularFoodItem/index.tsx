@@ -31,7 +31,7 @@ export const PopularFoodItem = React.memo((props: PopularFoodItemProps) => {
                         }}>
                         <BText
                             text={props.data.productName}
-                            style={{ fontSize: 18, textAlign: 'center', flexGrow: 1 }} />
+                            style={{ fontSize: 18, textAlign: 'center', flexGrow: 1, flexShrink: 1, paddingHorizontal: 10 }} numberOfLines={3} />
                     </View>
                 </TransparentView>
             </Pressable>

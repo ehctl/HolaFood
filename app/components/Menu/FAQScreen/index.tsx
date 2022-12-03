@@ -15,6 +15,8 @@ import { ShimmerGroup, ShimmerItem } from "../../../base/Shimmer"
 import { isValidNormalText } from "../../../validation/validate"
 import { useSelector } from "react-redux"
 import { AppState } from "../../../redux/Reducer"
+import { Constant } from "../../../utils/Constant"
+import { useToast } from "../../../base/Toast"
 
 
 export const FAQScreen = React.memo(() => {
@@ -28,6 +30,8 @@ export const FAQScreen = React.memo(() => {
     const [errorMsg, setErrorMsg] = useState('')
     const popupRef = useRef(null)
 
+    const showToast = useToast()
+
     const fetchData = useCallback(() => {
         setLoading(true)
         getListFAQ(
@@ -38,6 +42,7 @@ export const FAQScreen = React.memo(() => {
             },
             (e) => {
                 console.log(e)
+                showToast(Constant.API_ERROR_OCCURRED)
                 setLoading(false)
             }
         )
@@ -69,6 +74,7 @@ export const FAQScreen = React.memo(() => {
                 },
                 (e) => {
                     console.log(e)
+                    showToast(Constant.API_ERROR_OCCURRED)
                     setUpdating(false)
                 }
             )
@@ -129,7 +135,7 @@ export const FAQScreen = React.memo(() => {
                         elevation: 5
                     }}
                     onPress={() => { popupRef.current.changeVisibility(true) }} >
-                    <FontAwesome name="plus" size={35} color='#ed8f05' />
+                    <FontAwesome name="question" size={35} color='#ed8f05' />
                 </Pressable>
             </TransparentView>
 

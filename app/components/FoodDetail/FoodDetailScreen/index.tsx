@@ -12,6 +12,8 @@ import { FoodDetailShimmer } from "../FoodDetailShimmer"
 import { wait } from "../../../utils/Utils"
 import { getFoodDetail, getFoodOption } from "../../../core/apis/Requests"
 import { useLanguage } from "../../../base/Themed"
+import { useToast } from "../../../base/Toast"
+import { Constant } from "../../../utils/Constant"
 
 export const FoodDetailScreen = React.memo(({ route }: any) => {
     const [foodData, setFoodData] = useState<FoodDetailData>(null)
@@ -20,12 +22,12 @@ export const FoodDetailScreen = React.memo(({ route }: any) => {
 
     const I18NLoading = useLanguage('Loading')
 
-    const fetchData = useCallback(async () => {
+    const showToast = useToast()
+
+    const fetchData = useCallback(() => {
         const itemId = route.params.itemId
         setLoading(true)
         setListItem([])
-
-        await wait(2000)
 
         getFoodDetail(
             itemId,
@@ -42,17 +44,19 @@ export const FoodDetailScreen = React.memo(({ route }: any) => {
                     (e) => {
                         setFoodData(mapFoodDetailDataFromRequest(data, []))
                         setListItem(getListItem())
-                        setLoading(false)
                         console.log(e)
+                        showToast(Constant.API_ERROR_OCCURRED)
+                        setLoading(false)
                     }
                 )
             },
             (e) => {
-                setLoading(false)
                 console.log(e)
+                showToast(Constant.API_ERROR_OCCURRED)
+                setLoading(false)
             }
         )
-    }, [])
+    }, [route.params.itemId])
 
     useEffect(() => {
         fetchData()
@@ -94,7 +98,7 @@ export const FoodDetailScreen = React.memo(({ route }: any) => {
                     keyExtractor: (_, index) => `${index}`,
                     ListFooterComponent: <FoodDetailShimmer visible={loading} />
                 }}
-                hideReload={true}
+                onRefresh={() => fetchData()}
             />
         </View>
     )
@@ -123,6 +127,12 @@ export const mapFoodDetailDataFromRequest = (item: any, options: FoodOptionType[
     return item
 }
 
+
+export const mapFoodDetailDataFromRequest1 = (item: any) => {
+    item.isFavorite = item.isFavorite == 1
+    return item
+}
+
 export type FoodDetailData = {
     id: number,
     productName: string,
@@ -138,9 +148,17 @@ export type FoodDetailData = {
     isFavorite: boolean,
     star: number,
     numberOfReview: number,
-    option: FoodOptionType[]
+    option: FoodOptionType[],
+    cost: ShipCost[]
 }
 
+export type ShipCost = {
+    id: number,
+    shopId: number,
+    name: string,
+    price: number,
+    categoryCost: number
+}
 
 export type FoodOptionType = {
     id: number,

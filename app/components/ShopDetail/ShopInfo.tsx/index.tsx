@@ -10,9 +10,13 @@ import { getShopInfo } from "../../../core/apis/Requests"
 import { FontAwesome } from "../../../base/FontAwesome"
 import { Pressable } from 'react-native'
 import { Linking } from "react-native"
+import { Constant } from "../../../utils/Constant"
+import { useToast } from "../../../base/Toast"
 
 export const ShopInfo = React.memo((props: ShopInfoProps) => {
     const [shopData, setShopData] = useState<ShopData>(null)
+
+    const showToast = useToast()
 
     const fetchData = useCallback(async () => {
         getShopInfo(
@@ -24,6 +28,7 @@ export const ShopInfo = React.memo((props: ShopInfoProps) => {
             },
             (e) => {
                 console.log(e)
+                showToast(Constant.API_ERROR_OCCURRED)
             }
         )
     }, [])
@@ -42,7 +47,7 @@ export const ShopInfo = React.memo((props: ShopInfoProps) => {
                         style={{ width: 150, height: 150, borderRadius: 15 }}
                     />
                     <TransparentView style={{ marginHorizontal: 10, flexGrow: 1, flexShrink: 1 }}>
-                        <Text text={shopData.shopName + ' - ' + shopData.shopAddress} style={{ fontSize: 14, fontWeight: '500', textAlign: 'left' }} numberOfLines={3} />
+                        <Text text={shopData.shopAddress} style={{ fontSize: 14, fontWeight: '500', textAlign: 'left' }} numberOfLines={7} />
                         
                         <Pressable
                             style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginTop: 10 }}

@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { ActivityIndicator, Alert, FlatList, Pressable, TextInput } from "react-native";
-import { AnimatedHeader } from "../../../../base/AnimatedHeader";
 import { FontAwesome, FontAwesome1, FontAwesome2 } from "../../../../base/FontAwesome";
 import { Level2Header, Level2HeaderStat } from "../../../../base/Headers/Level2Header";
 import { I18NText } from "../../../../base/Text";
@@ -12,6 +11,8 @@ import { Text } from "../../../../base/Text";
 import { addNewAddress, getSuggestAddress } from "../../../../core/apis/Requests";
 import { useDispatch, useSelector } from "react-redux";
 import { AppState, setUserAddressList } from "../../../../redux/Reducer";
+import { Constant } from "../../../../utils/Constant";
+import { useToast } from "../../../../base/Toast";
 
 export const AddAddressScreen = React.memo(() => {
     const navigation = useNavigation()
@@ -33,6 +34,7 @@ export const AddAddressScreen = React.memo(() => {
     const I18NAlreadyAddedAddress = useLanguage("You've already added this address. Please choose another address!")
     const I18NMaxAddressWarning = useLanguage("You Can Have Maximum 5 Addressess")
 
+    const showToast = useToast()
 
     useEffect(() => {
         abortController?.abort()
@@ -72,9 +74,11 @@ export const AddAddressScreen = React.memo(() => {
                     address: address.formatted_address
                 })
                 dispatch(setUserAddressList(list))
+                showToast('Add Address Successfully')
                 setLoading(false)
             },
             (e) => {
+                showToast(Constant.API_ERROR_OCCURRED)
                 setLoading(false)
             }
         )

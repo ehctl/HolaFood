@@ -12,6 +12,8 @@ import { useDispatch } from "react-redux"
 import { useLanguage } from "../../../base/Themed"
 import { getCartItems } from "../../../core/apis/Requests"
 import { CartItemShimmer } from "./CartItemShimmer.tsx"
+import { Constant } from "../../../utils/Constant"
+import { useToast } from "../../../base/Toast"
 
 
 export const Cart = React.memo(({ navigation }: any) => {
@@ -27,6 +29,8 @@ export const Cart = React.memo(({ navigation }: any) => {
     const I18NOrder = useLanguage('Order')
     const I18NSelectFood = useLanguage('Please Select Some Food To Order')
     const I18NOk = useLanguage('Ok')
+
+    const showToast = useToast()
 
     const renderItems = ({ item }: ListRenderItemInfo<CartItemData>) => {
         return (
@@ -49,6 +53,7 @@ export const Cart = React.memo(({ navigation }: any) => {
             },
             (e) => {
                 console.log(e)
+                showToast(Constant.API_ERROR_OCCURRED)
                 setRefreshing(false)
             }
         )

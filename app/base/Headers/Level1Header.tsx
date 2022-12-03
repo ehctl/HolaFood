@@ -7,6 +7,7 @@ import { FontAwesomeIconType } from "../../constants/FontAwesomeIconType";
 import { I18NText, Text } from "../Text";
 import { useSelector } from "react-redux";
 import { AppState } from "../../redux/Reducer";
+import { isIosDevice } from "../../utils/Utils";
 
 
 export const Level1Header = React.memo((props: HomeHeaderProp) => {
@@ -35,7 +36,7 @@ export const Level1Header = React.memo((props: HomeHeaderProp) => {
                                 {
                                     (appStateProps.cartItems.length + appStateProps.orders.length) > 0 && value == 'shopping-cart' ?
                                         <View style={{ position: 'absolute', right: -13, top: -13, backgroundColor: '#029699', borderRadius: 20, padding: 3, zIndex: 1, aspectRatio: 1, height: 20, alignItems: 'center', justifyContent: 'center' }}>
-                                            <Text text={(appStateProps.cartItems.length + appStateProps.orders.length).toString()} style={{ fontWeight: '600', textAlign: 'right', fontSize: 12, color: 'white' }} />
+                                            <Text text={(appStateProps.cartItems.length + appStateProps.orders.length).toString()} style={{ fontWeight: '600', textAlign: 'right', fontSize: isIosDevice() ? 10 : 8, color: 'white' }} />
                                         </View> : null
                                 }
                                 <FontAwesome name={value} size={20} color={props.leftIconsColor[index]} />

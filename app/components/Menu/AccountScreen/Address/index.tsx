@@ -7,13 +7,15 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import { PopupModal } from "../../../../base/PopupModal"
 import { TextInput } from "react-native-gesture-handler"
 import React from "react"
-import { addNewAddress, deleteAddress } from "../../../../core/apis/Requests"
+import { deleteAddress } from "../../../../core/apis/Requests"
 import { useSelector } from "react-redux"
 import { AppState, deleteUserAddress, setUserAddressList, UserAddress } from "../../../../redux/Reducer"
 import { useDispatch } from "react-redux"
 import { isValidNormalText } from "../../../../validation/validate"
 import { useLanguage } from "../../../../base/Themed"
 import { useNavigation } from '@react-navigation/native';
+import { Constant } from "../../../../utils/Constant"
+import { useToast } from "../../../../base/Toast"
 
 
 
@@ -32,6 +34,8 @@ export const Address = React.memo(() => {
     const I18NDeleteAddressConfirm = useLanguage("Are you sure you want to delete this address")
     const I18NMaxAddressWarning = useLanguage("You Can Have Maximum 5 Addressess")
 
+    const showToast = useToast()
+
     const onDeleteAddress = useCallback((id: number) => {
         setLoadingDelete(true)
 
@@ -42,8 +46,9 @@ export const Address = React.memo(() => {
                 dispatch(deleteUserAddress(id))
             },
             (e) => {
-                setLoadingDelete(false)
                 console.log(e)
+                showToast(Constant.API_ERROR_OCCURRED)
+                setLoadingDelete(false)
             }
         )
     }, [])

@@ -10,11 +10,13 @@ import { FlatList } from "react-native-gesture-handler";
 import { BottomStackParamList } from "../../../navigation/BottomTabBar";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RouteProp } from '@react-navigation/core'
-import { OrderData, OrderItem, OrderStatus } from "../OrderItem";
+import { OrderData, OrderItem } from "../OrderItem";
 import { OrderItemShimmer } from "../OrderItemShimmer";
-import { Text } from "../../../base/Text";
+import { I18NText, Text } from "../../../base/Text";
 import { getShipperOrderQueue } from "../../../core/apis/Requests";
 import { mapCartItemFromResponse } from "../Cart";
+import { Constant } from "../../../utils/Constant";
+import { useToast } from "../../../base/Toast";
 
 
 export const OrderQueueScreen = React.memo((props: OrderViewProp) => {
@@ -23,10 +25,13 @@ export const OrderQueueScreen = React.memo((props: OrderViewProp) => {
         appState: state.applicationState,
         newOrderNotification: state.newOrderNotification,
         selectedBottomTabIndex: state.selectedBottomTabIndex,
-        shipperOrderQueue: state.shipperOrderQueue
+        shipperOrderQueue: state.shipperOrderQueue,
+        userInfo: state.userInfo,
     }))
     const [loading, setLoading] = useState(false)
     const [refreshing, setRefreshing] = useState(false)
+
+    const showToast = useToast()
 
     useEffect(() => {
         fetchData()
@@ -37,7 +42,7 @@ export const OrderQueueScreen = React.memo((props: OrderViewProp) => {
         dispatch(setOrderQueue([]))
 
         getShipperOrderQueue(
-            20,
+            stateProps.userInfo.shopId,
             (response) => {
                 const orderDataFromResponse = response.data
                 const orders = orderDataFromResponse.map((i) => mapOrderDataFromResponse(i))
@@ -45,8 +50,9 @@ export const OrderQueueScreen = React.memo((props: OrderViewProp) => {
                 setLoading(false)
             },
             (e) => {
-                setLoading(false)
                 console.log(e)
+                showToast(Constant.API_ERROR_OCCURRED)
+                setLoading(false)
             }
         )
     }, [])
@@ -75,7 +81,7 @@ export const OrderQueueScreen = React.memo((props: OrderViewProp) => {
                 renderItem={renderItems}
                 data={stateProps.shipperOrderQueue}
                 keyExtractor={(_, index) => `${index}`}
-                ListEmptyComponent={(!loading && !refreshing) ? <Text text='Chưa có order mới.' /> : null}
+                ListEmptyComponent={(!loading && !refreshing) ? <I18NText text='You Do Not Have Any New Order Yet' /> : null}
                 ListFooterComponent={() => renderLoadMore()} />
         </View>
     )
@@ -91,6 +97,7 @@ export const mapOrderDataFromResponse = (data: any): OrderData => {
         status: data.orderStatus,
         price: data.price,
         shipFee: data.shipPrice,
+        shipFeeWithShopPolicy: data.shipOrder,
         createdDate: formatCreatedDateType(new Date()),
         phone: data.phone,
         roleCancel: data.roleCancel,

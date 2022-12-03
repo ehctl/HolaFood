@@ -42,7 +42,7 @@ export const BottomTabNavigator = React.memo(() => {
                     <BottomTab.Group>
                         <BottomTab.Screen name="Home" component={HomeScreen} options={{}} />
                         <BottomTab.Screen name="Order" component={OrderTab} options={{ lazy: false }} />
-                        <BottomTab.Screen name="Notification" component={Notifications} options={{}} />
+                        <BottomTab.Screen name="Notification" component={Notifications} options={{ lazy: false}} />
                         <BottomTab.Screen name="Menu" component={Menu} options={{}} />
                     </BottomTab.Group>
                     :
@@ -116,12 +116,12 @@ const BottomTabBar = React.memo((params: BottomBarParams) => {
                                     <FontAwesome name={params.iconList[index]} size={28} color={'#2a90c7'} />
                                 </Animated.View>
                                 {
-                                    (route.name == 'Order' && props.newOrderNotification) ?
-                                        <FontAwesome name='exclamation-circle' size={15} color={'#269437'} style={{ position: 'absolute', right: -10, top: -5 }} />
+                                    (route.name == 'Notification' && props.newOrderNotification) ?
+                                        <FontAwesome name='exclamation-circle' size={15} color={'#2a90c7'} style={{ position: 'absolute', right: -8, top: -3 }} />
                                         : null
                                 }
                             </View>
-                            <Animated.Text style={[style.tab_element_text, { opacity, color: Colors[props.theme].text, fontSize: 10, fontWeight: '500' }]}>
+                            <Animated.Text style={[style.tab_element_text, { opacity, color: Colors[props.theme].text, fontSize: 10, fontWeight: '500', marginBottom: 5 }]}>
                                 {title}
                             </Animated.Text>
                         </View>
@@ -137,6 +137,7 @@ type BottomBarParams = { props: MaterialTopTabBarProps, iconList: FontAwesomeIco
 
 const style = StyleSheet.create({
     tab_container: {
+        height: 45,
         flex: 1,
         backgroundColor: 'white',
     },
@@ -145,7 +146,7 @@ const style = StyleSheet.create({
         backgroundColor: '#2a90c7'
     },
     tab_element_container: {
-        paddingVertical: 3,
+        paddingVertical: 5,
         alignItems: 'center',
         justifyContent: 'center'
     },

@@ -7,7 +7,7 @@ import { AppNavigation } from './app/navigation/AppNavigation';
 import Colors from './app/constants/Colors';
 import useColorScheme from './app/hooks/useColorScheme';
 import { createStore } from "redux";
-import { AppLanguage, changeApplicationState, changeLanguage, changeTheme, reducer, setUserInfo, setUserType, UserInfo } from './app/redux/Reducer';
+import { AppLanguage, changeApplicationState, changeLanguage, changeTheme, reducer, setUserInfo, setUserType } from './app/redux/Reducer';
 import { Provider } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { AppState } from './app/redux/Reducer';
@@ -23,6 +23,7 @@ import { NavigationContainer, useNavigationContainerRef, DefaultTheme, DarkTheme
 import { View, Image } from 'react-native'
 import * as SplashScreen from 'expo-splash-screen';
 import { Dimensions } from 'react-native';
+import { Toast, ToastWrapper } from './app/base/Toast';
 
 
 
@@ -45,7 +46,8 @@ const AppRoot = React.memo(() => {
   const osColorScheme = useColorScheme()
   const props = useSelector((state: AppState) => ({
     appState: state.applicationState,
-    theme: state.theme
+    theme: state.theme,
+    userInfo: state.userInfo
   }))
 
   const notificationListener = useRef(null);
@@ -65,8 +67,8 @@ const AppRoot = React.memo(() => {
         });
 
         responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-          if (response.notification.request.content.data?.category == "order")
-            navigationRef.current.navigate('Order' as never, { needRefresh: true } as never)
+          if (response.notification.request.content.data?.type == "OrderStatusChange")
+            navigationRef.current.navigate('Notification' as never, { needRefresh: true } as never)
         });
 
         try {
@@ -117,11 +119,14 @@ const AppRoot = React.memo(() => {
           hidden={false}
           backgroundColor={Colors[props.theme].background}
           barStyle={props.theme !== 'dark' ? 'dark-content' : 'light-content'} />
-        <NavigationContainer
-          ref={navigationRef}
-          theme={props.theme === 'dark' ? DarkTheme : DefaultTheme}>
-          <AppNavigation />
-        </NavigationContainer>
+        <ToastWrapper>
+          <NavigationContainer
+            ref={navigationRef}
+            theme={props.theme === 'dark' ? DarkTheme : DefaultTheme}>
+            <AppNavigation />
+            <Toast />
+          </NavigationContainer>
+        </ToastWrapper>
       </SafeAreaView>
     </SafeAreaProvider >
   )

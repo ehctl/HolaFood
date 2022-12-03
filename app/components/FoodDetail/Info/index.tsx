@@ -12,7 +12,8 @@ import { updateProductFavorite } from "../../../core/apis/Requests"
 import { useNavigation } from '@react-navigation/native';
 import { useSelector } from "react-redux"
 import { AppState } from "../../../redux/Reducer"
-
+import { Constant } from "../../../utils/Constant"
+import { useToast } from "../../../base/Toast"
 
 
 export const Info = React.memo((props: InfoType) => {
@@ -21,6 +22,8 @@ export const Info = React.memo((props: InfoType) => {
     }))
     const navigation = useNavigation()
     const [isFavorite, setIsFavorite] = useState(props.data.isFavorite)
+
+    const showToast = useToast()
 
     const updateFavorite = useCallback((value: boolean) => {
         updateProductFavorite(
@@ -35,6 +38,7 @@ export const Info = React.memo((props: InfoType) => {
             },
             (e) => {
                 console.log(e)
+                showToast(Constant.API_ERROR_OCCURRED)
             }
         )
     }, [appStateProps.userInfo, props.data])

@@ -11,6 +11,8 @@ import { useDispatch } from "react-redux"
 import { useSelector } from "react-redux"
 import { mapFoodDetailDataFromRequest } from "../../FoodDetail/FoodDetailScreen"
 import { Image } from "../../../base/Image"
+import { useToast } from "../../../base/Toast"
+import { Constant } from "../../../utils/Constant"
 
 
 export const CategoryList = React.memo(() => {
@@ -19,6 +21,7 @@ export const CategoryList = React.memo(() => {
         categoryList: state.categoryList
     }))
     const [loading, setLoading] = useState(false)
+    const showToast = useToast()
 
     const fetchData = useCallback(() => {
         setLoading(true)
@@ -26,12 +29,13 @@ export const CategoryList = React.memo(() => {
         getFoodCategory(
             (response) => {
                 const data = response.data
-                dispatch(setStateListCategory(data))
+                dispatch(setStateListCategory(data ?? []))
                 setLoading(false)
             },
             (e) => {
-                setLoading(false)
+                showToast(Constant.API_ERROR_OCCURRED)
                 console.log(e)
+                setLoading(false)
             }
         )
     }, [])

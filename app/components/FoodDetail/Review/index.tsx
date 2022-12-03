@@ -15,6 +15,8 @@ import { useLanguage } from "../../../base/Themed"
 import { FoodDetailData } from "../FoodDetailScreen"
 import { useSelector } from "react-redux"
 import { AppState } from "../../../redux/Reducer"
+import { useToast } from "../../../base/Toast"
+import { Constant } from "../../../utils/Constant"
 
 export const Review = React.memo((props: ReviewType) => {
     const appStateProps = useSelector((state: AppState) => ({
@@ -28,70 +30,85 @@ export const Review = React.memo((props: ReviewType) => {
     const updatePopupModal = useRef(null)
     const popupRateRef = useRef(null)
 
+    const [pageIndex, setPageIndex] = useState(0)
     const [starVoted, setStarVoted] = useState(5)
     const [review, setReview] = useState('')
     const [reviewErrorMsg, setReviewErrorMsg] = useState('')
 
     const [updateReview, setUpdateReview] = useState('')
+    const [updateStarVote, setUpdateStarVote] = useState(0)
+
+
     const [updateReviewErrorMsg, setUpdateReviewErrorMsg] = useState('')
     const [selectedReviewId, setSelectedReviewId] = useState(null)
-
+    const [reachEndList, setReachEndList] = useState(false)
     const I18NReason = useLanguage('Reason')
     const I18NOptional = useLanguage('Optional')
+
+    const showToast = useToast()
 
     const collapse = useCallback(() => {
         if (isCollapse)
             setReviewList([])
         else
-            fetchData()
+            fetchData(0)
 
         setIsCollapse(!isCollapse)
     }, [isCollapse])
 
-    const fetchData = useCallback(async () => {
+    const fetchData = useCallback((pageIndex: number) => {
         setLoading(true)
 
         getFoodReviews(
             props.data.id,
+            pageIndex,
             (response) => {
                 const data = response.data
-                // setReviewList([...reviewList, ...data])
-                setReviewList(data)
+                pageIndex != 0 ? setReviewList([...reviewList, ...data]) : setReviewList(data)
+                if (data.length < 10) {
+                    setReachEndList(true)
+                }
                 setLoading(false)
             },
             (e) => {
                 console.log('Error', e)
+                showToast(Constant.API_ERROR_OCCURRED)
                 setLoading(false)
             },
         )
     }, [reviewList])
 
     const onUpdateReview = useCallback(() => {
-        if (reviewList.filter((i) => i.id == selectedReviewId)[0].review == updateReview) {
+        const chosenReview = reviewList.filter((i) => i.id == selectedReviewId)[0]
+        if (chosenReview.review == updateReview && chosenReview.star == updateStarVote) {
             setUpdateReviewErrorMsg('Value was not changed')
         } else {
             setUpdating(true)
             updateFoodReview(
                 props.data.id,
                 updateReview,
-                props.data.star,
+                updateStarVote,
                 (response) => {
-                    reviewList.filter((i) => i.id == selectedReviewId)[0].review = updateReview
+                    chosenReview.review = updateReview
+                    chosenReview.star = updateStarVote
                     setReviewList([...reviewList])
                     setUpdating(false)
                     updatePopupModal.current.changeVisibility(false)
                 },
                 (e) => {
                     console.log(e)
+                    showToast(Constant.API_ERROR_OCCURRED)
                     setUpdating(false)
                 }
             )
         }
-    }, [updateReview, reviewList, selectedReviewId])
+    }, [updateReview, updateStarVote ,reviewList, selectedReviewId])
 
     useEffect(() => {
         if (selectedReviewId) {
-            setUpdateReview(reviewList.filter((i) => i.id == selectedReviewId)[0].review)
+            const chosenReview = reviewList.filter((i) => i.id == selectedReviewId)[0]
+            setUpdateReview(chosenReview.review)
+            setUpdateStarVote(chosenReview.star)
         }
     }, [selectedReviewId])
 
@@ -125,7 +142,7 @@ export const Review = React.memo((props: ReviewType) => {
             },
             (e) => {
                 console.log(e)
-                setReviewErrorMsg(e.message)
+                setReviewErrorMsg(e.message ?? e)
                 setUpdating(false)
             }
         )
@@ -161,12 +178,28 @@ export const Review = React.memo((props: ReviewType) => {
                             data={reviewList}
                             renderItem={renderItem}
                             keyExtractor={(_, index) => `${Math.random()}`}
+                            onEndReachedThreshold={0.5}
+                            onEndReached={() => {
+                                if (!reachEndList && !loading) {
+                                    fetchData(pageIndex + 1)
+                                    setPageIndex(pageIndex + 1)
+                                }
+                            }}
                             ListFooterComponent={<ReviewItemShimmer visible={loading} />} />
                     </View> : null
             }
 
             <PopupModal ref={updatePopupModal} title='Update Your Review'>
                 <View style={{ height: 1, backgroundColor: '#c0c6cf' }} />
+
+                <TransparentView style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 15 }}>
+                    <FontAwesome name="star" color={updateStarVote >= 1 ? '#ebcc34' : 'grey'} size={22} onPress={() => setUpdateStarVote(1)} />
+                    <FontAwesome name="star" color={updateStarVote >= 2 ? '#ebcc34' : 'grey'} size={22} onPress={() => setUpdateStarVote(2)} />
+                    <FontAwesome name="star" color={updateStarVote >= 3 ? '#ebcc34' : 'grey'} size={22} onPress={() => setUpdateStarVote(3)} />
+                    <FontAwesome name="star" color={updateStarVote >= 4 ? '#ebcc34' : 'grey'} size={22} onPress={() => setUpdateStarVote(4)} />
+                    <FontAwesome name="star" color={updateStarVote == 5 ? '#ebcc34' : 'grey'} size={22} onPress={() => setUpdateStarVote(5)} />
+                </TransparentView>
+
                 <TextInput
                     placeholder={`${I18NReason} ${I18NOptional}`}
                     multiline={true}
@@ -214,7 +247,7 @@ export const Review = React.memo((props: ReviewType) => {
 
                 {
                     reviewErrorMsg.length ?
-                        <I18NText text={reviewErrorMsg} style={{color: 'red', textAlign: 'left'}}/>
+                        <I18NText text={reviewErrorMsg} style={{ color: 'red', textAlign: 'left', marginTop: 10 }} />
                         : null
                 }
 

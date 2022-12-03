@@ -8,10 +8,12 @@ import { HomeFoodList } from "./HomeFoodList"
 import { View } from "../../base/View"
 import { FoodListType } from "../FoodList/FoodListType"
 import { CategoryList } from "./CategoryList"
-import { addNewAddress, getListAddress } from "../../core/apis/Requests"
+import { getListAddress } from "../../core/apis/Requests"
 import { mapUserAddressFromResponse } from "../Menu/AccountScreen/Address"
 import { useDispatch } from "react-redux"
 import { setUserAddressList } from "../../redux/Reducer"
+import { Constant } from "../../utils/Constant"
+import { useToast } from "../../base/Toast"
 
 
 export const HomeScreen = React.memo(({ navigation }: any) => {
@@ -35,7 +37,8 @@ export const HomeScreen = React.memo(({ navigation }: any) => {
     const [itemList, _] = useState(getListItem())
     const [refresh, setRefresh] = useState(false)
     const extractor = (item: HomeItem, index: number) => `${index + String(refresh)}`
-
+    const showToast = useToast()
+    
     useEffect(() => {
         getListAddress(
             (response) => {
@@ -44,6 +47,7 @@ export const HomeScreen = React.memo(({ navigation }: any) => {
             },
             (e) => {
                 console.log(e)
+                showToast(Constant.API_ERROR_OCCURRED)
             }
         )
     }, [refresh])

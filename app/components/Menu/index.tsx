@@ -59,7 +59,7 @@ export const MenuScreen = React.memo(({ navigation }: any) => {
 
                 <MenuItem
                     text='About Us' iconName='info-circle' iconColor='#5a996b'
-                    onPress={() => navigation.navigate('WebView', { uri: "https://google.com" })} />
+                    onPress={() => navigation.navigate('WebView', { uri: "http://swp490g52-env.eba-sk7m9gfw.ap-southeast-1.elasticbeanstalk.com/customer/aboutUs" })} />
                     
                 <LinearGradient colors={['#89c1c4', 'grey']} start={[0, 0]} end={[1, 0]} style={{height: 80}}/>
 

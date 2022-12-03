@@ -10,7 +10,6 @@ import { Button } from "../../../base/Button"
 import { TextInput } from "react-native-gesture-handler"
 import { PopupModal } from "../../../base/PopupModal"
 import { useLanguage } from "../../../base/Themed"
-import { addFoodReview } from "../../../core/apis/Requests"
 
 export const Rate = React.memo((props: FoodDetailData) => {
 

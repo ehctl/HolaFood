@@ -24,7 +24,6 @@ export const PopupModal = React.memo(forwardRef<any, PopupModalProps>((props: Po
     )
 
     return (
-
         <Modal
             animationType="fade"
             transparent={true}

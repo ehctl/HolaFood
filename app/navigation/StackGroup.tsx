@@ -80,7 +80,7 @@ export type GroupStackParamList = {
     };
 
     OrderDetail: {
-        data: OrderData
+        orderId: number,
     };
 
     OrderHistory: undefined,

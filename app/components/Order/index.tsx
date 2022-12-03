@@ -1,24 +1,25 @@
 import { TransparentView, View } from "../../base/View"
 import { ActivityIndicator, Pressable, RefreshControl, TextInput } from 'react-native';
-import { formatCreatedDateType, formatDateTimeFromData, getStyle, reformatDateTime, wait } from "../../utils/Utils";
+import { getStyle, reformatDateTime, wait } from "../../utils/Utils";
 import { useCallback, useEffect, useRef, useState } from "react";
 import React from "react";
 import { useSelector } from "react-redux";
-import { AppState, removeOrder, setNewOrderNotification, setOrderQueue, setOrders } from "../../redux/Reducer";
+import { AppState, removeOrder, setOrders } from "../../redux/Reducer";
 import { useDispatch } from "react-redux";
 import { FlatList } from "react-native-gesture-handler";
 import { BottomStackParamList } from "../../navigation/BottomTabBar";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RouteProp } from '@react-navigation/core'
-import { OrderData, OrderItem, OrderStatus } from "./OrderItem";
+import { OrderData, OrderItem } from "./OrderItem";
 import { OrderItemShimmer } from "./OrderItemShimmer";
 import { I18NText, Text } from "../../base/Text";
-import { cancelOrder, getActiveOrders, getShipperOrderQueue, getShipperProgressingOrder, updateOrder } from "../../core/apis/Requests";
+import { cancelOrder, getActiveOrders, getShipperProgressingOrder } from "../../core/apis/Requests";
 import { mapCartItemFromResponse } from "./Cart";
 import { PopupModal } from "../../base/PopupModal";
 import { isValidNormalText } from "../../validation/validate";
 import { useLanguage } from "../../base/Themed";
-
+import { Constant } from "../../utils/Constant";
+import { useToast } from "../../base/Toast";
 
 export const OrderScreen = React.memo((props: OrderViewProp) => {
     const dispatch = useDispatch()
@@ -41,6 +42,8 @@ export const OrderScreen = React.memo((props: OrderViewProp) => {
 
     const I18NReasonToCancel = useLanguage('Reason To Cancel This Order')
 
+    const showToast = useToast()
+
     useEffect(() => {
         fetchData()
     }, [])
@@ -59,8 +62,9 @@ export const OrderScreen = React.memo((props: OrderViewProp) => {
                 setLoading(false)
             },
             (e) => {
-                setLoading(false)
                 console.log(e)
+                showToast(Constant.API_ERROR_OCCURRED)
+                setLoading(false)
             }
         )
 
@@ -94,8 +98,9 @@ export const OrderScreen = React.memo((props: OrderViewProp) => {
                     cancelOrderPopupRef.current.changeVisibility(false)
                 },
                 (e) => {
-                    setCancelingOrder(false)
                     console.log(e)
+                    showToast(Constant.API_ERROR_OCCURRED)
+                    setCancelingOrder(false)
                 }
             )
         }
@@ -175,6 +180,7 @@ export const mapOrderDataFromResponse = (data: any): OrderData => {
         status: data.orderStatus,
         price: data.price,
         shipFee: data.shipPrice,
+        shipFeeWithShopPolicy: data.shipOrder,
         createdDate: reformatDateTime(data.createdDate),
         phone: data.phone,
         roleCancel: data.roleCancel,

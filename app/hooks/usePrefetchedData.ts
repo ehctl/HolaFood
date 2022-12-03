@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { Image } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Constant } from '../utils/Constant';
-import { getUserInfo, login } from '../core/apis/Requests';
+import { getUserInfo } from '../core/apis/Requests';
 import { UserInfo } from '../redux/Reducer';
 import { saveUserInfoLocalStorage, wait } from '../utils/Utils';
 import { Asset } from 'expo-asset';
@@ -26,7 +26,7 @@ export default function usePrefetchedData() {
         await wait(5000)
         if (token != null && token.length != 0) {
           const response = await getUserInfo()
-          const userInfo = mapResponseToUserInfo(response.user)
+          const userInfo = mapResponseToUserInfo(response.data)
           await saveUserInfoLocalStorage(userInfo)
         } else {
           throw 'Not Found'
@@ -53,7 +53,8 @@ export const mapResponseToUserInfo = (response): UserInfo => {
     lastName: response.lastName,
     email: response.email,
     phone: response.phone ?? '',
-    role: mapUserRole(response.roleId)
+    role: mapUserRole(response.roleId),
+    shopId: response.shopId
   }
 }
 

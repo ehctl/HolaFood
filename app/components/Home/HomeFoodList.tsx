@@ -12,8 +12,10 @@ import { ListRenderItemInfo, Pressable } from "react-native"
 import { useNavigation } from '@react-navigation/native';
 import { FoodListType, } from "../FoodList/FoodListType"
 import { getFoodList } from "../../core/apis/Requests"
-import { FoodDetailData } from "../FoodDetail/FoodDetailScreen"
+import { FoodDetailData, mapFoodDetailDataFromRequest1 } from "../FoodDetail/FoodDetailScreen"
 import { PopularFoodItem } from "./FoodItem/PopularFoodItem"
+import { Constant } from "../../utils/Constant"
+import { useToast } from "../../base/Toast"
 
 export const HomeFoodList = React.memo((props: FoodListProps) => {
     const [loading, setLoading] = useState(false)
@@ -21,6 +23,8 @@ export const HomeFoodList = React.memo((props: FoodListProps) => {
     const [foodListType, setFoodListType] = useState(FoodListType.POPULAR_FOOD)
     const popupModalRef = useRef(null)
     const navigation = useNavigation()
+    
+    const showToast = useToast()
 
     const fetchData = useCallback(async () => {
         setLoading(true)
@@ -37,12 +41,13 @@ export const HomeFoodList = React.memo((props: FoodListProps) => {
                         productName: i.productName
                     })))
                 } else {
-                    setListData(data)
+                    setListData(data.map((i) => mapFoodDetailDataFromRequest1(i)))
                 }
                 setLoading(false)
             },
             (response) => {
                 console.log(response)
+                showToast(Constant.API_ERROR_OCCURRED)
                 setLoading(false)
             }
         )
@@ -172,39 +177,4 @@ type FoodListProps = {
 
 export type PopularFoodData = {
     productName: string,
-}
-
-export const getPopularFood = (): PopularFoodData[] => {
-    return [
-        {
-            productName: 'Bún cá'
-        },
-        {
-            productName: 'Bún bò'
-        },
-        {
-            productName: 'Bún đậu'
-        },
-        {
-            productName: 'Bún riêu'
-        },
-        {
-            productName: 'Bún a'
-        },
-        {
-            productName: 'Bún b'
-        },
-        {
-            productName: 'Bún cá'
-        },
-        {
-            productName: 'Bún bò'
-        },
-        {
-            productName: 'Bún đậu'
-        },
-        {
-            productName: 'Bún riêu'
-        },
-    ]
 }

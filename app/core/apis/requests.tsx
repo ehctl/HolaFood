@@ -4,7 +4,7 @@ import { FoodListType } from "../../components/FoodList/FoodListType";
 import { CartItemData } from "../../components/Order/Cart";
 import { OrderData } from "../../components/Order/OrderItem";
 import { Constant } from "../../utils/Constant";
-import { DOMAIN, GOOGLE_DISTANCE_API_KEY, GOOGLE_DISTANCE_API_URL, GOOGLE_MAP_SUGGEST_ADDRESS_API_URL, ORI_DOMAIN } from "./Constant";
+import { DOMAIN, GOOGLE_DISTANCE_API_KEY, GOOGLE_DISTANCE_API_URL, GOOGLE_MAP_API_KEY, GOOGLE_MAP_SUGGEST_ADDRESS_API_URL, ORI_DOMAIN } from "./Constant";
 
 export const getSearchResult = (
     text: string,
@@ -55,7 +55,7 @@ export const getUserInfo = async () => {
         const newOption = await addHeaderToken(option)
         const response = await axios(newOption)
 
-        if (response.status === 200 && response.data.user != undefined) {
+        if (response.status === 200 && response.data.success) {
             return response.data;
         } else {
             throw response.data;
@@ -108,7 +108,6 @@ export const getShopInfo = (
         params: {
             shopId: shopId
         },
-        // url: 'https://mocki.io/v1/6ab0409e-5d8a-4e87-b11c-77f19914f3e2',
         url: DOMAIN + '/shop/getinfoshop',
     }
 
@@ -358,13 +357,15 @@ export const getFoodOption = (
 
 export const getFoodReviews = (
     foodId: number,
+    pageIndex: number,
     success: (data: any) => void,
     failure: (error: any) => void,
 ) => {
     const option = {
         method: 'GET',
         params: {
-            productId: foodId
+            productId: foodId,
+            index: pageIndex
         },
         url: DOMAIN + '/review/getreviewbyproduct',
     }
@@ -411,7 +412,7 @@ export const addFoodReview = (
         then((newOption) => {
             axios(newOption)
                 .then((response) => {
-                    if (response.status === 200) {
+                    if (response.status === 200 && response.data.success) {
                         success(response.data);
                     } else {
                         failure(response.data);
@@ -472,14 +473,13 @@ export const getFoodCategory = (
         params: {
         },
         url: DOMAIN + '/category/getall',
-        // url: 'https://mocki.io/v1/6d124633-b665-45ee-8c02-21cbabc6ef50',
     }
 
     return addHeaderToken(option).
         then((newOption) => {
             axios(newOption)
                 .then((response) => {
-                    if (response.status === 200) {
+                    if (response.status === 200 && response.data.success) {
                         success(response.data);
                     } else {
                         failure(response.data);
@@ -656,6 +656,7 @@ export const deleteCart = (
                 }
             })
                 .catch(((e) => {
+                    failure(e)
                     console.log(e)
                 }))
         })
@@ -732,6 +733,37 @@ export const getOrders = (
         })
 }
 
+export const getOrderDetail = (
+    orderId: number,
+    success: (data: any) => void,
+    failure: (error: any) => void
+) => {
+    const option = {
+        method: 'GET',
+        params: {
+            orderId: orderId
+        },
+        url: DOMAIN + '/order/getorderbyid',
+    }
+
+    return addHeaderToken(option).
+        then((newOption) => {
+            axios(newOption).then((response) => {
+                if (response.status === 200 && response.data.success) {
+                    success(response.data);
+                } else {
+                    failure(response.data);
+                }
+            })
+                .catch(((e) => {
+                    failure(e)
+                }))
+        })
+        .catch((e) => {
+            failure(e)
+        })
+}
+
 export const addOrdersWithCartId = (
     orders: OrderData[],
     success: (data: any) => void,
@@ -742,6 +774,7 @@ export const addOrdersWithCartId = (
         data: orders.map((i) => ({
             price: i.price,
             shipPrice: i.shipFee,
+            shipOrder: i.shipFeeWithShopPolicy,
             address: i.address,
             cartDTO: i.items.map((cartItem) => ({
                 id: cartItem.id
@@ -778,6 +811,7 @@ export const addOrdersWithCardData = (
         data: orders.map((i) => ({
             price: i.price,
             shipPrice: i.shipFee,
+            shipOrder: i.shipFeeWithShopPolicy,
             address: i.address,
             cartDTO: i.items.map((cartItem) => ({
                 amount: cartItem.quantity,
@@ -794,7 +828,6 @@ export const addOrdersWithCardData = (
 
     return addHeaderToken(option).
         then((newOption) => {
-            console.log(newOption)
             axios(newOption).then((response) => {
                 if (response.status === 200 && response.data.success) {
                     success(response.data);
@@ -828,7 +861,6 @@ export const updateOrder = (
 
     return addHeaderToken(option).
         then((newOption) => {
-            console.log(newOption)
             axios(newOption).then((response) => {
                 if (response.status === 200 && response.data.success) {
                     success(response.data);
@@ -863,7 +895,37 @@ export const cancelOrder = (
 
     return addHeaderToken(option).
         then((newOption) => {
-            console.log(newOption)
+            axios(newOption).then((response) => {
+                if (response.status === 200 && response.data.success) {
+                    success(response.data);
+                } else {
+                    failure(response.data);
+                }
+            })
+                .catch(((e) => {
+                    console.log(e)
+                }))
+        })
+        .catch((e) => {
+            failure(e)
+        })
+}
+
+export const getNotification = (
+    pageIndex: number,
+    success: (data: any) => void,
+    failure: (error: any) => void,
+) => {
+    const option = {
+        method: 'GET',
+        params: {
+            index: pageIndex
+        },
+        url: DOMAIN + '/notifications/get',
+    }
+
+    return addHeaderToken(option).
+        then((newOption) => {
             axios(newOption).then((response) => {
                 if (response.status === 200 && response.data.success) {
                     success(response.data);
@@ -890,7 +952,7 @@ export const getSuggestAddress = (
         method: 'GET',
         params: {
             query: text,
-            key: GOOGLE_DISTANCE_API_KEY
+            key: GOOGLE_MAP_API_KEY
         },
         url: GOOGLE_MAP_SUGGEST_ADDRESS_API_URL,
         signal: abortController?.signal
@@ -1331,6 +1393,70 @@ export const verifyEmail = (
             } else {
                 failure(response.data);
             }
+        })
+        .catch((e) => {
+            failure(e)
+        })
+}
+
+export const addNotificationToken = (
+    token: string,
+    success: (data: any) => void,
+    failure: (error: any) => void
+) => {
+    const option = {
+        method: 'POST',
+        data: {
+            token: token
+        },
+        url: DOMAIN + '/notificationstoken/add',
+    }
+
+    return addHeaderToken(option).
+        then((newOption) => {
+            console.log('new noti token', token)
+            axios(newOption).then((response) => {
+                if (response.status === 200) {
+                    success(response.data);
+                } else {
+                    failure(response.data);
+                }
+            })
+                .catch(((e) => {
+                    console.log(e)
+                }))
+        })
+        .catch((e) => {
+            failure(e)
+        })
+}
+
+export const deleteNotificationToken = (
+    token: string,
+    success: (data: any) => void,
+    failure: (error: any) => void
+) => {
+    const option = {
+        method: 'POST',
+        data: {
+            token: token
+        },
+        url: DOMAIN + '/notificationstoken/delete',
+    }
+
+    return addHeaderToken(option).
+        then((newOption) => {
+            console.log('new noti token', token)
+            axios(newOption).then((response) => {
+                if (response.status === 200) {
+                    success(response.data);
+                } else {
+                    failure(response.data);
+                }
+            })
+                .catch(((e) => {
+                    console.log(e)
+                }))
         })
         .catch((e) => {
             failure(e)

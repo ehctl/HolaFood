@@ -1,7 +1,9 @@
 import React from "react"
 import { useCallback, useEffect, useState } from "react"
 import { FlatList } from "react-native"
+import { useToast } from "../../../base/Toast"
 import { getShopListFood } from "../../../core/apis/Requests"
+import { Constant } from "../../../utils/Constant"
 import { wait } from "../../../utils/Utils"
 import { FoodDetailData } from "../../FoodDetail/FoodDetailScreen"
 import { ShopFoodListShimmer } from "../ShopDetailShimmer.tsx"
@@ -12,6 +14,8 @@ export const ShopFoodList = React.memo((props: ShopFoodListProps) => {
     const [loading, setLoading] = useState(true)
     const [reachEndList, setReachEndList] = useState(false)
     const [pageIndex, setPageIndex] = useState(0)
+
+    const showToast = useToast()
 
     const fetchData = useCallback(async () => {
         setLoading(true)
@@ -33,6 +37,7 @@ export const ShopFoodList = React.memo((props: ShopFoodListProps) => {
             },
             (e) => {
                 console.log(e)
+                showToast(Constant.API_ERROR_OCCURRED)
                 setLoading(false)
             }
         )

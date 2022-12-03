@@ -5,6 +5,7 @@ import { combineReducers } from 'redux'
 import { CategoryData } from "../components/Home/CategoryList";
 import { OrderData } from "../components/Order/OrderItem";
 import { CartItemData } from "../components/Order/Cart";
+import { NotificationItemData, NotificationType } from "../components/Notifications/NotificationItem";
 
 export type AppState = {
     userApiToken: string,
@@ -19,7 +20,8 @@ export type AppState = {
     orders: OrderData[],
     shipperOrderQueue: OrderData[],
     userInfo: UserInfo | undefined,
-    userAddressList: UserAddress[]
+    userAddressList: UserAddress[],
+    notifications: NotificationItemData[],
 }
 
 export type AppTheme = "dark" | "light"
@@ -36,7 +38,8 @@ export type UserInfo = {
     lastName: string,
     email: string,
     phone: string,
-    role: string
+    role: string,
+    shopId?: number,
 }
 
 export type UserAddress = {
@@ -57,7 +60,8 @@ const initalStates: AppState = {
     orders: [],
     shipperOrderQueue: [],
     userInfo: undefined,
-    userAddressList: []
+    userAddressList: [],
+    notifications: []
 }
 
 const MainAppReducer = createSlice({
@@ -71,7 +75,12 @@ const MainAppReducer = createSlice({
         changeLanguage: (state, action: PayloadAction<AppLanguage>) => { state.language = action.payload; return state },
         setUserType: (state, action: PayloadAction<UserType>) => { state.userType = action.payload; return state },
         setNewOrderNotification: (state, action: PayloadAction<boolean>) => { state.newOrderNotification = action.payload; return state },
-        setSelectedBottomTabIndex: (state, action: PayloadAction<number>) => { state.selectedBottomTabIndex = action.payload; return state },
+        setSelectedBottomTabIndex: (state, action: PayloadAction<number>) => { 
+            state.selectedBottomTabIndex = action.payload; 
+            if (action.payload == 2 && state.newOrderNotification)
+                state.newOrderNotification = false
+            return state 
+        },
         setStateListCategory: (state, action: PayloadAction<CategoryData[]>) => { state.categoryList = action.payload; return state },
         setCartItems: (state, action: PayloadAction<CartItemData[]>) => { state.cartItems = action.payload; return state },
         addCartItems: (state, action: PayloadAction<CartItemData[]>) => { state.cartItems = [...action.payload, ...state.cartItems]; return state },
@@ -106,6 +115,15 @@ const MainAppReducer = createSlice({
 
             return state
         },
+        updateOrderStatus: (state, action: PayloadAction<{orderId: number, status: number}>) => {
+            const index = state.orders.findIndex((i) => i.id == action.payload.orderId);
+            if (index != -1) {
+                state.orders[index].status = action.payload.status
+                state.cartItems = [...state.cartItems];
+            }
+
+            return state
+        },
         removeOrder: (state, action: PayloadAction<number>) => { state.orders = state.orders.filter((item) => item.id != action.payload); return state },
         setOrderQueue: (state, action: PayloadAction<OrderData[]>) => { state.shipperOrderQueue = action.payload; return state },
         removeOrderFromOrderQueue: (state, action: PayloadAction<number>) => { state.shipperOrderQueue = state.shipperOrderQueue.filter((item) => item.id != action.payload); return state },
@@ -121,7 +139,32 @@ const MainAppReducer = createSlice({
             state.userAddressList = []
 
             return state
-         }
+         },
+         addNotifications: (state, action: PayloadAction<NotificationItemData[]>) => { state.notifications = action.payload; return state },
+         updateNotifcations: (state, action: PayloadAction<{orderId: number, status: number}>) => { 
+            const index = state.notifications.findIndex((i) => i.data?.orderId == action.payload.orderId)
+            if (index != -1) {
+                const notiData = state.notifications[index].data
+                notiData.status = action.payload.status
+
+                const swapItem = state.notifications[index]
+                state.notifications[index] = state.notifications[0]
+                state.notifications[0] = swapItem
+            } else {
+                state.notifications = [{
+                    id: action.payload.orderId,
+                    type: NotificationType.ORDER_STATUS_CHANGE,
+                    data: {
+                        orderId: action.payload.orderId,
+                        status: action.payload.status
+                    }
+                }, ...state.notifications]
+            }
+            
+            state.newOrderNotification = true
+
+            return state
+        },
     }
 })
 
@@ -143,12 +186,15 @@ export const {
     addOrders,
     removeOrder,
     updateOrder,
+    updateOrderStatus,
     setOrderQueue,
     removeOrderFromOrderQueue,
     addOrderToOrderQueue,
     setUserAddressList,
     deleteUserAddress,
-    clearUserInfo
+    clearUserInfo,
+    addNotifications,
+    updateNotifcations
 } = MainAppReducer.actions
 
 export const reducer = MainAppReducer.reducer

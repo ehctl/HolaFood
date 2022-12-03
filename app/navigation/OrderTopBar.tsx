@@ -44,13 +44,13 @@ export const OrderTab = React.memo(() => {
                 {
                     stateProps.userType == 'customer' ?
                         <OrderTabNavigator.Group>
-                            <OrderTabNavigator.Screen name="Cart" component={Cart} options={{}} />
-                            <OrderTabNavigator.Screen name="Orders" component={Order} options={{}} />
+                            <OrderTabNavigator.Screen name="Cart" component={Cart} options={{ lazy: false }} />
+                            <OrderTabNavigator.Screen name="Orders" component={Order} options={{ lazy: false }} />
                         </OrderTabNavigator.Group>
                         :
                         <OrderTabNavigator.Group>
-                            <OrderTabNavigator.Screen name="Order Queue" component={OrderQueueScreen} options={{}} />
-                            <OrderTabNavigator.Screen name="Orders" component={Order} options={{}} />
+                            <OrderTabNavigator.Screen name="Order Queue" component={OrderQueueScreen} options={{ lazy: false }} />
+                            <OrderTabNavigator.Screen name="Orders" component={Order} options={{ lazy: false }} />
                         </OrderTabNavigator.Group>
 
                 }

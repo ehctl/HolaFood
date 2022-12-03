@@ -8,7 +8,7 @@ import { TransparentView, View } from '../../base/View';
 import { setUserApiToken, UserType } from '../../redux/Reducer';
 import { AuthenticationMode } from './AuthenticationMode';
 import { isValidEmail, isValidNormalText, isValidPassword, isValidPhoneNumber } from '../../validation/validate';
-import { signup, verifyEmail } from '../../core/apis/Requests';
+import { addNotificationToken, signup, verifyEmail } from '../../core/apis/Requests';
 import { useDispatch } from 'react-redux';
 import { Constant } from '../../utils/Constant';
 import { mapResponseToUserInfo } from '../../hooks/usePrefetchedData';
@@ -250,7 +250,7 @@ export const SignUpDetail = React.memo((props: SignUpDetailType) => {
     const [hidePassword, setHidePassword] = useState(true)
 
     const [loading, setLoading] = useState(false)
-    const I18NOverLoad = useLanguage('System overloaded. Please wait for a moment.')
+    const I18NOverLoad = useLanguage('System overloaded. Please wait for a moment')
     const I18NFirstName = useLanguage('First Name')
     const I18NLastName = useLanguage('Last Name')
     const I18NPassword = useLanguage('Password')
@@ -259,10 +259,25 @@ export const SignUpDetail = React.memo((props: SignUpDetailType) => {
     const onLoginSuccess = useCallback(async (response) => {
         const token = response.token
         const userInfo = mapResponseToUserInfo(response.data)
+        const notiToken = (await AsyncStorage.getItem(Constant.APP_NOTIFICATION_TOKEN)) ?? ''
+
         dispatch(setUserApiToken(token))
         dispatch(setUserInfo(userInfo))
         saveApiTokenInfoLocalStorage(token)
         saveUserInfoLocalStorage(userInfo)
+
+        if (notiToken.length > 0) {
+            addNotificationToken(
+                notiToken,
+                (response) => {
+                    console.log('Add notification token success')
+                },
+                (e) => {
+                    console.log(e)
+                }
+            )
+        }
+
         props.onSuccess('customer')
     }, [])
 

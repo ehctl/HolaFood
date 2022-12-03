@@ -6,7 +6,7 @@ import { FoodItem } from "../Home/FoodItem"
 import { wait } from "../../utils/Utils"
 import { FoodItemShimmer } from "../Home/FoodItemShimmer"
 import { getFoodList } from "../../core/apis/Requests"
-import { FoodDetailData } from "../FoodDetail/FoodDetailScreen"
+import { FoodDetailData, mapFoodDetailDataFromRequest1 } from "../FoodDetail/FoodDetailScreen"
 import { useSelector } from "react-redux"
 import { AppState } from "../../redux/Reducer"
 import { I18NText } from "../../base/Text"
@@ -14,6 +14,8 @@ import { FoodListType } from "./FoodListType"
 import { PopularFoodItem } from "../Home/FoodItem/PopularFoodItem"
 import { PopularFoodData } from "../Home/HomeFoodList"
 import { ListRenderItemInfo } from "react-native"
+import { useToast } from "../../base/Toast"
+import { Constant } from "../../utils/Constant"
 
 
 
@@ -21,13 +23,15 @@ export const FoodList = React.memo((props: FoodListProps) => {
     const appProps = useSelector((state: AppState) => ({
         categoryList: state.categoryList
     }))
+
+    const showToast = useToast()
+    
     const [reachListEnd, setReachListEnd] = useState(false)
     const [loadingMore, setLoadingMore] = useState(true)
     const [pageIndex, setPageIndex] = useState(0)
     const [listData, setListData] = useState<FoodDetailData[]>([])
     const [abortController, setAbortController] = useState<AbortController>(null)
-
-
+    
     useEffect(() => {
         fetchMoreData(0)
     }, [props.type])
@@ -41,7 +45,8 @@ export const FoodList = React.memo((props: FoodListProps) => {
 
     const extractor = (_: any, index: number) => `${index}`
 
-    const fetchMoreData = useCallback(async (currentPageIndex: number) => {
+
+    const fetchMoreData = useCallback( (currentPageIndex: number) => {
         setLoadingMore(true)
         abortController?.abort()
         const newAbortController = new AbortController()
@@ -50,21 +55,21 @@ export const FoodList = React.memo((props: FoodListProps) => {
         if (currentPageIndex == 0 && listData.length > 0)
             setListData([])
 
-        await wait(2000)
-
         getFoodList(
             props.type,
             currentPageIndex,
             (response) => {
-                const data = response.data
+                const data = response.data.map((i) => mapFoodDetailDataFromRequest1(i))
                 if (data.length < 10)
                     setReachListEnd(true)
+
                 setListData(currentPageIndex == 0 ? data : [...listData, ...data])
                 setLoadingMore(false)
             },
             (e) => {
-                setLoadingMore(false)
                 console.log(e)
+                showToast(Constant.API_ERROR_OCCURRED)
+                setLoadingMore(false)
             },
             newAbortController
         )

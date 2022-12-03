@@ -1,27 +1,90 @@
-import { View } from "../../base/View";
-import { getStyle } from "../../utils/Utils";
-import { useEffect } from "react";
+import { TransparentView, View } from "../../base/View";
+import { getStyle, wait } from "../../utils/Utils";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import React from "react";
 import { AnimatedHeader } from "../../base/AnimatedHeader";
 import { Text } from "../../base/Text";
-import { ListRenderItemInfo } from "react-native";
+import { Animated, KeyboardAvoidingView, ListRenderItemInfo, Modal, Platform, SafeAreaView, SafeAreaViewBase } from "react-native";
 import { Level1Header, Level1HeaderStats } from "../../base/Headers/Level1Header";
-import { getListItem, NotificationItem, NotificationItemData } from "./NotificationItem";
+import { getListItem, DefaultNotificationItem, NotificationItemData, NotificationType, OrderStatusNotificationItem, mapNotificationDataFromResponse } from "./NotificationItem";
+import { PopupModal } from "../../base/PopupModal";
+import { hide } from "expo-splash-screen";
+import { useSelector } from "react-redux";
+import { addNotifications, AppState } from "../../redux/Reducer";
+import { useDispatch } from "react-redux";
+import { NotificationItemShimmer } from "./NotificationItemShimmer";
+import { getNotification } from "../../core/apis/Requests";
+import { useToast } from "../../base/Toast";
+import { Constant } from "../../utils/Constant";
+import { AppState as ApplicationState } from 'react-native'
 
 export const NotificationsScreen = React.memo(({ navigation }: any) => {
+    const dispatch = useDispatch()
+    const appStateProps = useSelector((state: AppState) => ({
+        notifications: state.notifications,
+        selectedBottomTabIndex: state.selectedBottomTabIndex,
+    }))
+    const [loading, setLoading] = useState(false)
+    const [pageIndex, setPageIndex] = useState(0)
+    const [reachedEndList, setReachEndList] = useState(false)
+
+
+    const showToast = useToast()
+
+    const fetchData = useCallback((pageIndex: number) => {
+        setLoading(true)
+
+        if (pageIndex == 0)
+            dispatch(addNotifications([]))
+
+        getNotification(
+            pageIndex,
+            (response) => {
+                const data = response.data.map((i) => mapNotificationDataFromResponse(i))
+                const notiList = data.length > 0 ? data : (pageIndex == 0 ? getListItem() : [])
+                dispatch(addNotifications(pageIndex == 0 ? notiList : [...appStateProps.notifications, ...notiList]))
+
+                setReachEndList(data.length < 20)
+                setLoading(false)
+            },
+            (e) => {
+                console.log(e)
+                showToast(Constant.API_ERROR_OCCURRED)
+                setLoading(false)
+            }
+        )
+    }, [])
+
+    const appStateListener = useRef(null);
 
     useEffect(() => {
-        const unsubscribe = navigation.addListener('tabPress', (e: any) => {
-            // button press xD
+        appStateListener.current = ApplicationState.addEventListener("change", nextAppState => {
+            if (nextAppState == 'active' && appStateProps.selectedBottomTabIndex == 2 && !loading) {
+                fetchData(0)
+            }
         });
 
-        return unsubscribe;
-    })
+        return () => {
+            appStateListener.current.remove()
+        }
+    }, [loading])
+
+
+    useEffect(() => {
+        fetchData(0)
+    }, [])
 
     const renderItem = ({ item }: ListRenderItemInfo<NotificationItemData>) => {
-        return (
-            <NotificationItem {...item} />
-        )
+        switch (item.type) {
+            case NotificationType.DEFAULT:
+                return (
+                    <DefaultNotificationItem {...item} />
+                )
+            case NotificationType.ORDER_STATUS_CHANGE:
+                return (
+                    <OrderStatusNotificationItem {...item} />
+                )
+        }
     }
 
     return (
@@ -38,10 +101,18 @@ export const NotificationsScreen = React.memo(({ navigation }: any) => {
                 }}
                 flatListProps={{
                     renderItem: renderItem,
-                    data: getListItem(),
+                    data: appStateProps.notifications,
+                    ListFooterComponent: <NotificationItemShimmer visible={loading} />,
                     keyExtractor: (_, index) => `${index}`,
+                    onEndReachedThreshold: 0.5,
+                    onEndReached: () => {
+                        if (!reachedEndList && !loading) {
+                            fetchData(pageIndex + 1)
+                            setPageIndex(pageIndex + 1)
+                        }
+                    }
                 }}
-                hideReload={true}
+                onRefresh={() => fetchData(0)}
             />
         </View>
     );

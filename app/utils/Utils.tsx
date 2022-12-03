@@ -6,6 +6,7 @@ import Warehouse from "./Warehouse"
 import { useEffect, useState } from 'react';
 import { Keyboard, KeyboardEvent } from 'react-native';
 import { FontAwesome } from "@expo/vector-icons"
+import { ShipCost } from "../components/FoodDetail/FoodDetailScreen"
 
 
 
@@ -87,9 +88,10 @@ export const formatMoney = (price: number) => {
   return format(price, 0, 3, '.', '')
 }
 
-export const deleteSavedInfoBeforeLogout = async () => {
+export const deleteInfoBeforeLogout = async () => {
   await AsyncStorage.setItem(Constant.APP_API_TOKEN, '')
   await AsyncStorage.setItem(Constant.APP_USER_INFO, '')
+  // await AsyncStorage.setItem(Constant.APP_NOTIFICATION_TOKEN, '')
 }
 
 export const saveUserInfoLocalStorage = async (userInfo: UserInfo) => {
@@ -107,7 +109,7 @@ export const reformatDateTime = (time: string) => {
 
 export const formatDateTimeFromData = (time: string) => {
   const timeArr = time.split(' ')[0].split('-')
-  return `${timeArr[2]}-${timeArr[1]}-${timeArr[0]}` 
+  return `${timeArr[2]}-${timeArr[1]}-${timeArr[0]}`
 }
 
 export const formatCreatedDateType = (time: Date) => {
@@ -125,17 +127,20 @@ export const formatAccountRole = (role: string) => {
   }
 }
 
-export const calculateShipFee = (distance: number) => {
+export const calculateShipFee = (distance: number, costPolicy: ShipCost[]) => {
+  if (costPolicy.length < 3) {
+    console.log(' costPolicy rong~~~')
+    return 0
+  }
+  
   const distanceKM = distance / 1000
 
-  if (0 < distanceKM && distanceKM <= 3) 
-    return 15000
-  else if (3 < distanceKM && distanceKM <= 4)
-    return 20000
-  else if (4 < distanceKM && distanceKM <= 5)
-    return 25000
-  else 
-    return 25000 + Math.ceil(distanceKM - 5) * 6500
+  if (0 < distanceKM && distanceKM <= 3)
+    return costPolicy[0].price
+  else if (3 < distanceKM && distanceKM <= 5)
+    return costPolicy[1].price
+  else
+    return costPolicy[1].price + Math.ceil(distanceKM - 5) * costPolicy[2].price
 }
 
 export const getUserRole = (role: string): UserType => {

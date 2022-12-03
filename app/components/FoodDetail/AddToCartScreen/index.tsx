@@ -8,7 +8,7 @@ import { TextInput } from "react-native-gesture-handler"
 import { ActivityIndicator, Pressable } from "react-native"
 import { Select, SelectGroup, SelectIcon } from "../../../base/SellectGroup"
 import { useDispatch } from "react-redux"
-import { addCartItems, AppState, updateCartItem } from "../../../redux/Reducer"
+import { addCartItems, AppState, deleteCartItems, updateCartItem } from "../../../redux/Reducer"
 import { useLanguage } from "../../../base/Themed"
 import { useNavigation } from '@react-navigation/native';
 import { RouteProp } from '@react-navigation/core'
@@ -17,10 +17,16 @@ import { GroupStackParamList } from "../../../navigation/StackGroup"
 import { AnimatedHeader } from "../../../base/AnimatedHeader"
 import { Level2Header, Level2HeaderStat } from "../../../base/Headers/Level2Header"
 import { formatMoney } from "../../../utils/Utils"
-import { addCart, updateCart } from "../../../core/apis/Requests"
+import { addCart, deleteCart, updateCart } from "../../../core/apis/Requests"
+import { Constant } from "../../../utils/Constant"
+import { useToast } from "../../../base/Toast"
+import { useSelector } from "react-redux"
 
 export const AddToCartScreen = React.memo((props: AddToCartType) => {
     const navigation = useNavigation()
+    const appStateProps = useSelector((state: AppState) => ({
+        cartItems: state.cartItems
+    }))
     const dispatch = useDispatch()
 
     const [quantity, setQuantity] = useState(props.route.params?.isUpdateMode ? props.route.params?.cartItemDetail.quantity : 1)
@@ -30,9 +36,10 @@ export const AddToCartScreen = React.memo((props: AddToCartType) => {
     const [itemData, setItemData] = useState(props.route.params?.isUpdateMode ? props.route.params?.cartItemDetail.productDetail : props.route.params?.foodDetail)
 
     const [addingToCart, setAddingToCart] = useState(false)
-    const [addingToOrder, setAddingToOrder] = useState(false)
 
     const I18NNote = useLanguage('Ghi chú')
+
+    const showToast = useToast()
 
     useEffect(() => {
         if (props.route.params?.isUpdateMode && props.route.params?.cartItemDetail) {
@@ -54,6 +61,31 @@ export const AddToCartScreen = React.memo((props: AddToCartType) => {
         setPrice(currPrice * quantity)
     }, [quantity, option])
 
+
+    const getTobeUpdatedOrder = useCallback(() => {
+        const index = appStateProps.cartItems.findIndex((item) => {
+            if (item.productDetail.id == itemData.id) {
+                if (note == item.note) {
+                    if (option.length == item.option.length) {
+                        if (option.length == 0)
+                            return true
+
+                        for (let i = 0; i < option.length; i++) {
+                            if (option[i] == item.option[i].id) {
+                                if (note == item.note) {
+                                    return true
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            return false
+        })
+
+        return index != -1 ? appStateProps.cartItems[index] : null
+    }, [appStateProps.cartItems, itemData, option, note])
 
     const genCartItem = useCallback(() => {
         return props.route.params?.isUpdateMode ?
@@ -78,36 +110,109 @@ export const AddToCartScreen = React.memo((props: AddToCartType) => {
 
     const onAddToCart = useCallback(() => {
         setAddingToCart(true)
+        var tobeUpdatedOrder = getTobeUpdatedOrder()
+
         const cartItem = genCartItem()
 
-        props.route.params?.isUpdateMode ?
+        if (tobeUpdatedOrder != null) {
+            tobeUpdatedOrder = { ...tobeUpdatedOrder }
+            const oldPrice = tobeUpdatedOrder.price / tobeUpdatedOrder.quantity
+            tobeUpdatedOrder.price = oldPrice * (tobeUpdatedOrder.quantity + quantity)
+            tobeUpdatedOrder.quantity = tobeUpdatedOrder.quantity + quantity
+
+            if (props.route.params?.isUpdateMode) {
+                deleteCart(
+                    props.route.params?.cartItemDetail?.id,
+                    (response) => {
+                        dispatch(deleteCartItems([props.route.params?.cartItemDetail?.id]))
+                        setAddingToCart(false)
+                        navigation.goBack()
+                    },
+                    (e) => {
+                        console.log(e)
+                        showToast(Constant.API_ERROR_OCCURRED)
+                        setAddingToCart(false)
+                    }
+                )
+            }
+
             updateCart(
-                cartItem,
+                tobeUpdatedOrder,
                 (response) => {
-                    dispatch(updateCartItem(cartItem))
+                    dispatch(updateCartItem(tobeUpdatedOrder))
                     setAddingToCart(false)
                     navigation.goBack()
                 },
                 (e) => {
-                    setAddingToCart(false)
                     console.log(e)
+                    showToast(Constant.API_ERROR_OCCURRED)
+                    setAddingToCart(false)
                 }
             )
-            :
-            addCart(
-                cartItem,
-                (response) => {
-                    cartItem.id = response.data.id
-                    dispatch(addCartItems([cartItem]))
-                    setAddingToCart(false)
-                    navigation.goBack()
-                },
-                (e) => {
-                    setAddingToCart(false)
-                    console.log(e)
-                }
-            )
-    }, [genCartItem])
+
+        } else {
+            if (props.route.params?.isUpdateMode) {
+                updateCart(
+                    cartItem,
+                    (response) => {
+                        dispatch(updateCartItem(cartItem))
+                        setAddingToCart(false)
+                        navigation.goBack()
+                    },
+                    (e) => {
+                        console.log(e)
+                        showToast(Constant.API_ERROR_OCCURRED)
+                        setAddingToCart(false)
+                    }
+                )
+            } else {
+                addCart(
+                    cartItem,
+                    (response) => {
+                        cartItem.id = response.data.id
+                        dispatch(addCartItems([cartItem]))
+                        setAddingToCart(false)
+                        navigation.goBack()
+                    },
+                    (e) => {
+                        console.log(e)
+                        showToast(Constant.API_ERROR_OCCURRED)
+                        setAddingToCart(false)
+                    }
+                )
+            }
+        }
+
+        // props.route.params?.isUpdateMode ?
+        //     updateCart(
+        //         cartItem,
+        //         (response) => {
+        //             dispatch(updateCartItem(cartItem))
+        //             setAddingToCart(false)
+        //             navigation.goBack()
+        //         },
+        //         (e) => {
+        //             console.log(e)
+        //             showToast(Constant.API_ERROR_OCCURRED)
+        //             setAddingToCart(false)
+        //         }
+        //     )
+        //     :
+        //     addCart(
+        //         cartItem,
+        //         (response) => {
+        //             cartItem.id = response.data.id
+        //             dispatch(addCartItems([cartItem]))
+        //             setAddingToCart(false)
+        //             navigation.goBack()
+        //         },
+        //         (e) => {
+        //             console.log(e)
+        //             showToast(Constant.API_ERROR_OCCURRED)
+        //             setAddingToCart(false)
+        //         }
+        //     )
+    }, [genCartItem, getTobeUpdatedOrder])
 
     const onAddToOrder = useCallback(() => {
         const cartItem = genCartItem()
@@ -239,14 +344,8 @@ export const AddToCartScreen = React.memo((props: AddToCartType) => {
                         onPress={() => onAddToOrder()} >
 
                         <I18NText text='Order Now' />
-
-                        <ActivityIndicator
-                            animating={addingToOrder}
-                            color='black'
-                            style={{ position: 'absolute', zIndex: 1, top: 10, right: 10 }} />
                     </Pressable>
             }
-
         </AnimatedHeader>
     )
 })

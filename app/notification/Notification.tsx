@@ -4,7 +4,10 @@ import { Platform } from 'react-native';
 import { NotificationRequestInput, NotificationChannelInput } from 'expo-notifications';
 import Warehouse from '../utils/Warehouse';
 import { AnyAction, Dispatch } from 'redux';
-import { addOrders } from '../redux/Reducer';
+import { addOrders, setNewOrderNotification, updateNotifcations, updateOrderStatus } from '../redux/Reducer';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Constant } from '../utils/Constant';
+import { addNotificationToken } from '../core/apis/Requests';
 
 
 export default class Notification {
@@ -20,9 +23,33 @@ export default class Notification {
     return this._instance
   }
 
-  public setExpoToken(token?: string) {
-    this.expoToken = token
-    console.log('New Expo Push Token: ', this.expoToken)
+  public async setExpoToken(token: string) {
+    try {
+
+      if (token) {
+        this.expoToken = token
+        const notiToken = (await AsyncStorage.getItem(Constant.APP_NOTIFICATION_TOKEN)) ?? ''
+        const userInfo = JSON.parse((await AsyncStorage.getItem(Constant.APP_USER_INFO)) ?? '')
+
+        if (token.length > 0 && notiToken != token && userInfo.id && userInfo.role == 'ROLE_CUSTOMER') {
+          await AsyncStorage.setItem(Constant.APP_NOTIFICATION_TOKEN, token)
+          addNotificationToken(
+            token,
+            (response) => { 
+              console.log('Add notification token success')
+            },
+            (e) => {
+              console.log(e)
+            }
+          )
+          console.log('New Expo Push Token: ', this.expoToken)
+        } else {
+          console.log('Expo Push Token: ', this.expoToken)
+        }
+      }
+    } catch (e) {
+      console.log(e)
+    }
   }
 
   public getExpoToken = (): string | undefined => this.expoToken
@@ -40,17 +67,24 @@ export default class Notification {
   }
 
   public isDataNotification = (notification: Notifications.Notification) => {
-    return notification.request.content.data.category != undefined
+    return notification.request.content.data.type != undefined
   }
 
   public newNotification = (dispatch: Dispatch<AnyAction>, notification: Notifications.Notification) => {
     try {
       if (this.isDataNotification(notification)) {
         const data = notification.request.content.data as DataNotificationType
-        switch (data.category) {
-          case 'order':
-            console.log('Notification: new order')
-            dispatch(addOrders([data.data]))
+        switch (data.type) {
+          case 'OrderStatusChange':
+            console.log('Notification: Status Change')
+            dispatch(updateOrderStatus({
+              orderId: data.orderId,
+              status: data.status
+            }))
+            dispatch(updateNotifcations({
+              orderId: data.orderId,
+              status: data.status
+            }))
             break;
           default:
             console.log('Unsupported type')
@@ -91,7 +125,6 @@ export default class Notification {
         return;
       }
       token = (await Notifications.getExpoPushTokenAsync()).data;
-      this.setExpoToken(token)
     } else {
       alert('Must use physical device for Push Notifications');
     }
@@ -114,8 +147,8 @@ export default class Notification {
 }
 
 export type DataNotificationType = {
-  category: string,
   type: string,
-  data: any
+  status: number,
+  orderId: number
 }
 

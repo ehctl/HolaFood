@@ -1,16 +1,15 @@
-import { ActivityIndicator, Alert, Pressable, TextInput } from "react-native"
+import { ActivityIndicator, Alert, Pressable } from "react-native"
 import { useSelector } from "react-redux"
 import { RadioButton, RadioButtonGroup, RadioButtonIcon } from "../../../base/RadioGroup"
 import { TransparentView, View } from "../../../base/View"
-import { addOrders, AppState, deleteCartItems, setOrders } from "../../../redux/Reducer"
+import { addOrders, AppState, deleteCartItems } from "../../../redux/Reducer"
 import { I18NText, Text } from "../../../base/Text"
 import { useCallback, useEffect, useState } from "react"
-import { FontAwesome, FontAwesome2 } from "../../../base/FontAwesome"
+import { FontAwesome2 } from "../../../base/FontAwesome"
 import React from "react"
 import { useLanguage } from "../../../base/Themed"
 import { AnimatedHeader } from "../../../base/AnimatedHeader"
 import { Level2Header, Level2HeaderStat } from "../../../base/Headers/Level2Header"
-import { Button } from "../../../base/Button"
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch } from "react-redux"
 import { RouteProp } from '@react-navigation/core'
@@ -18,9 +17,11 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { GroupStackParamList } from "../../../navigation/StackGroup"
 import { CartItemData } from "../../Order/Cart"
 import { OrderData, OrderStatus } from "../../Order/OrderItem"
-import { calculateShipFee, formatCreatedDateType, formatDateTimeFromData, formatMoney } from "../../../utils/Utils"
+import { calculateShipFee, formatCreatedDateType, formatMoney } from "../../../utils/Utils"
 import { getDistance } from "../../../core/apis/Requests"
 import { addOrdersWithCartId, addOrdersWithCardData } from "../../../core/apis/Requests"
+import { Constant } from "../../../utils/Constant"
+import { useToast } from "../../../base/Toast"
 
 
 export const AddToOrderScreen = React.memo((props: AddToOrderType) => {
@@ -35,8 +36,11 @@ export const AddToOrderScreen = React.memo((props: AddToOrderType) => {
     const [listOrder, setListOrder] = useState<OrderData[]>([])
     const [addingOrder, setAddingOrder] = useState(false)
     const [listShipPrice, setListShipPrice] = useState<number[]>(Array(100).fill(0))
+    const [listShipPriceWithShopPolicy, setListShipPriceWithShopPolicy] = useState<number[]>(Array(100).fill(0))
 
     const I18NListEmptyWarning = useLanguage('Your Address List Is Empty. Please Add Your Address!')
+
+    const showToast = useToast()
 
     useEffect(() => {
         const orders = getOrders()
@@ -48,12 +52,16 @@ export const AddToOrderScreen = React.memo((props: AddToOrderType) => {
                     address,
                     (response) => {
                         const distance = response['rows'][0]['elements'][0]['distance']['value']
-                        listShipPrice[index] = calculateShipFee(distance)
+                        listShipPrice[index] = calculateShipFee(distance, item.items[0].productDetail.cost.filter((i) => i.categoryCost == 1))
+                        listShipPriceWithShopPolicy[index] = calculateShipFee(distance, item.items[0].productDetail.cost.filter((i) => i.categoryCost == 2))
                         setListShipPrice([...listShipPrice])
+                        setListShipPriceWithShopPolicy([...listShipPriceWithShopPolicy])
                     },
                     (e) => {
                         listShipPrice[index] = 0
+                        listShipPriceWithShopPolicy[index] = 0
                         setListShipPrice([...listShipPrice])
+                        setListShipPriceWithShopPolicy([...listShipPriceWithShopPolicy])
                         console.log(e)
                     }
                 )
@@ -96,16 +104,17 @@ export const AddToOrderScreen = React.memo((props: AddToOrderType) => {
                 createdDate: formatCreatedDateType(time),
                 address: address,
                 shipFee: listShipPrice[index],
+                shipFeeWithShopPolicy: listShipPriceWithShopPolicy[index],
                 phone: appStateProps.userInfo.phone,
             }
         })
 
         return orders
-    }, [categorizeNewOrders, listShipPrice, appStateProps.userInfo])
+    }, [categorizeNewOrders, listShipPrice, listShipPriceWithShopPolicy, appStateProps.userInfo])
 
     const getTotalPrice = useCallback(() => {
         var price = 0
-        getOrders().forEach((i) => price += i.price + i.shipFee)
+        getOrders().forEach((i) => price += i.price + i.shipFeeWithShopPolicy)
         return price
     }, [getOrders])
 
@@ -129,8 +138,9 @@ export const AddToOrderScreen = React.memo((props: AddToOrderType) => {
                     navigation.navigate('Orders' as never)
                 },
                 (e) => {
-                    setAddingOrder(false)
                     console.log(e)
+                    showToast(Constant.API_ERROR_OCCURRED)
+                    setAddingOrder(false)
                 }
             )
         }
@@ -147,7 +157,6 @@ export const AddToOrderScreen = React.memo((props: AddToOrderType) => {
             }}
             useScrollView={true}
             hideReload={true} >
-
 
             <TransparentView>
                 <TransparentView style={{ marginLeft: 15, justifyContent: 'flex-start', alignItems: 'flex-start' }}>
@@ -244,13 +253,13 @@ export const AddToOrderScreen = React.memo((props: AddToOrderType) => {
                                     <I18NText text='Ship Fee' style={{ textAlign: 'left', fontSize: 16 }} />
                                     <Text text={`: `} style={{ textAlign: 'left', fontSize: 16 }} />
 
-                                    <Text text={`${formatMoney(listShipPrice[index])} đ`} style={{ textAlign: 'left', color: 'red', fontSize: 16 }} />
+                                    <Text text={`${formatMoney(listShipPriceWithShopPolicy[index])} đ`} style={{ textAlign: 'left', color: 'red', fontSize: 16 }} />
                                 </TransparentView>
 
                                 <TransparentView style={{ marginTop: 15, flexDirection: 'row' }}>
                                     <I18NText text='Order Price' style={{ textAlign: 'left', fontSize: 22 }} />
                                     <Text text={`: `} style={{ textAlign: 'left', fontSize: 22 }} />
-                                    <Text text={`${formatMoney(listShipPrice[index] + item.price)} đ`} style={{ textAlign: 'left', color: 'red', fontSize: 22 }} />
+                                    <Text text={`${formatMoney(listShipPriceWithShopPolicy[index] + item.price)} đ`} style={{ textAlign: 'left', color: 'red', fontSize: 22 }} />
                                 </TransparentView>
                             </TransparentView>
 
@@ -269,6 +278,11 @@ export const AddToOrderScreen = React.memo((props: AddToOrderType) => {
                         <Text text={`${formatMoney(getTotalPrice())} đ`} style={{ textAlign: 'left', color: 'red', fontSize: 24 }} />
                     </TransparentView> : null
             }
+
+            <TransparentView style={{ flexDirection: 'row', alignItems: 'center', marginTop: 15 }}>
+                <I18NText text='Hình thức thanh toán' style={{ marginLeft: 10, textAlign: 'left', fontSize: 18, fontWeight: '500' }} />
+                <I18NText text=': COD' style={{ textAlign: 'left', fontSize: 18, fontWeight: '500' }} />
+            </TransparentView>
 
             <Pressable
                 style={{

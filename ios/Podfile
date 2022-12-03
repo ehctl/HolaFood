@@ -9,6 +9,12 @@ platform :ios, podfile_properties['ios.deploymentTarget'] || '12.4'
 install! 'cocoapods',
   :deterministic_uuids => false
 
+  pod 'Firebase', :modular_headers => true
+  pod 'FirebaseCoreInternal', :modular_headers => true
+  pod 'GoogleUtilities', :modular_headers => true
+  pod 'FirebaseCore', :modular_headers => true
+
+
 target 'HolaFood' do
   use_expo_modules!
   config = use_native_modules!

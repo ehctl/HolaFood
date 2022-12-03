@@ -29,7 +29,7 @@ export default class Notification {
       if (token) {
         this.expoToken = token
         const notiToken = (await AsyncStorage.getItem(Constant.APP_NOTIFICATION_TOKEN)) ?? ''
-        const userInfo = JSON.parse((await AsyncStorage.getItem(Constant.APP_USER_INFO)) ?? '')
+        const userInfo = JSON.parse((await AsyncStorage.getItem(Constant.APP_USER_INFO)) ?? '{}')
 
         if (token.length > 0 && notiToken != token && userInfo.id && userInfo.role == 'ROLE_CUSTOMER') {
           await AsyncStorage.setItem(Constant.APP_NOTIFICATION_TOKEN, token)
@@ -37,7 +37,7 @@ export default class Notification {
             token,
             (response) => { 
               console.log('Add notification token success')
-            },
+            },    
             (e) => {
               console.log(e)
             }

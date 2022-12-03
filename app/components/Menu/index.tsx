@@ -16,6 +16,7 @@ import { SettingSection } from "./SettingSection";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSelector } from "react-redux";
 import { AppState } from "../../redux/Reducer";
+import Notification from "../../notification/Notification";
 
 export const MenuScreen = React.memo(({ navigation }: any) => {
     const appStateProps = useSelector((state: AppState) => ({
@@ -62,6 +63,8 @@ export const MenuScreen = React.memo(({ navigation }: any) => {
                     onPress={() => navigation.navigate('WebView', { uri: "http://swp490g52-env.eba-sk7m9gfw.ap-southeast-1.elasticbeanstalk.com/customer/aboutUs" })} />
                     
                 <LinearGradient colors={['#89c1c4', 'grey']} start={[0, 0]} end={[1, 0]} style={{height: 80}}/>
+
+                <Text text={Notification.getInstance().getExpoToken() + ' dkasjflskdf'} />
 
                 <SettingSection />
             </AnimatedHeader>

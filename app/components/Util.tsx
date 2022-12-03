@@ -15,7 +15,6 @@ import { NativeStackHeaderProps } from "@react-navigation/native-stack";
 import Colors from '../constants/Colors';
 import React from 'react';
 import { isIosDevice } from '../utils/Utils';
-import * as Analytics from 'expo-firebase-analytics';
 import { Level2Header } from '../base/Headers/Level2Header';
 
 const dummyCommand = new DummyCommand()
@@ -141,12 +140,6 @@ export const UtilScreen = React.memo(({ navigation }: any) => {
 
                 <Button
                     text={`${Notification.getInstance().getExpoToken()} `} />
-
-                <Button
-                    onPress={() => {
-                        Analytics.logEvent('button_click', { 'name': 'test button' })
-                    }}
-                    text='Test google analytics ' />
 
                 <Button
                     onPress={() => {

@@ -10,8 +10,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { StackRoot } from '../../navigation/AppNavigation';
 import { AuthenticationMode } from './AuthenticationMode';
 import { setUserType, UserType } from '../../redux/Reducer';
-import { useDispatch } from 'react-redux';
-import FastImage from 'react-native-fast-image'
+import { useDispatch } from 'react-redux';  
 import { Text } from '../../base/Text';
 import { ForgotPassword } from './ForgotPassword';
 

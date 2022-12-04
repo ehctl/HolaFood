@@ -95,7 +95,7 @@ export const mapOrderDataFromResponse = (data: any): OrderData => {
         address: data.address,
         items: items,
         status: data.orderStatus,
-        price: data.price,
+        price: data.price - data.shipOrder,
         shipFee: data.shipPrice,
         shipFeeWithShopPolicy: data.shipOrder,
         createdDate: formatCreatedDateType(new Date()),

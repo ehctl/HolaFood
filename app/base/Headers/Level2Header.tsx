@@ -2,7 +2,7 @@ import { TransparentView, View } from "../View";
 import { I18NText, Text } from "../Text";
 import { Pressable } from 'react-native';
 import { FontAwesome, FontAwesome1 } from "../FontAwesome";
-import { getStyle } from "../../utils/Utils";
+import { getStyle, isIosDevice } from "../../utils/Utils";
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from "../View";
 import { useSelector } from "react-redux";
@@ -44,8 +44,15 @@ export const Level2Header = React.memo((props: Level2HeaderProps) => {
                             <TransparentView style={{ position: 'relative', margin: 10, }}>
                                 {
                                     (appStateProps.cartItems.length + appStateProps.orders.length) > 0 ?
-                                        <View style={{ position: 'absolute', right: -13, top: -13, backgroundColor: '#029699', borderRadius: 20, padding: 3, zIndex: 1, aspectRatio: 1, height: 20, alignItems: 'center', justifyContent: 'center' }}>
-                                            <Text text={(appStateProps.cartItems.length + appStateProps.orders.length).toString()} style={{ fontWeight: '600', textAlign: 'right', fontSize: 12, color: 'white' }} />
+                                        <View
+                                            style={{
+                                                position: 'absolute', right: -13, top: -13, backgroundColor: '#029699', borderRadius: 20,
+                                                padding: 3, zIndex: 1, aspectRatio: 1, height: 20, alignItems: 'center', justifyContent: 'center'
+                                            }}>
+
+                                            <Text
+                                                text={(appStateProps.cartItems.length + appStateProps.orders.length).toString()}
+                                                style={{ fontWeight: '600', fontSize: isIosDevice() ? 10 : 8, color: 'white' }} />
                                         </View> : null
                                 }
                                 <FontAwesome name="shopping-cart" size={22} color='#d14fa6' style={{}} />

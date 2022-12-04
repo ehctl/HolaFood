@@ -25,28 +25,28 @@ export const FoodList = React.memo((props: FoodListProps) => {
     }))
 
     const showToast = useToast()
-    
+
     const [reachListEnd, setReachListEnd] = useState(false)
     const [loadingMore, setLoadingMore] = useState(true)
     const [pageIndex, setPageIndex] = useState(0)
-    const [listData, setListData] = useState<FoodDetailData[]>([])
+    const [listData, setListData] = useState<(FoodDetailData| PopularFoodData)[]>([])
     const [abortController, setAbortController] = useState<AbortController>(null)
-    
+
     useEffect(() => {
         fetchMoreData(0)
     }, [props.type])
 
-    const renderItem = ({ item, index }: ListRenderItemInfo<ItemType>) => {
+    const renderItem = ({ item, index }: ListRenderItemInfo<FoodDetailData | PopularFoodData>) => {
         if (props.type == FoodListType.POPULAR_FOOD)
             return <PopularFoodItem data={item as PopularFoodData} index={index} />
 
-        return <FoodItem data={item} />
+        return <FoodItem data={item as FoodDetailData} />
     }
 
     const extractor = (_: any, index: number) => `${index}`
 
 
-    const fetchMoreData = useCallback( (currentPageIndex: number) => {
+    const fetchMoreData = useCallback((currentPageIndex: number) => {
         setLoadingMore(true)
         abortController?.abort()
         const newAbortController = new AbortController()
@@ -59,11 +59,19 @@ export const FoodList = React.memo((props: FoodListProps) => {
             props.type,
             currentPageIndex,
             (response) => {
-                const data = response.data.map((i) => mapFoodDetailDataFromRequest1(i))
-                if (data.length < 10)
-                    setReachListEnd(true)
+                const data = response.data
+                if (props.type == FoodListType.POPULAR_FOOD) {
+                    setListData(data.map((i: any) => ({
+                        productName: i.productName,
+                        quantity: i.quantity
+                    })))
+                } else {
+                    const listFood = response.data.map((i) => mapFoodDetailDataFromRequest1(i))
+                    if (listFood.length < 10)
+                        setReachListEnd(true)
 
-                setListData(currentPageIndex == 0 ? data : [...listData, ...data])
+                    setListData(currentPageIndex == 0 ? listFood : [...listData, ...listFood])
+                }
                 setLoadingMore(false)
             },
             (e) => {
@@ -85,7 +93,7 @@ export const FoodList = React.memo((props: FoodListProps) => {
 
     return (
         <View style={{
-            flex: 1, flexGrow:1, flexShrink: 1 ,marginTop: 10, borderRadius: 15, marginHorizontal: 10
+            flex: 1, flexGrow: 1, flexShrink: 1, marginTop: 10, borderRadius: 15, marginHorizontal: 10
         }}>
             <TransparentView style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 10, marginBottom: 5 }}>
                 <I18NText
@@ -93,9 +101,9 @@ export const FoodList = React.memo((props: FoodListProps) => {
                     text={getFoodListTitle()} />
             </TransparentView>
 
-            <View style={{ flex:1 , flexGrow: 1, height: '100%', backgroundColor: 'transparent' }}>
+            <View style={{ flex: 1, flexGrow: 1, height: '100%', backgroundColor: 'transparent' }}>
                 <FlatList
-                    contentContainerStyle={{flex: 1}}
+                    contentContainerStyle={{ flex: 1 }}
                     style={{}}
                     showsHorizontalScrollIndicator={false}
                     data={listData}
@@ -108,7 +116,7 @@ export const FoodList = React.memo((props: FoodListProps) => {
                         }
                     }}
                     keyExtractor={extractor}
-                    ListEmptyComponent={loadingMore ? null : <I18NText text='No Food Right Now, Please Comeback Later'/>}
+                    ListEmptyComponent={loadingMore ? null : <I18NText text='No Food Right Now, Please Comeback Later' />}
                     ListFooterComponent={<FoodItemShimmer visible={loadingMore} />}
                     ListFooterComponentStyle={{}} />
             </View>

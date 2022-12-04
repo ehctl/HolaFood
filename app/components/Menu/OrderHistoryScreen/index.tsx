@@ -7,7 +7,7 @@ import { ListRenderItemInfo, RefreshControl, SectionList } from "react-native";
 import { formatCreatedDateType, formatDateTimeFromData, wait } from "../../../utils/Utils";
 import { OrderStatus } from "../../Order/OrderItem";
 import { OrderItemShimmer } from "../../Order/OrderItemShimmer";
-import { getInactiveOrders } from "../../../core/apis/Requests";
+import { getAllOrders, getInactiveOrders } from "../../../core/apis/Requests";
 import { mapOrderDataFromResponse } from "../../Order";
 import { I18NText } from "../../../base/Text";
 import { useSelector } from "react-redux";
@@ -70,7 +70,7 @@ export const OrderHistoryScreen = React.memo(() => {
     const fetchData = useCallback((pageIndex: number) => {
         setLoading(true)
 
-        getInactiveOrders(
+        getAllOrders(
             pageIndex,
             (response) => {
                 const orderDataFromResponse = response.data
@@ -90,6 +90,7 @@ export const OrderHistoryScreen = React.memo(() => {
 
     const onRefresh = useCallback(() => {
         setListOrder([])
+        setPageIndex(0)
         fetchData(0)
     }, [fetchData])
 

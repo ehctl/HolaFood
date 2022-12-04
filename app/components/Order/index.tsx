@@ -1,6 +1,6 @@
 import { TransparentView, View } from "../../base/View"
 import { ActivityIndicator, Pressable, RefreshControl, TextInput } from 'react-native';
-import { getStyle, reformatDateTime, wait } from "../../utils/Utils";
+import { getStyle, reformatDateTime } from "../../utils/Utils";
 import { useCallback, useEffect, useRef, useState } from "react";
 import React from "react";
 import { useSelector } from "react-redux";
@@ -113,6 +113,7 @@ export const OrderScreen = React.memo((props: OrderViewProp) => {
 
     return (
         <View style={[getStyle().flex_c_s, { paddingTop: 5 }]}>
+            
             <FlatList
                 refreshControl={
                     <RefreshControl
@@ -129,6 +130,7 @@ export const OrderScreen = React.memo((props: OrderViewProp) => {
             <PopupModal
                 ref={cancelOrderPopupRef}
                 title="Cancel Order" >
+
                 <TransparentView style={{ flexDirection: 'row', marginTop: 15 }}>
                     <TextInput
                         placeholder={I18NReasonToCancel}
@@ -178,7 +180,7 @@ export const mapOrderDataFromResponse = (data: any): OrderData => {
         address: data.address,
         items: items,
         status: data.orderStatus,
-        price: data.price,
+        price: data.price - data.shipOrder,
         shipFee: data.shipPrice,
         shipFeeWithShopPolicy: data.shipOrder,
         createdDate: reformatDateTime(data.createdDate),

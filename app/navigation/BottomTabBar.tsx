@@ -1,7 +1,6 @@
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { SettingSection } from '../components/Menu/SettingSection';
 import { NotificationsScreen as Notifications } from '../components/Notifications';
-import { UtilScreen as Util, UtilScreen } from '../components/Util';
 import { Animated, Pressable, TouchableOpacity } from 'react-native';
 import { MaterialTopTabBarProps } from '@react-navigation/material-top-tabs';
 import { StyleSheet } from 'react-native';

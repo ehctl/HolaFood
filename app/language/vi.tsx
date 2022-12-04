@@ -93,7 +93,7 @@ export const vi: any = {
     "Your Address List Is Empty. Please Add Your Address!": 'Bạn chưa có địa chỉ nhận đơn hàng. Hãy thêm địa chỉ mới!',
     "Order Is Waiting For Shop Confirmation": 'Đơn đang chờ cửa hàng xác nhận',
     "Order Is Ready To Ship": 'Đơn hàng đã sẵn sàng để vận chuyển',
-    "Order Is Waiting For Shipper To Pick Up": 'Đơn hàng đang chờ shipper nhận',
+    "Order Is Waiting For Shipper To Pick Up": 'Đơn hàng đang chờ người giao hàng nhận',
     "Order Is The Way": 'Đơn hàng đang được vận chuyển',
     "Order Was Delivered": 'Đơn hàng đã được giao',
     "Order Was Cancelled": 'Đơn hàng đã bị hủy',

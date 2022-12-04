@@ -7,7 +7,7 @@ import { Constant } from "../../../utils/Constant"
 import { wait } from "../../../utils/Utils"
 import { FoodDetailData } from "../../FoodDetail/FoodDetailScreen"
 import { ShopFoodListShimmer } from "../ShopDetailShimmer.tsx"
-import { ShopFoodItem, ShopFoodItemProps } from "../ShopFoodItem"
+import { ShopFoodItem } from "../ShopFoodItem"
 
 export const ShopFoodList = React.memo((props: ShopFoodListProps) => {
     const [foodList, setFoodList] = useState<FoodDetailData[]>([])
@@ -17,9 +17,8 @@ export const ShopFoodList = React.memo((props: ShopFoodListProps) => {
 
     const showToast = useToast()
 
-    const fetchData = useCallback(async () => {
+    const fetchData = useCallback((pageIndex: number) => {
         setLoading(true)
-        await wait(2000)
 
         getShopListFood(
             props.shopId,
@@ -44,7 +43,9 @@ export const ShopFoodList = React.memo((props: ShopFoodListProps) => {
     }, [foodList])
 
     useEffect(() => {
-        fetchData()
+        setPageIndex(0)
+        setReachEndList(false)
+        fetchData(0)
     }, [])
 
     const renderItems = ({ item }) => {
@@ -63,9 +64,9 @@ export const ShopFoodList = React.memo((props: ShopFoodListProps) => {
             scrollEnabled={false}
             onEndReachedThreshold={0.5}
             onEndReached={() => {
-                if (!reachEndList) {
+                if (!reachEndList && !loading) {
+                    fetchData(pageIndex + 1)
                     setPageIndex(pageIndex + 1)
-                    fetchData()
                 }
             }}
             ListFooterComponent={<ShopFoodListShimmer visible={loading} />}

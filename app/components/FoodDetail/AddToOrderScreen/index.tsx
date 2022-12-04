@@ -124,6 +124,8 @@ export const AddToOrderScreen = React.memo((props: AddToOrderType) => {
         } else {
             setAddingOrder(true)
             const orders = getOrders()
+            orders.sort((i1, i2) => i2.id - i1.id)
+
             const addOrderFN = props.route.params?.usingNewCartItem ? addOrdersWithCardData : addOrdersWithCartId
             addOrderFN(
                 orders,
@@ -133,6 +135,8 @@ export const AddToOrderScreen = React.memo((props: AddToOrderType) => {
                     orders.forEach((item, index) => {
                         item.id = data[index].id
                     })
+                    orders.sort((i1, i2) => i2.id - i1.id)
+
                     dispatch(addOrders(orders))
                     setAddingOrder(false)
                     navigation.navigate('Orders' as never)
@@ -280,8 +284,7 @@ export const AddToOrderScreen = React.memo((props: AddToOrderType) => {
             }
 
             <TransparentView style={{ flexDirection: 'row', alignItems: 'center', marginTop: 15 }}>
-                <I18NText text='Hình thức thanh toán' style={{ marginLeft: 10, textAlign: 'left', fontSize: 18, fontWeight: '500' }} />
-                <I18NText text=': COD' style={{ textAlign: 'left', fontSize: 18, fontWeight: '500' }} />
+                <I18NText text='· Thanh toán khi nhận hàng' style={{ marginLeft: 10, textAlign: 'left', fontSize: 18, fontWeight: '500', flexGrow: 1, flexShrink: 1 }} numberOfLines={3}/>
             </TransparentView>
 
             <Pressable

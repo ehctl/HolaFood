@@ -37,8 +37,9 @@ export const HomeFoodList = React.memo((props: FoodListProps) => {
             (response) => {
                 const data = response.data
                 if (foodListType == FoodListType.POPULAR_FOOD) {
-                    setListData(data.map((i: FoodDetailData) => ({
-                        productName: i.productName
+                    setListData(data.map((i: any) => ({
+                        productName: i.productName,
+                        quantity: i.quantity
                     })))
                 } else {
                     setListData(data.map((i) => mapFoodDetailDataFromRequest1(i)))
@@ -177,4 +178,5 @@ type FoodListProps = {
 
 export type PopularFoodData = {
     productName: string,
+    quantity: number,
 }

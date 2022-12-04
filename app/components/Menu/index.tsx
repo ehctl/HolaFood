@@ -64,8 +64,6 @@ export const MenuScreen = React.memo(({ navigation }: any) => {
                     
                 <LinearGradient colors={['#89c1c4', 'grey']} start={[0, 0]} end={[1, 0]} style={{height: 80}}/>
 
-                <Text text={Notification.getInstance().getExpoToken() + ' dkasjflskdf'} />
-
                 <SettingSection />
             </AnimatedHeader>
         </View>

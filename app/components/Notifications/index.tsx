@@ -33,7 +33,7 @@ export const NotificationsScreen = React.memo(({ navigation }: any) => {
 
     const fetchData = useCallback((pageIndex: number) => {
         setLoading(true)
-
+        const prevNotiList = appStateProps.notifications
         if (pageIndex == 0)
             dispatch(addNotifications([]))
 
@@ -42,8 +42,8 @@ export const NotificationsScreen = React.memo(({ navigation }: any) => {
             (response) => {
                 const data = response.data.map((i) => mapNotificationDataFromResponse(i))
                 const notiList = data.length > 0 ? data : (pageIndex == 0 ? getListItem() : [])
-                dispatch(addNotifications(pageIndex == 0 ? notiList : [...appStateProps.notifications, ...notiList]))
-
+                dispatch(addNotifications(pageIndex == 0 ? notiList : [...prevNotiList, ...notiList]))
+                console.log(data.map((i) => i.id), pageIndex)
                 setReachEndList(data.length < 20)
                 setLoading(false)
             },
@@ -53,13 +53,14 @@ export const NotificationsScreen = React.memo(({ navigation }: any) => {
                 setLoading(false)
             }
         )
-    }, [])
+    }, [appStateProps.notifications])
 
     const appStateListener = useRef(null);
 
     useEffect(() => {
         appStateListener.current = ApplicationState.addEventListener("change", nextAppState => {
             if (nextAppState == 'active' && appStateProps.selectedBottomTabIndex == 2 && !loading) {
+                console.log('sdafksjfslk')
                 fetchData(0)
             }
         });
@@ -71,6 +72,8 @@ export const NotificationsScreen = React.memo(({ navigation }: any) => {
 
 
     useEffect(() => {
+        setReachEndList(false)
+        setPageIndex(0)
         fetchData(0)
     }, [])
 
@@ -106,13 +109,13 @@ export const NotificationsScreen = React.memo(({ navigation }: any) => {
                     keyExtractor: (_, index) => `${index}`,
                     onEndReachedThreshold: 0.5,
                     onEndReached: () => {
-                        if (!reachedEndList && !loading) {
+                        if (!reachedEndList && !loading && appStateProps.notifications.length > 0) {
                             fetchData(pageIndex + 1)
                             setPageIndex(pageIndex + 1)
                         }
                     }
                 }}
-                onRefresh={() => fetchData(0)}
+                onRefresh={() => {setPageIndex(0); fetchData(0)}}
             />
         </View>
     );

@@ -299,7 +299,6 @@ export const getFoodDetail = (
             id: foodId,
             index: 0
         },
-        // url: 'https://mocki.io/v1/3650dac3-486d-4645-8255-ee2c8c96a36e',
         url: DOMAIN + '/product/getproductby',
     }
 
@@ -698,6 +697,14 @@ export const getInactiveOrders = (
     return getOrders(7, 0, pageIndex, success, failure)
 }
 
+export const getAllOrders = (
+    pageIndex: number,
+    success: (data: any) => void,
+    failure: (error: any) => void
+) => {
+    return getOrders(10, 0, pageIndex, success, failure)
+}
+
 export const getOrders = (
     status: number,
     shopId: number,
@@ -772,7 +779,7 @@ export const addOrdersWithCartId = (
     const option = {
         method: 'POST',
         data: orders.map((i) => ({
-            price: i.price,
+            price: i.price + i.shipFeeWithShopPolicy,
             shipPrice: i.shipFee,
             shipOrder: i.shipFeeWithShopPolicy,
             address: i.address,
@@ -809,7 +816,7 @@ export const addOrdersWithCardData = (
     const option = {
         method: 'POST',
         data: orders.map((i) => ({
-            price: i.price,
+            price: i.price + i.shipFeeWithShopPolicy,
             shipPrice: i.shipFee,
             shipOrder: i.shipFeeWithShopPolicy,
             address: i.address,

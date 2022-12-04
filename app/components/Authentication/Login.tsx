@@ -10,7 +10,7 @@ import { TextInput } from 'react-native'
 import { useLanguage } from '../../base/Themed';
 import { addNotificationToken, login } from '../../core/apis/Requests';
 import { useDispatch } from 'react-redux';
-import { mapResponseToUserInfo } from '../../hooks/usePrefetchedData';
+import { mapResponseToUserInfo, mapResponseToUserInfo1 } from '../../hooks/usePrefetchedData';
 import { Constant } from '../../utils/Constant';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -30,7 +30,7 @@ export const Login = (props: LoginScreenProp) => {
 
     const onLoginSuccess = useCallback(async (response) => {
         const token = response.token
-        const userInfo = mapResponseToUserInfo(response.data)
+        const userInfo = mapResponseToUserInfo1(response)
         const userType = getUserRole(userInfo.role)
         const notiToken = (await AsyncStorage.getItem(Constant.APP_NOTIFICATION_TOKEN)) ?? ''
 
@@ -39,7 +39,7 @@ export const Login = (props: LoginScreenProp) => {
         dispatch(setUserInfo(userInfo))
         saveApiTokenInfoLocalStorage(token)
         saveUserInfoLocalStorage(userInfo)
-        
+
         if (userType == 'customer' && notiToken.length > 0) {
             addNotificationToken(
                 notiToken,

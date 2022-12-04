@@ -58,6 +58,18 @@ export const mapResponseToUserInfo = (response): UserInfo => {
   }
 }
 
+export const mapResponseToUserInfo1 = (response): UserInfo => {
+  return {
+    id: response.data.id,
+    firstName: response.data.firstName,
+    lastName: response.data.lastName,
+    email: response.data.email,
+    phone: response.data.phone ?? '',
+    role: mapUserRole(response.data.roleId),
+    shopId: parseInt(response.message)
+  }
+}
+
 export const mapUserRole = (role: number): string => {
   switch (role) {
     case 2:

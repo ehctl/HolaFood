@@ -44,10 +44,10 @@ export const OrderStatusNotificationItem = React.memo((props: NotificationItemDa
                 }}>
                 <FontAwesome2 name="fastfood" style={{}} size={22} color='#ab0785' />
 
-                <TransparentView style={{flexDirection: 'row', alignItems: 'center'}}>
+                <TransparentView style={{flexDirection: 'row', alignItems: 'center', flexShrink: 1}}>
                     <BText 
                         text={`${I18NOrders} ${props.data.orderId} ${I18NOrderStatus}`} 
-                        style={{ marginLeft: 15,textAlign: 'left', fontWeight: '500', fontSize: 15 }} 
+                        style={{ marginHorizontal: 15, flexShrink: 1,textAlign: 'left', fontWeight: '500', fontSize: 15 }} 
                         numberOfLines={3} />
                 </TransparentView>
             </View>
@@ -62,7 +62,7 @@ export const getOrderStatusForNotificaton = (status: number) => {
         case 2:
             return "is ready to ship"
         case 6:
-            return "is waiting for shipper to pickup"
+            return "is waiting for shipper to pick up"
         case 3:
             return "is on the way"
         case 4:

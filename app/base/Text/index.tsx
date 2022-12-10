@@ -7,7 +7,7 @@ export const Text = React.memo((props: TextProps) => {
     const color = useThemeColor({ light: lightColor, dark: darkColor }, 'text');
 
     return (
-        <DefaultText numberOfLines={1} ellipsizeMode='tail' style={[{ color }, { textAlign: 'center', fontSize: 16, fontWeight: '400' }, style]} {...otherProps} >
+        <DefaultText numberOfLines={10} ellipsizeMode='tail' style={[{ color }, { textAlign: 'center', fontSize: 16, fontWeight: '400' }, style]} {...otherProps} >
             {props.text}
         </DefaultText>
     );

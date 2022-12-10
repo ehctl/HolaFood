@@ -293,6 +293,11 @@ export const OrderDetail = (props: OrderDetailProps) => {
                             </TransparentView>
 
                             <TransparentView style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginHorizontal: 10, marginTop: 5 }}>
+                                <Entypo name='calendar' size={20} color='#c49829' />
+                                <I18NText text={formatDateTimeFromData(data.createdDate)} style={{ textAlign: 'left', marginLeft: 10, fontSize: 16 }} />
+                            </TransparentView>
+
+                            <TransparentView style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginHorizontal: 10, marginTop: 5 }}>
                                 <FontAwesome2 name={getOrderStatusIcon(data.status)} size={24} color='#995050' />
                                 <I18NText text={getOrderStatusMsg(data.status)} style={{ textAlign: 'left', marginLeft: 10, fontSize: 16, fontWeight: '500' }} />
                                 {
@@ -301,6 +306,7 @@ export const OrderDetail = (props: OrderDetailProps) => {
                                         : null
                                 }
                             </TransparentView>
+
                             {
                                 data.status == OrderStatus.CANCELED ?
                                     <TransparentView style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginHorizontal: 10, marginTop: 5 }}>
@@ -311,13 +317,8 @@ export const OrderDetail = (props: OrderDetailProps) => {
                                     : null
                             }
 
-                            <TransparentView style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginHorizontal: 10, marginTop: 5 }}>
-                                <FontAwesome2 name='date-range' size={24} color='#106e7d' />
-                                <I18NText text={formatDateTimeFromData(data.createdDate)} style={{ textAlign: 'left', marginLeft: 10, fontSize: 16 }} />
-                            </TransparentView>
-
                             <Pressable
-                                style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10, marginHorizontal: 10}}
+                                style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10, marginHorizontal: 10 }}
                                 onPress={() => navigateToShopDetail(data?.items[0]?.productDetail?.shopID)}>
 
                                 <Entypo name='shop' size={20} color='#3179cc' />
@@ -331,11 +332,11 @@ export const OrderDetail = (props: OrderDetailProps) => {
                             </TransparentView>
 
                             <TransparentView style={{ flexDirection: 'row', flexShrink: 1, marginHorizontal: 10, marginTop: 15 }}>
-                                <Text text={I18NShopAddress + ': ' + data.items[0].productDetail.shopAddress} style={{ textAlign: 'left', fontSize: 16, flexShrink: 1 }} numberOfLines={3} />
+                                <Text text={I18NShopAddress + ': ' + data.items[0].productDetail.shopAddress} style={{ textAlign: 'left', fontSize: 16, flexShrink: 1 }}  />
                             </TransparentView>
 
                             <TransparentView style={{ flexDirection: 'row', flexShrink: 1, marginHorizontal: 10, marginTop: 5 }}>
-                                <Text text={I18NShipTo + ': ' + data.address} style={{ textAlign: 'left', fontSize: 16, flexShrink: 1 }} numberOfLines={3} />
+                                <Text text={I18NShipTo + ': ' + data.address} style={{ textAlign: 'left', fontSize: 16, flexShrink: 1 }}  />
                             </TransparentView>
 
                             <TransparentView style={{ flexDirection: 'row', marginTop: 15 }}>
@@ -358,7 +359,7 @@ export const OrderDetail = (props: OrderDetailProps) => {
                             {
                                 data.items.map((item, index) => (
                                     <TransparentView key={'order_item_' + index}>
-                                        <CartInnerItem item={item} />
+                                        <CartInnerItem item={item} hideShopName={true}/>
                                         <View style={{ backgroundColor: 'grey', height: 2, marginVertical: 15, marginHorizontal: 10 }} />
                                     </TransparentView>
                                 ))
@@ -376,7 +377,7 @@ export const OrderDetail = (props: OrderDetailProps) => {
                                                 }}
                                                 onPress={() => confirm(data.id, OrderStatus.PROGRESSING)}>
                                                 <FontAwesome2 name="local-shipping" size={20} color='#288c26' style={{ marginLeft: 10 }} />
-                                                <I18NText text="Accept Ship Order" style={{ color: '#288c26', fontSize: 18, marginLeft: 10, flexShrink: 1 }} numberOfLines={2} />
+                                                <I18NText text="Accept Ship Order" style={{ color: '#288c26', fontSize: 18, marginLeft: 10, flexShrink: 1 }} />
 
                                                 <ActivityIndicator
                                                     animating={shippingOrder}
@@ -391,7 +392,7 @@ export const OrderDetail = (props: OrderDetailProps) => {
                                                 }}
                                                 onPress={() => confirm(data.id, OrderStatus.READY_TO_BE_SHIPPED)}>
                                                 <FontAwesome2 name="close" size={20} color='red' style={{ marginLeft: 10 }} />
-                                                <I18NText text="Cancel Accept Ship Order" style={{ color: 'red', fontSize: 18, marginLeft: 10, flexShrink: 1 }} numberOfLines={2} />
+                                                <I18NText text="Cancel Accept Ship Order" style={{ color: 'red', fontSize: 18, marginLeft: 10, flexShrink: 1 }} />
 
                                                 <ActivityIndicator
                                                     animating={cancelingOrder}
@@ -412,7 +413,7 @@ export const OrderDetail = (props: OrderDetailProps) => {
                                                 }}
                                                 onPress={() => confirm(data.id, OrderStatus.DONE)}>
                                                 <FontAwesome2 name="done-all" size={20} color='#288c26' style={{ marginLeft: 10 }} />
-                                                <I18NText text="Finish Order" style={{ color: '#288c26', fontSize: 18, marginLeft: 10, flexShrink: 1 }} numberOfLines={2} />
+                                                <I18NText text="Finish Order" style={{ color: '#288c26', fontSize: 18, marginLeft: 10, flexShrink: 1 }} />
 
                                                 <ActivityIndicator
                                                     animating={finishingOrder}
@@ -427,7 +428,7 @@ export const OrderDetail = (props: OrderDetailProps) => {
                                                 }}
                                                 onPress={() => confirm(data.id, OrderStatus.CANCELED)}>
                                                 <FontAwesome2 name="close" size={20} color='red' style={{ marginLeft: 10 }} />
-                                                <I18NText text="Cancel Ship Order" style={{ color: 'red', fontSize: 18, marginLeft: 0, flexShrink: 1 }} numberOfLines={2} />
+                                                <I18NText text="Cancel Ship Order" style={{ color: 'red', fontSize: 18, marginLeft: 0, flexShrink: 1 }} />
 
                                                 <ActivityIndicator
                                                     animating={cancelingOrder}
@@ -447,7 +448,7 @@ export const OrderDetail = (props: OrderDetailProps) => {
                                             }}
                                             onPress={() => confirm(data.id, OrderStatus.WAITING_FOR_SHIPPER_TO_PICK_UP)}>
                                             <FontAwesome2 name="local-shipping" size={20} color='#51418c' style={{ marginLeft: 10 }} />
-                                            <I18NText text="Accept Order" style={{ color: '#51418c', fontSize: 18, marginLeft: 20, flexShrink: 1 }} numberOfLines={2} />
+                                            <I18NText text="Accept Order" style={{ color: '#51418c', fontSize: 18, marginLeft: 20, flexShrink: 1 }} />
 
                                             <ActivityIndicator
                                                 animating={shippingOrder}

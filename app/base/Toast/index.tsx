@@ -84,7 +84,7 @@ export const Toast = React.memo(() => {
             }}
             pointerEvents='none'>
 
-            <Animated.Text style={{ color: consumer.color, fontSize: 18 }}>
+            <Animated.Text style={{ color: consumer.color, fontSize: 18 }} numberOfLines={3}>
                 {message}
             </Animated.Text>
         </Animated.View>

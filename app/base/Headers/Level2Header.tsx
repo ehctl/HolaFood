@@ -43,7 +43,7 @@ export const Level2Header = React.memo((props: Level2HeaderProps) => {
                             }} >
                             <TransparentView style={{ position: 'relative', margin: 10, }}>
                                 {
-                                    (appStateProps.cartItems.length + appStateProps.orders.length) > 0 ?
+                                    (appStateProps.cartItems.length) > 0 ?
                                         <View
                                             style={{
                                                 position: 'absolute', right: -13, top: -13, backgroundColor: '#029699', borderRadius: 20,

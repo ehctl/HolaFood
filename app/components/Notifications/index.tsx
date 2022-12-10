@@ -10,19 +10,22 @@ import { getListItem, DefaultNotificationItem, NotificationItemData, Notificatio
 import { PopupModal } from "../../base/PopupModal";
 import { hide } from "expo-splash-screen";
 import { useSelector } from "react-redux";
-import { addNotifications, AppState } from "../../redux/Reducer";
+import { addNotifications, AppState, setNewOrderNotification } from "../../redux/Reducer";
 import { useDispatch } from "react-redux";
 import { NotificationItemShimmer } from "./NotificationItemShimmer";
-import { getNotification } from "../../core/apis/Requests";
+import { getNotification, updateSeenAllNotification } from "../../core/apis/Requests";
 import { useToast } from "../../base/Toast";
 import { Constant } from "../../utils/Constant";
 import { AppState as ApplicationState } from 'react-native'
+import { checkNewNotification as checkNewNotificationReq } from "../../core/apis/Requests";
+
 
 export const NotificationsScreen = React.memo(({ navigation }: any) => {
     const dispatch = useDispatch()
     const appStateProps = useSelector((state: AppState) => ({
         notifications: state.notifications,
         selectedBottomTabIndex: state.selectedBottomTabIndex,
+        newNotifications: state.newOrderNotification,
     }))
     const [loading, setLoading] = useState(false)
     const [pageIndex, setPageIndex] = useState(0)
@@ -54,12 +57,39 @@ export const NotificationsScreen = React.memo(({ navigation }: any) => {
         )
     }, [appStateProps.notifications])
 
+    const checkNewNotification = useCallback(() => {
+        checkNewNotificationReq(
+            (response) => {
+                const status = response.data.status as number
+                dispatch(setNewOrderNotification(status == 1))
+            },
+            (e) => {
+                console.log(e)
+                showToast(Constant.API_ERROR_OCCURRED)
+                dispatch(setNewOrderNotification(true))
+            })
+    }, [])
+
+
+    useEffect(() => {
+        if (appStateProps.selectedBottomTabIndex == 2 && appStateProps.newNotifications) {
+            updateSeenAllNotification(
+                (response) => {
+                    dispatch(setNewOrderNotification(false))
+                },
+                (e) => {
+                    console.log(e)
+                    showToast(Constant.API_ERROR_OCCURRED)
+                }
+            )
+        }
+    }, [appStateProps.selectedBottomTabIndex, appStateProps.newNotifications])
+
     const appStateListener = useRef(null);
 
     useEffect(() => {
         appStateListener.current = ApplicationState.addEventListener("change", nextAppState => {
             if (nextAppState == 'active' && appStateProps.selectedBottomTabIndex == 2 && !loading) {
-                console.log('sdafksjfslk')
                 fetchData(0)
             }
         });
@@ -71,6 +101,7 @@ export const NotificationsScreen = React.memo(({ navigation }: any) => {
 
 
     useEffect(() => {
+        checkNewNotification()
         setReachEndList(false)
         setPageIndex(0)
         fetchData(0)

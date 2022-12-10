@@ -77,8 +77,6 @@ const MainAppReducer = createSlice({
         setNewOrderNotification: (state, action: PayloadAction<boolean>) => { state.newOrderNotification = action.payload; return state },
         setSelectedBottomTabIndex: (state, action: PayloadAction<number>) => { 
             state.selectedBottomTabIndex = action.payload; 
-            if (action.payload == 2 && state.newOrderNotification)
-                state.newOrderNotification = false
             return state 
         },
         setStateListCategory: (state, action: PayloadAction<CategoryData[]>) => { state.categoryList = action.payload; return state },

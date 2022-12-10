@@ -121,7 +121,7 @@ export const CartInnerItem = (props: CartItemType) => {
             <Pressable
                 onPress={() => { navigateToFoodDetail(props.item.productDetail.id) }}
                 style={{ justifyContent: 'center', marginLeft: 10 }}>
-                
+
                 <Image source={{ uri: props.item.productDetail.productImgURL }} style={{ height: 125, aspectRatio: 1, borderRadius: 10 }} />
             </Pressable>
 
@@ -130,11 +130,16 @@ export const CartInnerItem = (props: CartItemType) => {
                     <Text text={props.item.productDetail.productName.trim()} style={{ textAlign: 'left', fontSize: 20 }} numberOfLines={2} />
                 </Pressable>
 
-                <Pressable
-                    style={{ marginTop: 5 }}
-                    onPress={() => { navigateToShopDetail(props.item.productDetail.shopID) }}>
-                    <Text text={props.item.productDetail.shopName.trim()} style={{ fontSize: 16, paddingRight: 5, fontWeight: '500', textAlign: 'left' }} numberOfLines={2} />
-                </Pressable>
+                {
+                    props.hideShopName == true ?
+                        null
+                        :
+                        <Pressable
+                            style={{ marginTop: 5 }}
+                            onPress={() => { navigateToShopDetail(props.item.productDetail.shopID) }}>
+                            <Text text={props.item.productDetail.shopName.trim()} style={{ fontSize: 16, paddingRight: 5, fontWeight: '500', textAlign: 'left' }} numberOfLines={2} />
+                        </Pressable>
+                }
 
                 {
                     props.item.option.length !== 0 ?
@@ -170,4 +175,5 @@ export const CartInnerItem = (props: CartItemType) => {
 
 export type CartItemType = {
     item: CartItemData,
+    hideShopName?: boolean
 }

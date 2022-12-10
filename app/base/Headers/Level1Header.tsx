@@ -34,7 +34,7 @@ export const Level1Header = React.memo((props: HomeHeaderProp) => {
                             }} >
                             <TransparentView style={{ position: 'relative', margin: 10, }}>
                                 {
-                                    (appStateProps.cartItems.length + appStateProps.orders.length) > 0 && value == 'shopping-cart' ?
+                                    (appStateProps.cartItems.length) > 0 && value == 'shopping-cart' ?
                                         <View
                                             style={{
                                                 position: 'absolute', right: -13, top: -13, backgroundColor: '#029699',

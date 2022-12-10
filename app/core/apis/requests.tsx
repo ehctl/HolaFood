@@ -35,7 +35,7 @@ export const getSearchResult = (
                     }
                 })
                 .catch(((e) => {
-                    console.log(e)
+                    failure(e)
                 }))
         })
         .catch((e) => {
@@ -209,7 +209,7 @@ export const getFoodListByCategory = (
                     }
                 })
                 .catch(((e) => {
-                    console.log(e)
+                    failure(e)
                 }))
         })
         .catch((e) => {
@@ -247,7 +247,7 @@ export const getFoodListByType = (
                     }
                 })
                 .catch(((e) => {
-                    console.log(e)
+                    failure(e)
                 }))
         })
         .catch((e) => {
@@ -279,7 +279,7 @@ export const getPopularFood = (
                     }
                 })
                 .catch(((e) => {
-                    console.log(e)
+                    failure(e)
                 }))
         })
         .catch((e) => {
@@ -313,7 +313,7 @@ export const getFoodDetail = (
                     }
                 })
                 .catch(((e) => {
-                    console.log(e)
+                    failure(e)
                 }))
         })
         .catch((e) => {
@@ -345,7 +345,7 @@ export const getFoodOption = (
                     }
                 })
                 .catch(((e) => {
-                    console.log(e)
+                    failure(e)
                 }))
         })
         .catch((e) => {
@@ -381,7 +381,7 @@ export const getFoodReviews = (
                     }
                 })
                 .catch(((e) => {
-                    console.log(e)
+                    failure(e)
                 }))
         })
         .catch((e) => {
@@ -418,7 +418,7 @@ export const addFoodReview = (
                     }
                 })
                 .catch(((e) => {
-                    console.log(e)
+                    failure(e)
                 }))
         })
         .catch((e) => {
@@ -455,7 +455,7 @@ export const updateFoodReview = (
                     }
                 })
                 .catch(((e) => {
-                    console.log(e)
+                    failure(e)
                 }))
         })
         .catch((e) => {
@@ -485,7 +485,7 @@ export const getFoodCategory = (
                     }
                 })
                 .catch(((e) => {
-                    console.log(e)
+                    failure(e)
                 }))
         })
         .catch((e) => {
@@ -516,7 +516,7 @@ export const getListAddress = (
                     }
                 })
                 .catch(((e) => {
-                    console.log(e)
+                    failure(e)
                 }))
         })
         .catch((e) => {
@@ -548,7 +548,7 @@ export const getCartItems = (
                 })
                 .catch(((e) => {
                     failure(e)
-                    console.log(e)
+                    failure(e)
                 }))
         })
         .catch((e) => {
@@ -585,7 +585,7 @@ export const addCart = (
                 }
             })
                 .catch(((e) => {
-                    console.log(e)
+                    failure(e)
                 }))
         })
         .catch((e) => {
@@ -623,7 +623,7 @@ export const updateCart = (
                 }
             })
                 .catch(((e) => {
-                    console.log(e)
+                    failure(e)
                 }))
         })
         .catch((e) => {
@@ -656,7 +656,7 @@ export const deleteCart = (
             })
                 .catch(((e) => {
                     failure(e)
-                    console.log(e)
+                    failure(e)
                 }))
         })
         .catch((e) => {
@@ -800,7 +800,7 @@ export const addOrdersWithCartId = (
                 }
             })
                 .catch(((e) => {
-                    console.log(e)
+                    failure(e)
                 }))
         })
         .catch((e) => {
@@ -843,7 +843,7 @@ export const addOrdersWithCardData = (
                 }
             })
                 .catch(((e) => {
-                    console.log(e)
+                    failure(e)
                 }))
         })
         .catch((e) => {
@@ -876,7 +876,7 @@ export const updateOrder = (
                 }
             })
                 .catch(((e) => {
-                    console.log(e)
+                    failure(e)
                 }))
         })
         .catch((e) => {
@@ -910,7 +910,7 @@ export const cancelOrder = (
                 }
             })
                 .catch(((e) => {
-                    console.log(e)
+                    failure(e)
                 }))
         })
         .catch((e) => {
@@ -941,7 +941,65 @@ export const getNotification = (
                 }
             })
                 .catch(((e) => {
-                    console.log(e)
+                    failure(e)
+                }))
+        })
+        .catch((e) => {
+            failure(e)
+        })
+}
+
+export const checkNewNotification = (
+    success: (data: any) => void,
+    failure: (error: any) => void,
+) => {
+    const option = {
+        method: 'GET',
+        params: {
+        },
+        url: DOMAIN + '/notifications/notinew',
+    }
+
+    return addHeaderToken(option).
+        then((newOption) => {
+            axios(newOption).then((response) => {
+                if (response.status === 200 && response.data.success) {
+                    success(response.data);
+                } else {
+                    failure(response.data);
+                }
+            })
+                .catch(((e) => {
+                    failure(e)
+                }))
+        })
+        .catch((e) => {
+            failure(e)
+        })
+}
+
+export const updateSeenAllNotification = (
+    success: (data: any) => void,
+    failure: (error: any) => void,
+) => {
+    const option = {
+        method: 'POST',
+        data: {
+        },
+        url: DOMAIN + '/notifications/updatenotinew',
+    }
+
+    return addHeaderToken(option).
+        then((newOption) => {
+            axios(newOption).then((response) => {
+                if (response.status === 200 && response.data.success) {
+                    success(response.data);
+                } else {
+                    failure(response.data);
+                }
+            })
+                .catch(((e) => {
+                    failure(e)
                 }))
         })
         .catch((e) => {
@@ -975,7 +1033,7 @@ export const getSuggestAddress = (
                 }
             })
                 .catch(((e) => {
-                    console.log(e)
+                    failure(e)
                 }))
         })
         .catch((e) => {
@@ -1011,7 +1069,7 @@ export const getDistance = (
                 }
             })
                 .catch(((e) => {
-                    console.log(e)
+                    failure(e)
                 }))
         })
         .catch((e) => {
@@ -1045,7 +1103,7 @@ export const addNewAddress = (
                     }
                 })
                 .catch(((e) => {
-                    console.log(e)
+                    failure(e)
                 }))
         })
         .catch((e) => {
@@ -1077,7 +1135,7 @@ export const deleteAddress = (
                     }
                 })
                 .catch(((e) => {
-                    console.log(e)
+                    failure(e)
                 }))
         })
         .catch((e) => {
@@ -1107,7 +1165,7 @@ export const getListFAQ = (
                     }
                 })
                 .catch(((e) => {
-                    console.log(e)
+                    failure(e)
                 }))
         })
         .catch((e) => {
@@ -1141,7 +1199,7 @@ export const addNewFAQ = (
                     }
                 })
                 .catch(((e) => {
-                    console.log(e)
+                    failure(e)
                 }))
         })
         .catch((e) => {
@@ -1185,7 +1243,7 @@ export const addFavorite = (
                     }
                 })
                 .catch(((e) => {
-                    console.log(e)
+                    failure(e)
                 }))
         })
         .catch((e) => {
@@ -1218,7 +1276,7 @@ export const deleteFavorite = (
                 }
             })
                 .catch(((e) => {
-                    console.log(e)
+                    failure(e)
                 }))
         })
         .catch((e) => {
@@ -1430,7 +1488,7 @@ export const addNotificationToken = (
                 }
             })
                 .catch(((e) => {
-                    console.log(e)
+                    failure(e)
                 }))
         })
         .catch((e) => {
@@ -1462,7 +1520,7 @@ export const deleteNotificationToken = (
                 }
             })
                 .catch(((e) => {
-                    console.log(e)
+                    failure(e)
                 }))
         })
         .catch((e) => {

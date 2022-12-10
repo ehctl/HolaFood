@@ -81,7 +81,7 @@ export const OrderQueueScreen = React.memo((props: OrderViewProp) => {
                 marginHorizontal: 10, flexDirection: 'row', alignItems: 'center', 
             }}>
                 <Pressable
-                    style={{ flexDirection: 'row',borderRadius: 10, backgroundColor: 'orange', paddingHorizontal: 15, paddingVertical: 5 }}
+                    style={{ flexDirection: 'row',borderRadius: 10, backgroundColor: '#60cde0', paddingHorizontal: 15, paddingVertical: 5 }}
                     onPress={() => popupModalRef.current.changeVisibility(true)}>
 
                     <I18NText text="Sort" />
@@ -106,7 +106,7 @@ export const OrderQueueScreen = React.memo((props: OrderViewProp) => {
 
             <PopupModal ref={popupModalRef} title='Sort'>
                 <RadioButtonGroup
-                    selectedColor='orange'
+                    selectedColor='#28b1c9'
                     defaultColor='grey'
                     value={orderQueueSortType}
                     valueChange={(value: string) => {
@@ -116,20 +116,20 @@ export const OrderQueueScreen = React.memo((props: OrderViewProp) => {
 
                     <RadioButton value={QueueSortType.DATE} style={{ width: '100%', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 10 }}>
                         <TransparentView style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                            <View style={{ backgroundColor: '#607c87', borderRadius: 1000, padding: 10, width: 50, aspectRatio: 1, justifyContent: 'center', alignItems: 'center' }}>
-                                <FontAwesome2 name="date-range" size={28} color='orange' />
+                            <View style={{ backgroundColor: '#c0c6cf', borderRadius: 1000, padding: 10, width: 50, aspectRatio: 1, justifyContent: 'center', alignItems: 'center' }}>
+                                <FontAwesome2 name="date-range" size={28} color='#28b1c9' />
                             </View>
-                            <I18NText text={QueueSortType.DATE} style={{ fontSize: 18, marginLeft: 15 }} />
+                            <I18NText text={QueueSortType.DATE} style={{ fontSize: 18, marginLeft: 15, fontWeight: '500' }} />
                         </TransparentView>
                         <RadioButtonIcon size={5} />
                     </RadioButton>
 
                     <RadioButton value={QueueSortType.DISTANCE} style={{ width: '100%', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 10 }}>
                         <TransparentView style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                            <View style={{ backgroundColor: '#607c87', borderRadius: 1000, padding: 10, width: 50, aspectRatio: 1, justifyContent: 'center', alignItems: 'center' }}>
-                                <FontAwesome2 name="6-ft-apart" size={28} color='orange' />
+                            <View style={{ backgroundColor: '#c0c6cf', borderRadius: 1000, padding: 10, width: 50, aspectRatio: 1, justifyContent: 'center', alignItems: 'center' }}>
+                                <FontAwesome2 name="6-ft-apart" size={28} color='#28b1c9' />
                             </View>
-                            <I18NText text={QueueSortType.DISTANCE} style={{ fontSize: 18, marginLeft: 15 }} />
+                            <I18NText text={QueueSortType.DISTANCE} style={{ fontSize: 18, marginLeft: 15, fontWeight: '500' }} />
                         </TransparentView>
                         <RadioButtonIcon size={5} />
                     </RadioButton>

@@ -19,7 +19,7 @@ import { useToast } from "../../base/Toast"
 export const HomeScreen = React.memo(({ navigation }: any) => {
     const dispatch = useDispatch()
     const renderItem = ({ item }: { item: HomeItem }) => {
-        // draft item in list :~:
+        
         switch (item) {
             case HomeItem.NEWS:
                 return <News />
@@ -38,7 +38,7 @@ export const HomeScreen = React.memo(({ navigation }: any) => {
     const [refresh, setRefresh] = useState(false)
     const extractor = (item: HomeItem, index: number) => `${index + String(refresh)}`
     const showToast = useToast()
-    
+
     useEffect(() => {
         getListAddress(
             (response) => {
@@ -53,7 +53,7 @@ export const HomeScreen = React.memo(({ navigation }: any) => {
     }, [refresh])
 
     return (
-        <View style={{ flex: 1}}>
+        <View style={{ flex: 1, height: '100%', backgroundColor: 'red', position: 'relative', margin: 0 }}>
             <AnimatedHeader
                 headerProps={{
                     header: <Level1Header
@@ -65,7 +65,8 @@ export const HomeScreen = React.memo(({ navigation }: any) => {
                     headerHeight: Level1HeaderStats.HEADER_MAX_HEIGHT
                 }}
                 flatListProps={{
-                    style: { marginHorizontal: 10 },
+                    style: { marginHorizontal: 10, height: '100%' },
+                    contentContainerStyle: { height: '100%' },
                     renderItem: renderItem,
                     data: itemList,
                     keyExtractor: extractor,

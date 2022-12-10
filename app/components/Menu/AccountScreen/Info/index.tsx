@@ -8,7 +8,7 @@ import { useSelector } from "react-redux"
 import { AppState, clearUserInfo, setUserInfo } from "../../../../redux/Reducer"
 import { useLanguage } from "../../../../base/Themed"
 import React from "react"
-import { isValidNormalText, isValidPassword, isValidPhoneNumber } from "../../../../validation/validate"
+import { isValidName, isValidNormalText, isValidPassword, isValidPhoneNumber } from "../../../../validation/validate"
 import { changePassword, updateUserInfo } from "../../../../core/apis/Requests"
 import { deleteInfoBeforeLogout, formatAccountRole, saveUserInfoLocalStorage } from "../../../../utils/Utils"
 import { useNavigation } from '@react-navigation/native';
@@ -212,12 +212,13 @@ export const UpdateUsername = (props: { name: string, updateFirstName: boolean, 
     const [errorMsg, setErrorMsg] = useState('')
 
     const onSubmit = useCallback(() => {
-        const nameValidate = isValidNormalText(userName)
+        const nameValidate = isValidName(userName)
         if (userName == props.name) {
             setErrorMsg('Value was not changed')
         } else if (!nameValidate.qualify) {
             setErrorMsg(nameValidate.message)
         } else {
+            console.log(userName)
             setLoading(true)
             props.callback?.(userName)
         }

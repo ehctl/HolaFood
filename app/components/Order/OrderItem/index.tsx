@@ -15,6 +15,7 @@ import { useLanguage } from "../../../base/Themed";
 import { updateOrder as updateOrderAction } from "../../../redux/Reducer";
 import { Constant } from "../../../utils/Constant";
 import { useToast } from "../../../base/Toast";
+import { Entypo } from "@expo/vector-icons";
 
 export const OrderItem = React.memo((props: OrderItemType) => {
     const navigation = useNavigation()
@@ -216,8 +217,9 @@ export const OrderItem = React.memo((props: OrderItemType) => {
                     }
 
                     <TransparentView style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
+                        <Entypo name='shop' size={20} color='#3179cc' />
                         <Text
-                            style={{ textAlign: 'left', fontSize: 22, fontWeight: '500' }}
+                            style={{ marginLeft: 5, textAlign: 'left', fontSize: 22, fontWeight: '500' }}
                             text={props.item.items[0].productDetail.shopName} />
 
                     </TransparentView>
@@ -232,7 +234,7 @@ export const OrderItem = React.memo((props: OrderItemType) => {
                         }
                     </TransparentView>
 
-                    <TransparentView style={{ marginTop: 5 }}>
+                    <TransparentView style={{ marginTop: 5, flexDirection: 'row', alignItems: 'center' }}>
                         <Text
                             text={`${formatMoney(appStateProps.userType == 'shipper' ? props.item.price : props.item.price + props.item.shipFee)} đ`}
                             style={{ textAlign: 'left', color: 'red', fontSize: 18, fontWeight: '500' }} />
@@ -362,7 +364,7 @@ export const OrderItem = React.memo((props: OrderItemType) => {
                     : null
             }
             {
-                appStateProps.userType == 'customer' && props.item.status == 1 && props.cancelOrderCallback?
+                appStateProps.userType == 'customer' && props.item.status == 1 && props.cancelOrderCallback ?
                     <Pressable
                         style={{
                             flexDirection: 'row', justifyContent: 'center', alignItems: 'center', width: '100%',

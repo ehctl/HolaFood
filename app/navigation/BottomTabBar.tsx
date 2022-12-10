@@ -27,7 +27,8 @@ export const BottomTabNavigator = React.memo(() => {
     }))
 
     return (
-        <BottomTab.Navigator tabBarPosition='bottom' screenOptions={{ lazy: true }} tabBar={props =>
+        <BottomTab.Navigator tabBarPosition='bottom' screenOptions={{ lazy: true }} 
+        tabBar={props =>
             <BottomTabBar
                 props={props}
                 iconList={
@@ -35,11 +36,12 @@ export const BottomTabNavigator = React.memo(() => {
                         ['home', 'shopping-cart', 'bell', 'ellipsis-h'] :
                         ['shopping-cart', 'ellipsis-h']
                 } />
-        }>
+        }
+        >
             {
                 stateProps.userType == 'customer' ?
                     <BottomTab.Group>
-                        <BottomTab.Screen name="Home" component={HomeScreen} options={{}} />
+                        <BottomTab.Screen name="Home" component={HomeScreen} options={{ lazy: false}} />
                         <BottomTab.Screen name="Order" component={OrderTab} options={{ lazy: false }} />
                         <BottomTab.Screen name="Notification" component={Notifications} options={{ lazy: false}} />
                         <BottomTab.Screen name="Menu" component={Menu} options={{}} />
@@ -75,7 +77,7 @@ const BottomTabBar = React.memo((params: BottomBarParams) => {
     }, [params.props.position])
 
     return (
-        <View style={{ flexDirection: 'row' }} >
+        <View style={{ flexDirection: 'row', backgroundColor: 'green' }} >
             <View style={style.divider} />
             {params.props.state.routes.map((route, index) => {
                 const { options } = params.props.descriptors[route.key];

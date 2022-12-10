@@ -28,9 +28,9 @@ export const OrderTab = React.memo(() => {
                 <Level1Header
                     text="Order"
                     textColor="#28b1c9"
-                    leftIcons={['search']}
-                    leftIconsColor={['#4666a6']}
-                    leftIconsTarget={['Search']} />
+                    leftIcons={stateProps.userType == 'customer' ? ['search'] : []}
+                    leftIconsColor={stateProps.userType == 'customer' ? ['#4666a6'] : []}
+                    leftIconsTarget={stateProps.userType == 'customer' ? ['Search'] : []} />
             </View>
 
             <OrderTabNavigator.Navigator

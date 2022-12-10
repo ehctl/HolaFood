@@ -27,32 +27,38 @@ export const BottomTabNavigator = React.memo(() => {
     }))
 
     return (
-        <BottomTab.Navigator tabBarPosition='bottom' screenOptions={{ lazy: true }} 
-        tabBar={props =>
-            <BottomTabBar
-                props={props}
-                iconList={
-                    stateProps.userType == 'customer' ?
-                        ['home', 'shopping-cart', 'bell', 'ellipsis-h'] :
-                        ['shopping-cart', 'ellipsis-h']
-                } />
-        }
-        >
-            {
-                stateProps.userType == 'customer' ?
-                    <BottomTab.Group>
-                        <BottomTab.Screen name="Home" component={HomeScreen} options={{ lazy: false}} />
-                        <BottomTab.Screen name="Order" component={OrderTab} options={{ lazy: false }} />
-                        <BottomTab.Screen name="Notification" component={Notifications} options={{ lazy: false}} />
-                        <BottomTab.Screen name="Menu" component={Menu} options={{}} />
-                    </BottomTab.Group>
-                    :
-                    <BottomTab.Group>
-                        <BottomTab.Screen name="Order" component={OrderTab} options={{ lazy: false }} />
-                        <BottomTab.Screen name="Menu" component={Menu} options={{}} />
-                    </BottomTab.Group>
-            }
-        </BottomTab.Navigator>
+        stateProps.userType == 'customer' ?
+            <BottomTab.Navigator tabBarPosition='bottom' screenOptions={{ lazy: true }}
+                tabBar={props =>
+                    <BottomTabBar
+                        props={props}
+                        iconList={
+                            stateProps.userType == 'customer' ?
+                                ['home', 'shopping-cart', 'bell', 'ellipsis-h'] :
+                                ['shopping-cart', 'ellipsis-h']
+                        } />
+                }
+            >
+                <BottomTab.Screen name="Home" component={HomeScreen} options={{ lazy: false }} />
+                <BottomTab.Screen name="Order" component={OrderTab} options={{ lazy: false }} />
+                <BottomTab.Screen name="Notification" component={Notifications} options={{ lazy: false }} />
+                <BottomTab.Screen name="Menu" component={Menu} options={{}} />
+            </BottomTab.Navigator>
+            :
+            <BottomTab.Navigator tabBarPosition='bottom' screenOptions={{ lazy: true }}
+                tabBar={props =>
+                    <BottomTabBar
+                        props={props}
+                        iconList={
+                            stateProps.userType == 'customer' ?
+                                ['home', 'shopping-cart', 'bell', 'ellipsis-h'] :
+                                ['shopping-cart', 'ellipsis-h']
+                        } />
+                }
+            >
+                <BottomTab.Screen name="Order" component={OrderTab} options={{ lazy: false }} />
+                <BottomTab.Screen name="Menu" component={Menu} options={{}} />
+            </BottomTab.Navigator>
     )
 })
 

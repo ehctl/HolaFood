@@ -19,7 +19,7 @@ import { useToast } from "../../base/Toast"
 export const HomeScreen = React.memo(({ navigation }: any) => {
     const dispatch = useDispatch()
     const renderItem = ({ item }: { item: HomeItem }) => {
-        
+
         switch (item) {
             case HomeItem.NEWS:
                 return <News />

@@ -1,18 +1,18 @@
 import React, { useCallback, useEffect, useState } from "react"
 import { TransparentView } from "../../../base/View"
-import { BText, I18NText, Text } from "../../../base/Text"
-import { Image as DefaultView, LayoutChangeEvent, Pressable } from "react-native"
-import { ImageSourcePropType } from "react-native"
+import { I18NText, Text } from "../../../base/Text"
+import { ListRenderItemInfo, Pressable } from "react-native"
 import { useNavigation } from '@react-navigation/native';
 import { getFoodCategory } from "../../../core/apis/Requests"
 import { CategoryListShimmer } from "./CategoryListShimmer/CategoryListShimmer"
 import { AppState, setStateListCategory } from "../../../redux/Reducer"
 import { useDispatch } from "react-redux"
 import { useSelector } from "react-redux"
-import { mapFoodDetailDataFromRequest } from "../../FoodDetail/FoodDetailScreen"
 import { Image } from "../../../base/Image"
 import { useToast } from "../../../base/Toast"
 import { Constant } from "../../../utils/Constant"
+import { FlatList } from "react-native-gesture-handler"
+import { CategoryItemProps } from "../../FoodList/CategoryList"
 
 
 export const CategoryList = React.memo(() => {
@@ -22,6 +22,8 @@ export const CategoryList = React.memo(() => {
     }))
     const [loading, setLoading] = useState(false)
     const showToast = useToast()
+    const [customizeList, setCustomizeList] = useState<CategoryData[][]>([])
+
 
     const fetchData = useCallback(() => {
         setLoading(true)
@@ -44,6 +46,23 @@ export const CategoryList = React.memo(() => {
         fetchData()
     }, [])
 
+    useEffect(() => {
+        const size = 2
+        const originArr = [...stateProps.categoryList]
+        const arr = []
+
+        while (originArr.length > 0)
+            arr.push(originArr.splice(0, size));
+
+            setCustomizeList(arr)
+    }, [stateProps.categoryList])
+
+    const renderItem = ({ item, index }: ListRenderItemInfo<CategoryData[]>) => {
+        return <HomeCategoryColumn items={item} />
+    }
+
+    const extractor = (_: CategoryData[], index: number) => `home_category_item_${index}`
+
     return (
         <TransparentView style={{ marginTop: 20 }}>
             <I18NText
@@ -52,29 +71,57 @@ export const CategoryList = React.memo(() => {
 
             <CategoryListShimmer visible={loading} />
 
-            <TransparentView style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
-                {
-                    stateProps.categoryList.map((item, index) => (
-                        <CategoryItem
-                            id={item.id}
-                            usedOnHomePage={true}
-                            key={index}
-                            name={item.name}
-                            iconSource={item.imageCategory} />
-                    ))
-                }
-            </TransparentView>
+            <FlatList
+                contentContainerStyle={{ paddingVertical: 10, borderRadius: 10 }}
+                horizontal={true}
+                showsHorizontalScrollIndicator={false}
+                renderItem={renderItem}
+                keyExtractor={extractor}
+                data={customizeList}
+            />
+
         </TransparentView>
     )
 })
 
-export const CategoryItem = React.memo((props: CategoryItemProps) => {
+export const HomeCategoryColumn = React.memo((props: HomeCategoryItemProps) => {
+
+    return (
+        <TransparentView style={{}}>
+            <HomeCategoryItem
+                id={props.items[0].id}
+                usedOnHomePage={true}
+                key={'home_category_item_' + props.items[0].id}
+                name={props.items[0].name}
+                iconSource={props.items[0].imageCategory}
+            />
+
+            {
+                props.items.length > 1 ?
+                    <HomeCategoryItem
+                        id={props.items[1].id}
+                        usedOnHomePage={true}
+                        key={'home_category_item_' + props.items[1].id}
+                        name={props.items[1].name}
+                        iconSource={props.items[1].imageCategory}
+                    />
+                    : null
+            }
+        </TransparentView>
+    )
+})
+
+export const HomeCategoryItem = React.memo((props: CategoryItemProps) => {
     const navigation = useNavigation()
     return (
         <Pressable
             style={
-                [{ height: 40, marginHorizontal: 5, paddingVertical: 10, paddingHorizontal: 15, backgroundColor: '#c0c6cf', borderRadius: 25, marginVertical: 5, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' },
-                props.style]
+                [
+                    {
+                        marginHorizontal: 5, marginVertical: 5, justifyContent: 'center', alignItems: 'center'
+                    },
+                    props.style
+                ]
             }
             onPress={() => {
                 props.onPress?.()
@@ -85,26 +132,20 @@ export const CategoryItem = React.memo((props: CategoryItemProps) => {
             {
                 props.iconSource != null ?
                     <Image
-                        resizeMode="center"
+                        resizeMode="cover"
                         source={{
                             uri: props.iconSource
                         }}
-                        style={{ width: 25, height: 25, borderRadius: 10, marginRight: 10 }} />
+                        style={{ width: 70, height: 70, borderRadius: 10, marginRight: 10 }} />
                     : null
             }
-            <BText text={props.name} />
+            <Text text={props.name} style={{fontWeight: '500', marginTop: 10, fontSize: 16}}/>
         </Pressable>
     )
 })
 
-export type CategoryItemProps = {
-    id: number,
-    name: string,
-    usedOnHomePage?: boolean,
-    iconSource: string,
-    style?: DefaultView['props']['style'],
-    onPress?: () => void,
-    onLayout?: (event: LayoutChangeEvent) => void
+export type HomeCategoryItemProps = {
+    items: CategoryData[]
 }
 
 export type CategoryData = {

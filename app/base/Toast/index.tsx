@@ -29,7 +29,7 @@ export const ToastWrapper = React.memo((props: ToastWrapperType) => {
 
     const show = useCallback((message: string, color?: string) => {
         setMessage(message)
-        setColor(color ?? 'black')
+        setColor(color ?? 'white')
         setSwitch(!switch1)
     }, [switch1])
 
@@ -80,7 +80,7 @@ export const Toast = React.memo(() => {
             style={{
                 opacity: opacity,
                 borderRadius: 10, position: 'absolute', bottom: 50, right: 0, left: 0, height: 40,
-                marginHorizontal: 10, backgroundColor: '#c0c6cf', justifyContent: 'center', alignItems: 'center'
+                marginHorizontal: 10, backgroundColor: 'grey', justifyContent: 'center', alignItems: 'center'
             }}
             pointerEvents='none'>
 

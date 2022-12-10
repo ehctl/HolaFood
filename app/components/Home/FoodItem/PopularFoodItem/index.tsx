@@ -21,7 +21,7 @@ export const PopularFoodItem = React.memo((props: PopularFoodItemProps) => {
                         size={4}
                         color={getColorList()[props.index]} >
 
-                        <Text text={(props.index + 1).toString()} style={{ fontSize: 16, fontWeight: '500' }} />
+                        <Text text={(props.index + 1).toString()} style={{ fontSize: 14, fontWeight: '500' }} />
                     </AnimatedCircle>
 
                     <View

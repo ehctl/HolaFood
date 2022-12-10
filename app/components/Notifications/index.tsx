@@ -43,7 +43,6 @@ export const NotificationsScreen = React.memo(({ navigation }: any) => {
                 const data = response.data.map((i) => mapNotificationDataFromResponse(i))
                 const notiList = data.length > 0 ? data : (pageIndex == 0 ? getListItem() : [])
                 dispatch(addNotifications(pageIndex == 0 ? notiList : [...prevNotiList, ...notiList]))
-                console.log(data.map((i) => i.id), pageIndex)
                 setReachEndList(data.length < 20)
                 setLoading(false)
             },

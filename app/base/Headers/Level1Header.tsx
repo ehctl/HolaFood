@@ -40,8 +40,8 @@ export const Level1Header = React.memo((props: HomeHeaderProp) => {
                                                 position: 'absolute', right: -13, top: -13, backgroundColor: '#029699',
                                                 borderRadius: 20, padding: 3, zIndex: 1, aspectRatio: 1, height: 20, alignItems: 'center', justifyContent: 'center'
                                             }}>
+                                            <Text text={(appStateProps.cartItems.length).toString()} style={{ fontWeight: '600', fontSize: isIosDevice() ? 10 : 8, color: 'white' }} />
                                             {/* <Text text={(appStateProps.cartItems.length + appStateProps.orders.length).toString()} style={{ fontWeight: '600', fontSize: isIosDevice() ? 10 : 8, color: 'white' }} /> */}
-                                            <Text text={(appStateProps.cartItems.length + appStateProps.orders.length).toString()} style={{ fontWeight: '600', fontSize: isIosDevice() ? 10 : 8, color: 'white' }} />
                                         </View> : null
                                 }
                                 <FontAwesome name={value} size={20} color={props.leftIconsColor[index]} />

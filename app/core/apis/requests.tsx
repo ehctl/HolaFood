@@ -669,7 +669,7 @@ export const getShipperOrderQueue = (
     success: (data: any) => void,
     failure: (error: any) => void
 ) => {
-    return getOrders(1, shopId, 0, success, failure)
+    return getOrders(2, shopId, 0, success, failure)
 }
 
 // get status 6, 3

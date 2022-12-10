@@ -1,7 +1,7 @@
-import { View } from "../../../base/View"
-import { RefreshControl } from 'react-native';
+import { TransparentView, View } from "../../../base/View"
+import { Pressable, RefreshControl } from 'react-native';
 import { formatCreatedDateType, getStyle, wait } from "../../../utils/Utils";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import React from "react";
 import { useSelector } from "react-redux";
 import { AppState, setNewOrderNotification, setOrderQueue, setOrders } from "../../../redux/Reducer";
@@ -17,6 +17,9 @@ import { getShipperOrderQueue } from "../../../core/apis/Requests";
 import { mapCartItemFromResponse } from "../Cart";
 import { Constant } from "../../../utils/Constant";
 import { useToast } from "../../../base/Toast";
+import { PopupModal } from "../../../base/PopupModal";
+import { RadioButton, RadioButtonGroup, RadioButtonIcon } from "../../../base/RadioGroup";
+import { FontAwesome, FontAwesome1, FontAwesome2 } from "../../../base/FontAwesome";
 
 
 export const OrderQueueScreen = React.memo((props: OrderViewProp) => {
@@ -28,14 +31,17 @@ export const OrderQueueScreen = React.memo((props: OrderViewProp) => {
         shipperOrderQueue: state.shipperOrderQueue,
         userInfo: state.userInfo,
     }))
+
     const [loading, setLoading] = useState(false)
     const [refreshing, setRefreshing] = useState(false)
+    const popupModalRef = useRef(null)
+    const [orderQueueSortType, setOrderQueueSortType] = useState(QueueSortType.DATE)
 
     const showToast = useToast()
 
     useEffect(() => {
         fetchData()
-    }, [])
+    }, [orderQueueSortType])
 
     const fetchData = useCallback(() => {
         setLoading(true)
@@ -71,6 +77,20 @@ export const OrderQueueScreen = React.memo((props: OrderViewProp) => {
 
     return (
         <View style={[getStyle().flex_c_s, { paddingTop: 5 }]}>
+            <TransparentView style={{
+                marginHorizontal: 10, flexDirection: 'row', alignItems: 'center', 
+            }}>
+                <Pressable
+                    style={{ flexDirection: 'row',borderRadius: 10, backgroundColor: 'orange', paddingHorizontal: 15, paddingVertical: 5 }}
+                    onPress={() => popupModalRef.current.changeVisibility(true)}>
+
+                    <I18NText text="Sort" />
+                    <Text text=":  " />
+                    <I18NText text={orderQueueSortType} style={{fontWeight: '500'}}/>
+                    <FontAwesome name="angle-down" size={16} style={{ marginLeft: 10 }} />
+                </Pressable>
+            </TransparentView>
+
             <FlatList
                 refreshControl={
                     <RefreshControl
@@ -83,6 +103,38 @@ export const OrderQueueScreen = React.memo((props: OrderViewProp) => {
                 keyExtractor={(_, index) => `${index}`}
                 ListEmptyComponent={(!loading && !refreshing) ? <I18NText text='You Do Not Have Any New Order Yet' /> : null}
                 ListFooterComponent={() => renderLoadMore()} />
+
+            <PopupModal ref={popupModalRef} title='Sort'>
+                <RadioButtonGroup
+                    selectedColor='orange'
+                    defaultColor='grey'
+                    value={orderQueueSortType}
+                    valueChange={(value: string) => {
+                        popupModalRef.current.changeVisibility(false)
+                        setOrderQueueSortType(value as QueueSortType)
+                    }}>
+
+                    <RadioButton value={QueueSortType.DATE} style={{ width: '100%', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 10 }}>
+                        <TransparentView style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                            <View style={{ backgroundColor: '#607c87', borderRadius: 1000, padding: 10, width: 50, aspectRatio: 1, justifyContent: 'center', alignItems: 'center' }}>
+                                <FontAwesome2 name="date-range" size={28} color='orange' />
+                            </View>
+                            <I18NText text={QueueSortType.DATE} style={{ fontSize: 18, marginLeft: 15 }} />
+                        </TransparentView>
+                        <RadioButtonIcon size={5} />
+                    </RadioButton>
+
+                    <RadioButton value={QueueSortType.DISTANCE} style={{ width: '100%', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 10 }}>
+                        <TransparentView style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                            <View style={{ backgroundColor: '#607c87', borderRadius: 1000, padding: 10, width: 50, aspectRatio: 1, justifyContent: 'center', alignItems: 'center' }}>
+                                <FontAwesome2 name="6-ft-apart" size={28} color='orange' />
+                            </View>
+                            <I18NText text={QueueSortType.DISTANCE} style={{ fontSize: 18, marginLeft: 15 }} />
+                        </TransparentView>
+                        <RadioButtonIcon size={5} />
+                    </RadioButton>
+                </RadioButtonGroup>
+            </PopupModal>
         </View>
     )
 })
@@ -108,4 +160,9 @@ export const mapOrderDataFromResponse = (data: any): OrderData => {
 export interface OrderViewProp {
     navigation: NativeStackNavigationProp<BottomStackParamList, 'Order'>;
     route: RouteProp<BottomStackParamList, 'Order'>
+}
+
+export enum QueueSortType {
+    DATE = "Date",
+    DISTANCE = "Distance"
 }

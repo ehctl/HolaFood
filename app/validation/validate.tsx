@@ -7,7 +7,7 @@ export const isValidNormalText = (text: string, prefix?: string) => {
 
 export const isValidName = (text: string) => {
   return text.
-    match(/[a-zA-Z]+/) ?
+    match(/[a-zA-Z]+/) && text.length < 25 ?
     getSuccessValidation()
     :
     getFailValidation('Name is incorrect format')

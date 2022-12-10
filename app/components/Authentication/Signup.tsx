@@ -20,6 +20,7 @@ import React from 'react';
 
 export const Signup = (props: SignupScreenProp) => {
     const [email, setEmail] = useState('')
+    const [canGoBack, setCanGoBack] = useState(false)
     const [verifySuccess, setVerifySuccess] = useState(false)
     const [reset, setReset] = useState(false)
 
@@ -41,18 +42,22 @@ export const Signup = (props: SignupScreenProp) => {
             elevation: 5,
         }}>
             <TransparentView style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', width: '100%', marginBottom: 10, paddingVertical: 5 }}>
-                <Pressable
-                    onPress={() => { setVerifySuccess(false), setReset(!reset) }}
-                    style={{ position: 'absolute', left: 0 }}>
-                    <FontAwesome name='angle-left' size={32} color='white' />
-                </Pressable>
+                {
+                    canGoBack ?
+                        <Pressable
+                            onPress={() => { setVerifySuccess(false), setReset(!reset) }}
+                            style={{ position: 'absolute', left: 0 }}>
+                            <FontAwesome name='angle-left' size={32} color='white' />
+                        </Pressable>
+                        : null
+                }
 
                 <I18NText text='Sign Up' style={{ alignSelf: 'center', color: 'white', fontSize: 22, fontWeight: '500' }} />
             </TransparentView>
 
             {
                 !verifySuccess ?
-                    <VerifyEmail onVerifySuccess={onVerifySuccess} reset={reset} />
+                    <VerifyEmail onBeginVerify={() => setCanGoBack(true)} onVerifySuccess={onVerifySuccess} reset={reset} />
                     :
                     <SignUpDetail email={email} onSuccess={props.onSuccess} />
             }
@@ -84,6 +89,7 @@ export const Signup = (props: SignupScreenProp) => {
 }
 
 export type VerifyEmailType = {
+    onBeginVerify: () => void,
     onVerifySuccess: (email: string) => void,
     reset: boolean
 }
@@ -114,7 +120,7 @@ export const VerifyEmail = React.memo((props: VerifyEmailType) => {
             setEmailErrorMsg(emailValidate.message)
         } else {
             setVerifyingEmail(true)
-
+            
             verifyEmail(
                 email,
                 (response) => {
@@ -124,6 +130,7 @@ export const VerifyEmail = React.memo((props: VerifyEmailType) => {
                     setEmailErrorMsg('')
                     setVerifyEmailCode(otpCode)
                     setVerifyStage(true)
+                    props?.onBeginVerify()
                 },
                 (e) => {
                     setVerifyingEmail(false)

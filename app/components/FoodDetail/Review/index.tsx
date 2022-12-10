@@ -44,6 +44,7 @@ export const Review = React.memo((props: ReviewType) => {
     const [reachEndList, setReachEndList] = useState(false)
     const I18NReason = useLanguage('Reason')
     const I18NOptional = useLanguage('Optional')
+    const I18NYourRateOptional = useLanguage('Your Reason (Optional)')
 
     const showToast = useToast()
 
@@ -240,7 +241,8 @@ export const Review = React.memo((props: ReviewType) => {
                 </TransparentView>
 
                 <TextInput
-                    placeholder={I18NOptional}
+                    placeholder={I18NYourRateOptional}
+                    placeholderTextColor='black'
                     multiline={true}
                     onChangeText={(v) => setReview(v)}
                     style={{ paddingHorizontal: 10, backgroundColor: '#c0c6cf', fontSize: 14, borderRadius: 10, paddingTop: 15, paddingBottom: 15, marginTop: 20 }} />

@@ -281,7 +281,7 @@ export const OrderItem = React.memo((props: OrderItemType) => {
                             }}
                             onPress={() => confirm(props.item.id, OrderStatus.PROGRESSING)}>
                             <FontAwesome2 name="local-shipping" size={20} color='#288c26' style={{ marginLeft: 10 }} />
-                            <I18NText text="Ship Order" style={{ color: '#288c26', fontSize: 18, marginLeft: 10, flexShrink: 1 }} numberOfLines={2} />
+                            <I18NText text="Accept Ship Order" style={{ color: '#288c26', fontSize: 18, marginLeft: 10, flexShrink: 1 }} numberOfLines={2} />
 
                             <ActivityIndicator
                                 animating={shippingOrder}
@@ -344,7 +344,7 @@ export const OrderItem = React.memo((props: OrderItemType) => {
             }
 
             {
-                appStateProps.userType == 'shipper' && props.item.status == 1 ?
+                appStateProps.userType == 'shipper' && props.item.status == 2 ?
                     <Pressable
                         style={{
                             flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 15,

@@ -293,7 +293,7 @@ export const OrderDetail = (props: OrderDetailProps) => {
 
                             <TransparentView style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginHorizontal: 10, marginTop: 5 }}>
                                 <FontAwesome2 name={getOrderStatusIcon(data.status)} size={24} color='#995050' />
-                                <I18NText text={getOrderStatusMsg(data.status)} style={{ textAlign: 'left', marginLeft: 10, fontSize: 16 }} />
+                                <I18NText text={getOrderStatusMsg(data.status)} style={{ textAlign: 'left', marginLeft: 10, fontSize: 16, fontWeight: '500' }} />
                                 {
                                     data.status == OrderStatus.CANCELED ?
                                         <I18NText text={`by ${getUserRoleById(data.roleCancel)}`} style={{ textAlign: 'left', marginLeft: 3, fontSize: 16 }} />
@@ -372,7 +372,7 @@ export const OrderDetail = (props: OrderDetailProps) => {
                                                 }}
                                                 onPress={() => confirm(data.id, OrderStatus.PROGRESSING)}>
                                                 <FontAwesome2 name="local-shipping" size={20} color='#288c26' style={{ marginLeft: 10 }} />
-                                                <I18NText text="Ship Order" style={{ color: '#288c26', fontSize: 18, marginLeft: 10, flexShrink: 1 }} numberOfLines={2} />
+                                                <I18NText text="Accept Ship Order" style={{ color: '#288c26', fontSize: 18, marginLeft: 10, flexShrink: 1 }} numberOfLines={2} />
 
                                                 <ActivityIndicator
                                                     animating={shippingOrder}

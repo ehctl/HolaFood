@@ -51,8 +51,11 @@ export const Level2Header = React.memo((props: Level2HeaderProps) => {
                                             }}>
 
                                             <Text
-                                                text={(appStateProps.cartItems.length + appStateProps.orders.length).toString()}
+                                                text={(appStateProps.cartItems.length).toString()}
                                                 style={{ fontWeight: '600', fontSize: isIosDevice() ? 10 : 8, color: 'white' }} />
+                                            {/* <Text
+                                                text={(appStateProps.cartItems.length + appStateProps.orders.length).toString()}
+                                                style={{ fontWeight: '600', fontSize: isIosDevice() ? 10 : 8, color: 'white' }} /> */}
                                         </View> : null
                                 }
                                 <FontAwesome name="shopping-cart" size={22} color='#d14fa6' style={{}} />

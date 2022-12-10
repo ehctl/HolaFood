@@ -52,8 +52,8 @@ export const AddToOrderScreen = React.memo((props: AddToOrderType) => {
                     address,
                     (response) => {
                         const distance = response['rows'][0]['elements'][0]['distance']['value']
-                        listShipPrice[index] = calculateShipFee(distance, item.items[0].productDetail.cost.filter((i) => i.categoryCost == 1))
-                        listShipPriceWithShopPolicy[index] = calculateShipFee(distance, item.items[0].productDetail.cost.filter((i) => i.categoryCost == 2))
+                        listShipPrice[index] = calculateShipFee(distance, item.items[0].productDetail.cost.filter((i) => i.categoryCost == 2))
+                        listShipPriceWithShopPolicy[index] = calculateShipFee(distance, item.items[0].productDetail.cost.filter((i) => i.categoryCost == 1))
                         setListShipPrice([...listShipPrice])
                         setListShipPriceWithShopPolicy([...listShipPriceWithShopPolicy])
                     },

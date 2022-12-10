@@ -24,6 +24,7 @@ import { useDispatch } from "react-redux";
 import { updateOrder as updateOrderAction } from "../../../redux/Reducer";
 import { isValidNormalText } from "../../../validation/validate";
 import { PopupModal } from "../../../base/PopupModal";
+import { Entypo } from "@expo/vector-icons";
 
 
 export const OrderDetail = (props: OrderDetailProps) => {
@@ -96,7 +97,7 @@ export const OrderDetail = (props: OrderDetailProps) => {
             orderId,
             OrderStatus.DONE,
             (response) => {
-                const newData = {...data}
+                const newData = { ...data }
                 newData.status = 4
                 setData(newData)
                 dispatch(removeOrder(orderId))
@@ -188,7 +189,7 @@ export const OrderDetail = (props: OrderDetailProps) => {
                 (response) => {
                     const item = { ...data }
                     item.status = 5
-                    item.roleCancel = appStateProps.userType == 'customer' ? 2 : 4 
+                    item.roleCancel = appStateProps.userType == 'customer' ? 2 : 4
                     item.noteCancel = cancelReason.trim()
 
                     setData(item)
@@ -316,8 +317,11 @@ export const OrderDetail = (props: OrderDetailProps) => {
                             </TransparentView>
 
                             <Pressable
+                                style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10, marginHorizontal: 10}}
                                 onPress={() => navigateToShopDetail(data?.items[0]?.productDetail?.shopID)}>
-                                <Text text={data.items[0].productDetail.shopName} style={{ textAlign: 'left', fontSize: 20, marginTop: 10, marginHorizontal: 10 }} />
+
+                                <Entypo name='shop' size={20} color='#3179cc' />
+                                <Text text={data.items[0].productDetail.shopName} style={{ marginLeft: 10, textAlign: 'left', fontSize: 20, marginHorizontal: 10 }} />
                             </Pressable>
 
                             <TransparentView style={{ flexDirection: 'row', marginTop: 10 }}>

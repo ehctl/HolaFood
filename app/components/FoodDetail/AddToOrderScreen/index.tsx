@@ -35,6 +35,7 @@ export const AddToOrderScreen = React.memo((props: AddToOrderType) => {
     const [address, setAddress] = useState(appStateProps.addressList.length > 0 ? appStateProps.addressList[0].address : '')
     const [listOrder, setListOrder] = useState<OrderData[]>([])
     const [addingOrder, setAddingOrder] = useState(false)
+    const [distanceList, setDistanceList] = useState<number[]>(Array(100).fill(0))
     const [listShipPrice, setListShipPrice] = useState<number[]>(Array(100).fill(0))
     const [listShipPriceWithShopPolicy, setListShipPriceWithShopPolicy] = useState<number[]>(Array(100).fill(0))
 
@@ -52,14 +53,18 @@ export const AddToOrderScreen = React.memo((props: AddToOrderType) => {
                     address,
                     (response) => {
                         const distance = response['rows'][0]['elements'][0]['distance']['value']
+                        distanceList[index] = distance
                         listShipPrice[index] = calculateShipFee(distance, item.items[0].productDetail.cost.filter((i) => i.categoryCost == 2))
                         listShipPriceWithShopPolicy[index] = calculateShipFee(distance, item.items[0].productDetail.cost.filter((i) => i.categoryCost == 1))
+                        setDistanceList(distanceList)
                         setListShipPrice([...listShipPrice])
                         setListShipPriceWithShopPolicy([...listShipPriceWithShopPolicy])
                     },
                     (e) => {
+                        distanceList[index] = 0
                         listShipPrice[index] = 0
                         listShipPriceWithShopPolicy[index] = 0
+                        setDistanceList(distanceList)
                         setListShipPrice([...listShipPrice])
                         setListShipPriceWithShopPolicy([...listShipPriceWithShopPolicy])
                         console.log(e)
@@ -106,11 +111,12 @@ export const AddToOrderScreen = React.memo((props: AddToOrderType) => {
                 shipFee: listShipPrice[index],
                 shipFeeWithShopPolicy: listShipPriceWithShopPolicy[index],
                 phone: appStateProps.userInfo.phone,
+                distance: distanceList[index]
             }
         })
 
         return orders
-    }, [categorizeNewOrders, listShipPrice, listShipPriceWithShopPolicy, appStateProps.userInfo])
+    }, [categorizeNewOrders, address, listShipPrice, listShipPriceWithShopPolicy, distanceList, appStateProps.userInfo])
 
     const getTotalPrice = useCallback(() => {
         var price = 0

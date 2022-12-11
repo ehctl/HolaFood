@@ -1,13 +1,11 @@
 import React, { useCallback, useEffect, useLayoutEffect, useState } from "react";
 import { TransparentView, View } from "../../../base/View";
-import { AnimatedHeader } from "../../../base/AnimatedHeader";
-import { Level2Header, Level2HeaderStat } from "../../../base/Headers/Level2Header";
+import { Level2Header } from "../../../base/Headers/Level2Header";
 import { OrderData, OrderItem } from "../../Order/OrderItem";
 import { ListRenderItemInfo, RefreshControl, SectionList } from "react-native";
-import { formatCreatedDateType, formatDateTimeFromData, wait } from "../../../utils/Utils";
-import { OrderStatus } from "../../Order/OrderItem";
+import {  formatDateTimeFromData } from "../../../utils/Utils";
 import { OrderItemShimmer } from "../../Order/OrderItemShimmer";
-import { getAllOrders, getInactiveOrders } from "../../../core/apis/Requests";
+import { getAllOrders } from "../../../core/apis/Requests";
 import { mapOrderDataFromResponse } from "../../Order";
 import { I18NText } from "../../../base/Text";
 import { useSelector } from "react-redux";

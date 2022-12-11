@@ -665,11 +665,13 @@ export const deleteCart = (
 }
 
 export const getShipperOrderQueue = (
+    sortType: string,
+    sortOrder: string,
     shopId: number,
     success: (data: any) => void,
     failure: (error: any) => void
 ) => {
-    return getOrders(2, shopId, 0, success, failure)
+    return getOrders(2, shopId, 0, success, failure, sortType, sortOrder)
 }
 
 // get status 6, 3
@@ -710,17 +712,28 @@ export const getOrders = (
     shopId: number,
     index: number,
     success: (data: any) => void,
-    failure: (error: any) => void
+    failure: (error: any) => void,
+    sortBy?: string,
+    sort?: string
 ) => {
     const option = {
         method: 'GET',
         params: {
             status: status,
             shopId: shopId,
-            index: index
+            index: index,
         },
         url: DOMAIN + '/order/getorder',
     }
+
+    if (sortBy && sort)
+        option.params = {
+            ...option.params,
+            ...{
+                sortBy: sortBy,
+                sort: sort
+            }
+        }
 
     return addHeaderToken(option).
         then((newOption) => {
@@ -782,6 +795,7 @@ export const addOrdersWithCartId = (
             price: i.price + i.shipFeeWithShopPolicy,
             shipPrice: i.shipFee,
             shipOrder: i.shipFeeWithShopPolicy,
+            distance: i.distance,
             address: i.address,
             cartDTO: i.items.map((cartItem) => ({
                 id: cartItem.id
@@ -819,6 +833,7 @@ export const addOrdersWithCardData = (
             price: i.price + i.shipFeeWithShopPolicy,
             shipPrice: i.shipFee,
             shipOrder: i.shipFeeWithShopPolicy,
+            distance: i.distance,
             address: i.address,
             cartDTO: i.items.map((cartItem) => ({
                 amount: cartItem.quantity,
@@ -835,6 +850,7 @@ export const addOrdersWithCardData = (
 
     return addHeaderToken(option).
         then((newOption) => {
+            console.log(newOption)
             axios(newOption).then((response) => {
                 if (response.status === 200 && response.data.success) {
                     success(response.data);
@@ -929,6 +945,37 @@ export const getNotification = (
             index: pageIndex
         },
         url: DOMAIN + '/notifications/get',
+    }
+
+    return addHeaderToken(option).
+        then((newOption) => {
+            axios(newOption).then((response) => {
+                if (response.status === 200 && response.data.success) {
+                    success(response.data);
+                } else {
+                    failure(response.data);
+                }
+            })
+                .catch(((e) => {
+                    failure(e)
+                }))
+        })
+        .catch((e) => {
+            failure(e)
+        })
+}
+
+export const getNotificationDetailItems = (
+    orderId: number,
+    success: (data: any) => void,
+    failure: (error: any) => void,
+) => {
+    const option = {
+        method: 'GET',
+        params: {
+            orderid: orderId
+        },
+        url: DOMAIN + '/notifications/getnotibyorderid',
     }
 
     return addHeaderToken(option).

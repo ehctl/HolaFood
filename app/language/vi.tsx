@@ -151,5 +151,8 @@ export const vi: any = {
     "Distance": 'Khoảng cách',
     "Date": 'Ngày tháng',
     "Sort": 'Sắp xếp',
+    "Orderr": 'Thứ tự',
+    "Ascending": 'Tăng dần',
+    "Descending": 'Giảm dần',
     "Your Rate (Optional)": 'Đánh giá của bạn (Không bắt buộc)',
 }

@@ -139,7 +139,7 @@ export const HomeCategoryItem = React.memo((props: CategoryItemProps) => {
                         style={{ width: 70, height: 70, borderRadius: 10, marginRight: 10 }} />
                     : null
             }
-            <Text text={props.name} style={{fontWeight: '500', marginTop: 10, fontSize: 16}}/>
+            <Text text={props.name} style={{fontWeight: '500', marginTop: 10, fontSize: 14}}/>
         </Pressable>
     )
 })

@@ -185,6 +185,7 @@ export const mapOrderDataFromResponse = (data: any): OrderData => {
         shipFeeWithShopPolicy: data.shipOrder,
         createdDate: reformatDateTime(data.createdDate),
         phone: data.phone,
+        distance: data.distance,
         roleCancel: data.roleCancel,
         noteCancel: data.noteCancel ?? ''
     }

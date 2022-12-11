@@ -6,7 +6,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { AppState, setNewOrderNotification, setOrderQueue, setOrders } from "../../../redux/Reducer";
 import { useDispatch } from "react-redux";
-import { FlatList } from "react-native-gesture-handler";
+import { FlatList, ScrollView } from "react-native-gesture-handler";
 import { BottomStackParamList } from "../../../navigation/BottomTabBar";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RouteProp } from '@react-navigation/core'
@@ -34,20 +34,20 @@ export const OrderQueueScreen = React.memo((props: OrderViewProp) => {
 
     const [loading, setLoading] = useState(false)
     const [refreshing, setRefreshing] = useState(false)
-    const popupModalRef = useRef(null)
+    const popupModalQueueSortTypeRef = useRef(null)
+    const popupModalQueueSortOrderRef = useRef(null)
     const [orderQueueSortType, setOrderQueueSortType] = useState(QueueSortType.DATE)
+    const [orderQueueSortOrder, setOrderQueueSortOrder] = useState(QueueSortOrder.ASCENDING)
 
     const showToast = useToast()
-
-    useEffect(() => {
-        fetchData()
-    }, [orderQueueSortType])
 
     const fetchData = useCallback(() => {
         setLoading(true)
         dispatch(setOrderQueue([]))
 
         getShipperOrderQueue(
+            orderQueueSortType == QueueSortType.DATE ? 'created_date' : 'distance',
+            orderQueueSortOrder == QueueSortOrder.ASCENDING ? 'ASC' : 'DESC',
             stateProps.userInfo.shopId,
             (response) => {
                 const orderDataFromResponse = response.data
@@ -61,7 +61,11 @@ export const OrderQueueScreen = React.memo((props: OrderViewProp) => {
                 setLoading(false)
             }
         )
-    }, [])
+    }, [orderQueueSortType, orderQueueSortOrder])
+
+    useEffect(() => {
+        fetchData()
+    }, [orderQueueSortType, orderQueueSortOrder, fetchData])
 
     const renderItems = ({ item }) => {
         return (
@@ -78,17 +82,30 @@ export const OrderQueueScreen = React.memo((props: OrderViewProp) => {
     return (
         <View style={[getStyle().flex_c_s, { paddingTop: 5 }]}>
             <TransparentView style={{
-                marginHorizontal: 10, flexDirection: 'row', alignItems: 'center', 
+                marginHorizontal: 10
             }}>
-                <Pressable
-                    style={{ flexDirection: 'row',borderRadius: 10, backgroundColor: '#60cde0', paddingHorizontal: 15, paddingVertical: 5 }}
-                    onPress={() => popupModalRef.current.changeVisibility(true)}>
+                <ScrollView
+                    horizontal={true} >
 
-                    <I18NText text="Sort" />
-                    <Text text=":  " />
-                    <I18NText text={orderQueueSortType} style={{fontWeight: '500'}}/>
-                    <FontAwesome name="angle-down" size={16} style={{ marginLeft: 10 }} />
-                </Pressable>
+                    <Pressable
+                        style={{ flexDirection: 'row', borderRadius: 10, backgroundColor: '#60cde0', paddingHorizontal: 15, paddingVertical: 5 }}
+                        onPress={() => popupModalQueueSortTypeRef.current.changeVisibility(true)}>
+
+                        <I18NText text="Sort" />
+                        <Text text=":  " />
+                        <I18NText text={orderQueueSortType} style={{ fontWeight: '500' }} />
+                        <FontAwesome name="angle-down" size={16} style={{ marginLeft: 10 }} />
+                    </Pressable>
+                    <Pressable
+                        style={{ flexDirection: 'row', borderRadius: 10, marginLeft: 10, backgroundColor: '#60cde0', paddingHorizontal: 15, paddingVertical: 5 }}
+                        onPress={() => popupModalQueueSortOrderRef.current.changeVisibility(true)}>
+
+                        <I18NText text="Orderr" />
+                        <Text text=":  " />
+                        <I18NText text={orderQueueSortOrder} style={{ fontWeight: '500' }} />
+                        <FontAwesome name="angle-down" size={16} style={{ marginLeft: 10 }} />
+                    </Pressable>
+                </ScrollView>
             </TransparentView>
 
             <FlatList
@@ -104,13 +121,13 @@ export const OrderQueueScreen = React.memo((props: OrderViewProp) => {
                 ListEmptyComponent={(!loading && !refreshing) ? <I18NText text='You Do Not Have Any New Order Yet' /> : null}
                 ListFooterComponent={() => renderLoadMore()} />
 
-            <PopupModal ref={popupModalRef} title='Sort'>
+            <PopupModal ref={popupModalQueueSortTypeRef} title='Sort'>
                 <RadioButtonGroup
                     selectedColor='#28b1c9'
                     defaultColor='grey'
                     value={orderQueueSortType}
                     valueChange={(value: string) => {
-                        popupModalRef.current.changeVisibility(false)
+                        popupModalQueueSortTypeRef.current.changeVisibility(false)
                         setOrderQueueSortType(value as QueueSortType)
                     }}>
 
@@ -135,6 +152,38 @@ export const OrderQueueScreen = React.memo((props: OrderViewProp) => {
                     </RadioButton>
                 </RadioButtonGroup>
             </PopupModal>
+
+            <PopupModal ref={popupModalQueueSortOrderRef} title='Orderr'>
+                <RadioButtonGroup
+                    selectedColor='#28b1c9'
+                    defaultColor='grey'
+                    value={orderQueueSortOrder}
+                    valueChange={(value: string) => {
+                        popupModalQueueSortTypeRef.current.changeVisibility(false)
+                        setOrderQueueSortOrder(value as QueueSortOrder)
+                    }}>
+
+                    <RadioButton value={QueueSortOrder.ASCENDING} style={{ width: '100%', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 10 }}>
+                        <TransparentView style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                            <View style={{ backgroundColor: '#c0c6cf', borderRadius: 1000, padding: 10, width: 50, aspectRatio: 1, justifyContent: 'center', alignItems: 'center' }}>
+                                <FontAwesome1 name="caretup" size={28} color='#28b1c9' />
+                            </View>
+                            <I18NText text={QueueSortOrder.ASCENDING} style={{ fontSize: 18, marginLeft: 15, fontWeight: '500' }} />
+                        </TransparentView>
+                        <RadioButtonIcon size={5} />
+                    </RadioButton>
+
+                    <RadioButton value={QueueSortOrder.DESCENDING} style={{ width: '100%', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 10 }}>
+                        <TransparentView style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                            <View style={{ backgroundColor: '#c0c6cf', borderRadius: 1000, padding: 10, width: 50, aspectRatio: 1, justifyContent: 'center', alignItems: 'center' }}>
+                                <FontAwesome1 name="caretdown" size={28} color='#28b1c9' />
+                            </View>
+                            <I18NText text={QueueSortOrder.DESCENDING} style={{ fontSize: 18, marginLeft: 15, fontWeight: '500' }} />
+                        </TransparentView>
+                        <RadioButtonIcon size={5} />
+                    </RadioButton>
+                </RadioButtonGroup>
+            </PopupModal>
         </View>
     )
 })
@@ -152,6 +201,7 @@ export const mapOrderDataFromResponse = (data: any): OrderData => {
         shipFeeWithShopPolicy: data.shipOrder,
         createdDate: formatCreatedDateType(new Date()),
         phone: data.phone,
+        distance: data.distance,
         roleCancel: data.roleCancel,
         noteCancel: data.noteCancel ?? ''
     }
@@ -165,4 +215,9 @@ export interface OrderViewProp {
 export enum QueueSortType {
     DATE = "Date",
     DISTANCE = "Distance"
+}
+
+export enum QueueSortOrder {
+    ASCENDING = "Ascending",
+    DESCENDING = "Descending",
 }

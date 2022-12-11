@@ -112,8 +112,19 @@ export const formatDateTimeFromData = (time: string) => {
   return `${timeArr[2]}-${timeArr[1]}-${timeArr[0]}`
 }
 
+// YYYY-MM-DD HH:MM:SS
 export const formatCreatedDateType = (time: Date) => {
   return `${time.getFullYear()}-${time.getMonth() + 1}-${time.getDate()} ${time.getHours()}:${time.getMinutes()}:${time.getSeconds()}`
+}
+
+// HH:MM DD-MM-YYYY
+export const formatCreatedDateType1 = (time: Date) => {
+  return `${time.getHours()}:${time.getMinutes()} ${time.getDate()}-${time.getMonth() + 1}-${time.getFullYear()}`
+}
+
+// YYYY-MM-DD HH:MM
+export const formatCreatedDateType2 = (time: Date) => {
+  return `${time.getDate()}-${time.getMonth() + 1}-${time.getFullYear()} ${time.getHours()}:${time.getMinutes()}`
 }
 
 export const formatAccountRole = (role: string) => {

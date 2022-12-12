@@ -33,7 +33,7 @@ export const Level2Header = React.memo((props: Level2HeaderProps) => {
                     }
                 </Pressable>
                 <TransparentView style={[getStyle().headerTitleCointainer]}>
-                    <I18NText style={getStyle().headerTitle} text={props.title} />
+                    <I18NText style={[getStyle().headerTitle, {marginHorizontal: 50}]} text={props.title} />
                 </TransparentView>
                 {
                     props.canNavigateToOrderScreen ?

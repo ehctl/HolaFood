@@ -46,8 +46,8 @@ export const HomeFoodList = React.memo((props: FoodListProps) => {
                 }
                 setLoading(false)
             },
-            (response) => {
-                console.log(response)
+            (e) => {
+                console.log(e)
                 showToast(Constant.API_ERROR_OCCURRED)
                 setLoading(false)
             }

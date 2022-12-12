@@ -17,6 +17,7 @@ export const vi: any = {
     'Note': 'Ghi chú',
     'Vote': 'Đánh giá',
     'Food': 'Đồ ăn',
+    'Foods': 'Món ăn',
     'Option': 'Tùy chọn',
     'Size': 'Cỡ',
     'Add To Cart': 'Thêm vào giỏ hàng',

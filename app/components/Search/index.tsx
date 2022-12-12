@@ -23,19 +23,15 @@ import { useLanguage } from "../../base/Themed";
 export const SearchScreen = React.memo((props: SearchScreenProp) => {
     const [searchData, setSearchData] = useState<SearchData[]>([])
     const [listRecentSearch, setListRecentSearch] = useState<SearchData[]>([])
-    const [refreshing, setRefreshing] = useState(false);
     const [loading, setLoading] = useState(false);
     const [showRecentSearch, setShowRecentSearch] = useState(!props.route?.params?.keyword);
     const [abortController, setAbortController] = useState<AbortController>(null)
     const [searchText, setSearchText] = useState('')
     const [pageIndex, setPageIndex] = useState(0)
+
+    const [reachEndList, setReachEndList] = useState(false)
+
     const I18NSearch = useLanguage('Search')
-
-
-    const onRefresh = useCallback(() => {
-        setRefreshing(true);
-        wait(2000).then(() => setRefreshing(false));
-    }, []);
 
     const fetchSearches = useCallback(async () => {
         setListRecentSearch(await getRecentSearch())
@@ -57,7 +53,7 @@ export const SearchScreen = React.memo((props: SearchScreenProp) => {
 
     useEffect(() => {
         if (props.route?.params?.keyword) {
-            searchTextChange(props.route?.params?.keyword)
+            searchTextChange(props.route?.params?.keyword, 0)
         } else {
             fetchSearches()
         }
@@ -75,7 +71,7 @@ export const SearchScreen = React.memo((props: SearchScreenProp) => {
 
     const itemOnClick = (text: string) => {
         if (showRecentSearch)
-            searchTextChange(text)
+            searchTextChange(text, 0)
     }
 
     const renderItem = ({ item, index }: any) => {
@@ -89,19 +85,28 @@ export const SearchScreen = React.memo((props: SearchScreenProp) => {
         )
     }, [searchData])
 
-    const searchTextChange = useCallback(async (text: string) => {
+    const searchTextChange = useCallback(async (text: string, newPageIndex: number) => {
         setSearchText(text)
         abortController?.abort()
         const newAbortController = new AbortController()
         setAbortController(newAbortController)
+        const prevSearchData = [...searchData]
+
+        if (newPageIndex == 0 && (reachEndList || pageIndex != 0)) {
+            setReachEndList(false)
+            setPageIndex(0)
+        }
+
+        setLoading(true)
 
         if (text.length > 0) {
             setShowRecentSearch(false)
-            setLoading(true)
-            setSearchData([])
+            if (newPageIndex == 0)
+                setSearchData([])
+
             getSearchResult(
                 text,
-                pageIndex,
+                newPageIndex,
                 (response) => {
                     const shopList = response.shop.map((item) => ({
                         id: Math.floor(Math.random() * 1000),
@@ -113,7 +118,13 @@ export const SearchScreen = React.memo((props: SearchScreenProp) => {
                         data: item,
                         type: "food_item",
                     }))
-                    setSearchData(shuffleArray([...shopList, ...foodList]))
+
+                    const shuffledList = shuffleArray([...shopList, ...foodList])
+
+                    if (shopList.length < 5 && foodList.length < 5)
+                        setReachEndList(true)
+
+                    setSearchData(newPageIndex == 0 ? shuffledList : [...prevSearchData, ...shuffledList])
                     setLoading(false)
                 },
                 (e) => {
@@ -127,7 +138,7 @@ export const SearchScreen = React.memo((props: SearchScreenProp) => {
             setShowRecentSearch(true)
             setSearchData(await getRecentSearch())
         }
-    }, [listRecentSearch, showRecentSearch, pageIndex, abortController])
+    }, [listRecentSearch, showRecentSearch, abortController, reachEndList, pageIndex, searchData])
 
     const saveRecentSearch = useCallback(async (text: string) => {
         if (text.length > 0) {
@@ -160,14 +171,14 @@ export const SearchScreen = React.memo((props: SearchScreenProp) => {
                         style={{ fontSize: 18, flexGrow: 1, flexShrink: 1 }}
                         placeholder={I18NSearch}
                         value={searchText}
-                        onChangeText={searchTextChange}
+                        onChangeText={(v) => searchTextChange(v, 0)}
                         numberOfLines={1}
                         autoFocus={true}
                         keyboardType="web-search"
                         onEndEditing={(e: NativeSyntheticEvent<TextInputEndEditingEventData>) => saveRecentSearch(e.nativeEvent.text)} />
                     {
                         searchText.length > 0 ?
-                            <Pressable onPress={() => searchTextChange('')} style={{ paddingVertical: 10, paddingLeft: 10 }}>
+                            <Pressable onPress={() => searchTextChange('', 0)} style={{ paddingVertical: 10, paddingLeft: 10 }}>
                                 < FontAwesome1 name="close" size={20} />
                             </Pressable>
                             : null
@@ -182,6 +193,13 @@ export const SearchScreen = React.memo((props: SearchScreenProp) => {
                 renderItem={renderItem}
                 keyboardDismissMode={'on-drag'}
                 keyExtractor={(_, index) => `${index}`}
+                onEndReachedThreshold={0.5}
+                onEndReached={() => {
+                    if (!reachEndList && !loading) {
+                        searchTextChange(searchText, pageIndex + 1)
+                        setPageIndex(pageIndex + 1)
+                    }
+                }}
                 ListFooterComponent={() => getFooter()} />
         </View>
     )
@@ -198,12 +216,6 @@ const SearchItem = React.memo((props: SearchData) => {
     }
 
     const searchItemOnClick = async () => {
-        const recentSearches = await AsyncStorage.getItem("recentSearches")
-        var searchArr = JSON.parse(recentSearches) as SavedKeywordType[]
-        const currentItem = searchArr.splice(props.index, 1)
-        searchArr.unshift(currentItem[0])
-        await AsyncStorage.setItem("recentSearches", JSON.stringify(searchArr))
-
         props.itemOnClick(props.type == "food_item" ?
             (props.data as FoodDetailData).productName
             :
@@ -213,6 +225,12 @@ const SearchItem = React.memo((props: SearchData) => {
                     props.data as string
             )
         )
+
+        const recentSearches = await AsyncStorage.getItem("recentSearches")
+        var searchArr = JSON.parse(recentSearches) as SavedKeywordType[]
+        const currentItem = searchArr.splice(props.index, 1)
+        searchArr.unshift(currentItem[0])
+        await AsyncStorage.setItem("recentSearches", JSON.stringify(searchArr))
     }
 
     return (
@@ -229,7 +247,7 @@ const SearchItem = React.memo((props: SearchData) => {
                             (
                                 props.type == "shop_item" ?
                                     <ShopItem {...props.data as ShopData} /> :
-                                    <Text text={props.data as string} style={{ textAlign: 'left', fontSize: 18 }} />
+                                    <Text text={props.data as string} style={{ textAlign: 'left', fontSize: 18, padding: 5 }} />
                             )
                     }
                 </Pressable>

@@ -13,6 +13,8 @@ import { GroupStackParamList } from '../../navigation/StackGroup';
 
 export const FoodListScreen = (props: FoodListScreenProps) => {
     const [foodListType, setFoodListType] = useState<string | number>(props.route.params?.type ?? FoodListType.POPULAR_FOOD)
+    const [refresh, setRefresh] = useState(false)
+
 
     const renderItems = ({ item }: ListRenderItemInfo<ListItem>) => {
         switch (item) {
@@ -40,9 +42,9 @@ export const FoodListScreen = (props: FoodListScreenProps) => {
                         style: {},
                         renderItem: renderItems,
                         data: getListItem(),
-                        keyExtractor: (_, index) => `${index}`,
+                        keyExtractor: (_, index) => `${index + String(refresh)}`,
                     }}
-                    hideReload={true}
+                    onRefresh={() => setRefresh(!refresh)}
                 />
             </FoodListScreenContext.Provider>
         </View>

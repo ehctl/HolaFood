@@ -18,7 +18,6 @@ export const CategoryList = React.memo(() => {
     const scrollViewRef = useRef<ScrollView>(null)
     const { foodListType, changeFoodListType } = useContext(FoodListScreenContext)
 
-
     useEffect(() => {
         if (Object.keys(dataSourceCords).length == Object.keys(FoodListType).length + stateProps.categoryList.length) {
             scrollViewRef.current.scrollTo({

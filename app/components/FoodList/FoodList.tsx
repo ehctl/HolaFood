@@ -17,7 +17,6 @@ import { ListRenderItemInfo } from "react-native"
 import { useToast } from "../../base/Toast"
 import { Constant } from "../../utils/Constant"
 
-
 export const FoodList = React.memo((props: FoodListProps) => {
     const appProps = useSelector((state: AppState) => ({
         categoryList: state.categoryList
@@ -28,22 +27,25 @@ export const FoodList = React.memo((props: FoodListProps) => {
     const [reachListEnd, setReachListEnd] = useState(false)
     const [loadingMore, setLoadingMore] = useState(true)
     const [pageIndex, setPageIndex] = useState(0)
-    const [listData, setListData] = useState<(FoodDetailData| PopularFoodData)[]>([])
+    const [listData, setListData] = useState<(FoodDetailData | PopularFoodData)[]>([])
     const [abortController, setAbortController] = useState<AbortController>(null)
 
     useEffect(() => {
+        setReachListEnd(props.type == FoodListType.POPULAR_FOOD)
+        setPageIndex(0)
         fetchMoreData(0)
     }, [props.type])
 
+    
     const renderItem = ({ item, index }: ListRenderItemInfo<FoodDetailData | PopularFoodData>) => {
-        if (props.type == FoodListType.POPULAR_FOOD)
+        //@ts-ignore
+        if (props.type == FoodListType.POPULAR_FOOD || !item?.shopName)
             return <PopularFoodItem data={item as PopularFoodData} index={index} />
 
         return <FoodItem data={item as FoodDetailData} />
     }
 
     const extractor = (_: any, index: number) => `${index}`
-
 
     const fetchMoreData = useCallback((currentPageIndex: number) => {
         setLoadingMore(true)
@@ -66,7 +68,7 @@ export const FoodList = React.memo((props: FoodListProps) => {
                     })))
                 } else {
                     const listFood = response.data.map((i) => mapFoodDetailDataFromRequest1(i))
-                    console.log(listFood.length)
+
                     if (listFood.length < 10)
                         setReachListEnd(true)
 
@@ -76,7 +78,6 @@ export const FoodList = React.memo((props: FoodListProps) => {
             },
             (e) => {
                 console.log(e)
-                showToast(Constant.API_ERROR_OCCURRED)
                 setLoadingMore(false)
             },
             newAbortController
@@ -105,7 +106,6 @@ export const FoodList = React.memo((props: FoodListProps) => {
                 <FlatList
                     contentContainerStyle={{ flex: 1 }}
                     style={{}}
-                    showsHorizontalScrollIndicator={false}
                     data={listData}
                     renderItem={renderItem}
                     onEndReachedThreshold={0.5}

@@ -20,7 +20,7 @@ export default function usePrefetchedData() {
         // Preload images
         await cacheImages([
           require('../../assets/images/food_background.jpg'),
-        ]);  
+        ]);
 
         const token = await AsyncStorage.getItem(Constant.APP_API_TOKEN)
         await wait(5000)
@@ -54,11 +54,16 @@ export const mapResponseToUserInfo = (response): UserInfo => {
     email: response.email,
     phone: response.phone ?? '',
     role: mapUserRole(response.roleId),
-    shopId: response.shopId
+    shopId: response.shopId,
+    licensePlate: response.licensePlate,
+    citizenIdentification: response.citizenIdentification
   }
 }
 
 export const mapResponseToUserInfo1 = (response): UserInfo => {
+  var arr = response.message.split(':')
+  arr = arr.length == 3 ? arr : ['', '', '']
+
   return {
     id: response.data.id,
     firstName: response.data.firstName,
@@ -66,7 +71,9 @@ export const mapResponseToUserInfo1 = (response): UserInfo => {
     email: response.data.email,
     phone: response.data.phone ?? '',
     role: mapUserRole(response.data.roleId),
-    shopId: parseInt(response.message)
+    shopId: parseInt(arr[0]),
+    licensePlate: arr[1],
+    citizenIdentification: arr[2]
   }
 }
 

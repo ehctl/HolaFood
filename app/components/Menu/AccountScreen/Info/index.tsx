@@ -20,7 +20,8 @@ import { useToast } from "../../../../base/Toast"
 export const Info = React.memo(() => {
     const dispatch = useDispatch()
     const appStateProps = useSelector((state: AppState) => ({
-        userInfo: state.userInfo
+        userInfo: state.userInfo,
+        userType: state.userType
     }))
     const [updateMode, setUpdateMode] = useState(null)
     const updateModal = useRef(null)
@@ -95,7 +96,7 @@ export const Info = React.memo(() => {
                                 <I18NText text="Email" style={{ textAlign: 'left', color: '#a19e9d', fontSize: 18 }} />
                                 <Text text=" ﹡ " style={{ color: 'red', textAlign: 'left', fontSize: 18 }} />
                             </TransparentView>
-                            <Text text={appStateProps.userInfo?.email?.trim() ?? ''} style={{ fontSize: 18, color: '#757575', fontWeight: '500', marginTop: 5, textAlign: 'left' }} numberOfLines={5}/>
+                            <Text text={appStateProps.userInfo?.email?.trim() ?? ''} style={{ fontSize: 18, color: '#757575', fontWeight: '500', marginTop: 5, textAlign: 'left' }} numberOfLines={5} />
                         </TransparentView>
                     </TransparentView>
                     <View style={{ backgroundColor: 'grey', height: 1, marginLeft: -10 }} />
@@ -108,21 +109,54 @@ export const Info = React.memo(() => {
                                 <I18NText text="Role" style={{ textAlign: 'left', color: '#a19e9d', fontSize: 18 }} />
                                 <Text text=" ﹡ " style={{ color: 'red', textAlign: 'left', fontSize: 18 }} />
                             </TransparentView>
-                            <I18NText text={formatAccountRole(appStateProps.userInfo?.role ?? '')} style={{ fontSize: 18, color: '#757575', fontWeight: '500', marginTop: 5, textAlign: 'left' }} numberOfLines={5}/>
+                            <I18NText text={formatAccountRole(appStateProps.userInfo?.role ?? '')} style={{ fontSize: 18, color: '#757575', fontWeight: '500', marginTop: 5, textAlign: 'left' }} numberOfLines={5} />
                         </TransparentView>
                     </TransparentView>
                     <View style={{ backgroundColor: 'grey', height: 1, marginLeft: -10 }} />
                 </TransparentView>
+                {
+                    appStateProps.userType == 'shipper' ?
+                        <TransparentView style={{ marginTop: 5 }}>
+                            <TransparentView style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingTop: 5, paddingBottom: 10 }}>
+                                <TransparentView>
+                                    <TransparentView style={{ flexDirection: 'row' }}>
+                                        <I18NText text="License Plate" style={{ textAlign: 'left', color: '#a19e9d', fontSize: 18 }} />
+                                        <Text text=" ﹡ " style={{ color: 'red', textAlign: 'left', fontSize: 18 }} />
+                                    </TransparentView>
+                                    <I18NText text={appStateProps.userInfo.licensePlate} style={{ fontSize: 18, color: '#757575', fontWeight: '500', marginTop: 5, textAlign: 'left' }} numberOfLines={5} />
+                                </TransparentView>
+                            </TransparentView>
+                            <View style={{ backgroundColor: 'grey', height: 1, marginLeft: -10 }} />
+                        </TransparentView>
+                        : null
+                }
+
+                {
+                    appStateProps.userType == 'shipper' ?
+                        <TransparentView style={{ marginTop: 5 }}>
+                            <TransparentView style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingTop: 5, paddingBottom: 10 }}>
+                                <TransparentView>
+                                    <TransparentView style={{ flexDirection: 'row' }}>
+                                        <I18NText text="Citizen Identification" style={{ textAlign: 'left', color: '#a19e9d', fontSize: 18 }} />
+                                        <Text text=" ﹡ " style={{ color: 'red', textAlign: 'left', fontSize: 18 }} />
+                                    </TransparentView>
+                                    <I18NText text={appStateProps.userInfo.citizenIdentification} style={{ fontSize: 18, color: '#757575', fontWeight: '500', marginTop: 5, textAlign: 'left' }} numberOfLines={5} />
+                                </TransparentView>
+                            </TransparentView>
+                            <View style={{ backgroundColor: 'grey', height: 1, marginLeft: -10 }} />
+                        </TransparentView>
+                        : null
+                }
 
                 <TransparentView style={{ marginTop: 5 }}>
                     <TransparentView style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingTop: 5, paddingBottom: 10 }}>
-                        <TransparentView style={{flexShrink: 1}}>
+                        <TransparentView style={{ flexShrink: 1 }}>
                             <TransparentView style={{ flexDirection: 'row' }}>
                                 <I18NText text="First Name" style={{ textAlign: 'left', color: '#a19e9d', fontSize: 18 }} />
                                 <Text text=" ﹡ " style={{ color: 'red', textAlign: 'left', fontSize: 18 }} />
                             </TransparentView>
 
-                            <Text text={appStateProps.userInfo?.firstName?.trim() ?? ''} style={{ fontSize: 18, fontWeight: '500', marginTop: 5, textAlign: 'left' }} numberOfLines={5}/>
+                            <Text text={appStateProps.userInfo?.firstName?.trim() ?? ''} style={{ fontSize: 18, fontWeight: '500', marginTop: 5, textAlign: 'left' }} numberOfLines={5} />
                         </TransparentView>
                         <FontAwesome2
                             name="auto-fix-high" size={24} color='grey'
@@ -137,13 +171,13 @@ export const Info = React.memo(() => {
 
                 <TransparentView style={{ marginTop: 5 }}>
                     <TransparentView style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingTop: 5, paddingBottom: 10 }}>
-                        <TransparentView style={{flexShrink: 1}}>
+                        <TransparentView style={{ flexShrink: 1 }}>
                             <TransparentView style={{ flexDirection: 'row' }}>
                                 <I18NText text="Last Name" style={{ textAlign: 'left', color: '#a19e9d', fontSize: 18 }} />
                                 <Text text=" ﹡ " style={{ color: 'red', textAlign: 'left', fontSize: 18 }} />
                             </TransparentView>
 
-                            <Text text={appStateProps.userInfo?.lastName?.trim() ?? ''} style={{ fontSize: 18, fontWeight: '500', marginTop: 5, textAlign: 'left' }} numberOfLines={5}/>
+                            <Text text={appStateProps.userInfo?.lastName?.trim() ?? ''} style={{ fontSize: 18, fontWeight: '500', marginTop: 5, textAlign: 'left' }} numberOfLines={5} />
                         </TransparentView>
                         <FontAwesome2
                             name="auto-fix-high" size={24} color='grey'
@@ -158,13 +192,13 @@ export const Info = React.memo(() => {
 
                 <TransparentView style={{ marginTop: 5 }}>
                     <TransparentView style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingTop: 5, paddingBottom: 10 }}>
-                        <TransparentView style={{flexShrink: 1}}>
+                        <TransparentView style={{ flexShrink: 1 }}>
                             <TransparentView style={{ flexDirection: 'row' }}>
                                 <I18NText text="Phone Number" style={{ textAlign: 'left', color: '#a19e9d', fontSize: 18 }} />
                                 <Text text=" ﹡ " style={{ color: 'red', textAlign: 'left', fontSize: 18 }} />
                             </TransparentView>
-                            
-                            <Text text={appStateProps.userInfo?.phone?.trim() ?? ''} style={{ fontSize: 18, fontWeight: '500', marginTop: 5, textAlign: 'left' }} numberOfLines={5}/>
+
+                            <Text text={appStateProps.userInfo?.phone?.trim() ?? ''} style={{ fontSize: 18, fontWeight: '500', marginTop: 5, textAlign: 'left' }} numberOfLines={5} />
                         </TransparentView>
                         <FontAwesome2
                             name="auto-fix-high" size={24} color='grey'
@@ -179,7 +213,7 @@ export const Info = React.memo(() => {
 
                 <TransparentView style={{ marginTop: 5 }}>
                     <TransparentView style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingTop: 5, paddingBottom: 10 }}>
-                        <TransparentView style={{flexShrink: 1}}>
+                        <TransparentView style={{ flexShrink: 1 }}>
                             <TransparentView style={{ flexDirection: 'row' }}>
                                 <I18NText text="Password" style={{ textAlign: 'left', color: '#a19e9d', fontSize: 18 }} />
                                 <Text text=" ﹡ " style={{ color: 'red', textAlign: 'left', fontSize: 18 }} />

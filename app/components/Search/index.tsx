@@ -83,7 +83,7 @@ export const SearchScreen = React.memo((props: SearchScreenProp) => {
             searchData.length == 0 && !loading ?
                 <I18NText text="No Result" /> : null
         )
-    }, [searchData])
+    }, [searchData, loading])
 
     const searchTextChange = useCallback(async (text: string, newPageIndex: number) => {
         setSearchText(text)

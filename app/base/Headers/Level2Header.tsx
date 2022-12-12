@@ -39,7 +39,7 @@ export const Level2Header = React.memo((props: Level2HeaderProps) => {
                     props.canNavigateToOrderScreen ?
                         <Pressable style={{ position: 'absolute', backgroundColor: '#d4d4d4', borderRadius: 25, right: 10 }}
                             onPress={() => {
-                                navigation.navigate('Order' as never)
+                                navigation.navigate('Cart' as never)
                             }} >
                             <TransparentView style={{ position: 'relative', margin: 10, }}>
                                 {

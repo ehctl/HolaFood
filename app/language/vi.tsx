@@ -19,6 +19,8 @@ export const vi: any = {
     'Food': 'Đồ ăn',
     'Foods': 'Món ăn',
     'Option': 'Tùy chọn',
+    'License Plate': 'Biển số xe',
+    'Citizen Identification': 'Căn cước công dân',
     'Size': 'Cỡ',
     'Add To Cart': 'Thêm vào giỏ hàng',
     'Account': 'Tài khoản',

@@ -76,14 +76,16 @@ export default class Notification {
         const data = notification.request.content.data as DataNotificationType
         switch (data.type) {
           case 'OrderStatusChange':
+            console.log(data)
             console.log('Notification: Status Change')
             dispatch(updateOrderStatus({
               orderId: data.orderId,
-              status: data.status
+              status: data.status,
             }))
             dispatch(updateNotifcations({
               orderId: data.orderId,
-              status: data.status
+              status: data.status,
+              time: data.time
             }))
             break;
           default:
@@ -149,6 +151,7 @@ export default class Notification {
 export type DataNotificationType = {
   type: string,
   status: number,
-  orderId: number
+  orderId: number,
+  time: string
 }
 

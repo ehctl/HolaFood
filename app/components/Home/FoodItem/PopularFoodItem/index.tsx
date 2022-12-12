@@ -5,37 +5,41 @@ import { BText, Text } from "../../../../base/Text";
 import { Pressable } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import { AnimatedCircle } from "../../../../base/AnimatedCircle";
+import { Image } from "../../../../base/Image";
 
 
 export const PopularFoodItem = React.memo((props: PopularFoodItemProps) => {
     const navigation = useNavigation()
 
     return (
-        <View>
-            <Pressable
-                onPress={() => {
-                    navigation.navigate('Search' as never, { keyword: props.data.productName } as never)
-                }}>
-                <TransparentView style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', position: 'relative', height: 75 }}>
-                    <AnimatedCircle
+        <Pressable
+            onPress={() => {
+                navigation.navigate('Search' as never, { keyword: props.data.productName } as never)
+            }}
+            style={{ flex: 1 }}>
+            <TransparentView style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', position: 'relative' }}>
+                {/* <AnimatedCircle
                         size={4}
                         color={getColorList()[props.index]} >
 
                         <Text text={(props.index + 1).toString()} style={{ fontSize: 14, fontWeight: '500' }} />
-                    </AnimatedCircle>
+                    </AnimatedCircle> */}
+                <Text text={(props.index + 1).toString() + '.'} style={{fontWeight: '500', fontSize: 18}}/>
 
-                    <View
-                        style={{
-                            marginLeft: 30, paddingVertical: 10, backgroundColor: '#c0c6cf', borderRadius: 10,
-                            paddingLeft: 5, flexGrow: 1, flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', flexShrink: 1
-                        }}>
-                        <BText
-                            text={props.data.productName}
-                            style={{ fontSize: 18, textAlign: 'center', flexGrow: 1, flexShrink: 1, paddingHorizontal: 10 }} numberOfLines={3} />
-                    </View>
-                </TransparentView>
-            </Pressable>
-        </View >
+                <Text
+                    text={props.data.productName}
+                    style={{ fontSize: 18, textAlign: 'left', flexGrow: 1, flexShrink: 1, paddingHorizontal: 10, fontWeight: '500' }} numberOfLines={3} />
+
+                <Image
+                    resizeMode="cover"
+                    source={{
+                        uri: props.data.productImageUrl
+                    }}
+                    style={{ width: 120, height: 120, borderRadius: 10, marginRight: 10, marginVertical: 10 }} />
+            </TransparentView>
+
+            <View style={{ height: 1, backgroundColor: 'grey' }} />
+        </Pressable>
     )
 })
 

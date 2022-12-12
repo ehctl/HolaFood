@@ -61,7 +61,7 @@ export const HomeScreen = React.memo(({ navigation }: any) => {
                         textColor="#d9091f"
                         leftIcons={['search', 'shopping-cart']}
                         leftIconsColor={['#4666a6', '#d14fa6']}
-                        leftIconsTarget={['Search', 'Order']} />,
+                        leftIconsTarget={['Search', 'Cart']} />,
                     headerHeight: Level1HeaderStats.HEADER_MAX_HEIGHT
                 }}
                 flatListProps={{

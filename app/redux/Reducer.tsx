@@ -6,6 +6,7 @@ import { CategoryData } from "../components/Home/CategoryList";
 import { OrderData } from "../components/Order/OrderItem";
 import { CartItemData } from "../components/Order/Cart";
 import { NotificationItemData, NotificationType } from "../components/Notifications/NotificationItem";
+import { formatCreatedDateType2 } from "../utils/Utils";
 
 export type AppState = {
     userApiToken: string,
@@ -40,6 +41,8 @@ export type UserInfo = {
     phone: string,
     role: string,
     shopId?: number,
+    licensePlate?: string,
+    citizenIdentification?: string
 }
 
 export type UserAddress = {
@@ -139,11 +142,12 @@ const MainAppReducer = createSlice({
             return state
          },
          addNotifications: (state, action: PayloadAction<NotificationItemData[]>) => { state.notifications = action.payload; return state },
-         updateNotifcations: (state, action: PayloadAction<{orderId: number, status: number}>) => { 
+         updateNotifcations: (state, action: PayloadAction<{orderId: number, status: number, time: string}>) => { 
             const index = state.notifications.findIndex((i) => i.data?.orderId == action.payload.orderId)
             if (index != -1) {
-                const notiData = state.notifications[index].data
-                notiData.status = action.payload.status
+                const noti = state.notifications[index]
+                noti.data.status = action.payload.status
+                noti.createdDate = formatCreatedDateType2(new Date(action.payload.time))
 
                 const swapItem = state.notifications[index]
                 state.notifications[index] = state.notifications[0]
@@ -154,8 +158,9 @@ const MainAppReducer = createSlice({
                     type: NotificationType.ORDER_STATUS_CHANGE,
                     data: {
                         orderId: action.payload.orderId,
-                        status: action.payload.status
-                    }
+                        status: action.payload.status,
+                    },
+                    createdDate: formatCreatedDateType2(new Date(action.payload.time))
                 }, ...state.notifications]
             }
             

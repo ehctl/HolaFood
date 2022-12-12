@@ -5,7 +5,7 @@ import { I18NText, Text } from "../../../base/Text"
 import { Level2Header, Level2HeaderStat } from "../../../base/Headers/Level2Header"
 import { FontAwesome, FontAwesome2 } from "../../../base/FontAwesome"
 import { ActivityIndicator, Animated, Pressable } from "react-native"
-import { useTheme, useThemeColor } from "../../../base/Themed"
+import { useLanguage, useTheme, useThemeColor } from "../../../base/Themed"
 import Colors from "../../../constants/Colors"
 import { PopupModal } from "../../../base/PopupModal"
 import { TextInput } from "react-native-gesture-handler"
@@ -29,6 +29,8 @@ export const FAQScreen = React.memo(() => {
     const [updating, setUpdating] = useState(false)
     const [errorMsg, setErrorMsg] = useState('')
     const popupRef = useRef(null)
+
+    const I18NYourFAQS = useLanguage('Your FAQS')
 
     const showToast = useToast()
 
@@ -142,7 +144,7 @@ export const FAQScreen = React.memo(() => {
             <PopupModal ref={popupRef} title="FAQs" shouldAvoidKeyboard={true}>
                 <TransparentView style={{ flexDirection: 'row', marginTop: 15 }}>
                     <TextInput
-                        placeholder="Your FAQS"
+                        placeholder={I18NYourFAQS}
                         multiline={true}
                         style={{ fontSize: 18, paddingHorizontal: 10, paddingVertical: 20, paddingTop: 15, backgroundColor: '#cdd1d1', width: '100%', borderRadius: 10 }}
                         value={FAQContent}

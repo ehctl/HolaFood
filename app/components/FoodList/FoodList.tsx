@@ -18,7 +18,6 @@ import { useToast } from "../../base/Toast"
 import { Constant } from "../../utils/Constant"
 
 
-
 export const FoodList = React.memo((props: FoodListProps) => {
     const appProps = useSelector((state: AppState) => ({
         categoryList: state.categoryList
@@ -67,6 +66,7 @@ export const FoodList = React.memo((props: FoodListProps) => {
                     })))
                 } else {
                     const listFood = response.data.map((i) => mapFoodDetailDataFromRequest1(i))
+                    console.log(listFood.length)
                     if (listFood.length < 10)
                         setReachListEnd(true)
 
@@ -110,7 +110,7 @@ export const FoodList = React.memo((props: FoodListProps) => {
                     renderItem={renderItem}
                     onEndReachedThreshold={0.5}
                     onEndReached={() => {
-                        if (!reachListEnd && loadingMore) {
+                        if (!reachListEnd && !loadingMore) {
                             fetchMoreData(pageIndex + 1)
                             setPageIndex(pageIndex + 1)
                         }

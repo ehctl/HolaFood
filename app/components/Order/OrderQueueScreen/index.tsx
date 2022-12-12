@@ -37,7 +37,7 @@ export const OrderQueueScreen = React.memo((props: OrderViewProp) => {
     const popupModalQueueSortTypeRef = useRef(null)
     const popupModalQueueSortOrderRef = useRef(null)
     const [orderQueueSortType, setOrderQueueSortType] = useState(QueueSortType.DATE)
-    const [orderQueueSortOrder, setOrderQueueSortOrder] = useState(QueueSortOrder.ASCENDING)
+    const [orderQueueSortOrder, setOrderQueueSortOrder] = useState(QueueSortOrder.DESCENDING)
 
     const showToast = useToast()
 
@@ -199,7 +199,7 @@ export const mapOrderDataFromResponse = (data: any): OrderData => {
         price: data.price - data.shipOrder,
         shipFee: data.shipPrice,
         shipFeeWithShopPolicy: data.shipOrder,
-        createdDate: formatCreatedDateType(new Date()),
+        createdDate: data.createdDate,
         phone: data.phone,
         distance: data.distance,
         roleCancel: data.roleCancel,

@@ -7,7 +7,7 @@ import { CartInnerItem } from "../Cart/CartItem";
 import { TransparentView, View } from "../../../base/View";
 import { I18NText, Text } from "../../../base/Text";
 import { FontAwesome1, FontAwesome2 } from "../../../base/FontAwesome";
-import { formatDateTimeFromData, formatMoney, getUserRoleById } from "../../../utils/Utils";
+import { formatCreatedDateType2, formatDateTimeFromData, formatMoney, getUserRoleById } from "../../../utils/Utils";
 import { useLanguage } from "../../../base/Themed";
 import { getOrderStatusIcon, getOrderStatusMsg, OrderStatus } from "../OrderUtils";
 import { OrderData } from "../OrderItem";
@@ -271,7 +271,6 @@ export const OrderDetail = (props: OrderDetailProps) => {
         }
     }, [onShipOrder, onFinishOrder, onCancelOrder])
 
-
     return (
         <View style={{ flex: 1 }}>
             <AnimatedHeader
@@ -295,7 +294,7 @@ export const OrderDetail = (props: OrderDetailProps) => {
 
                             <TransparentView style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginHorizontal: 10, marginTop: 5 }}>
                                 <Entypo name='calendar' size={20} color='#c49829' />
-                                <I18NText text={formatDateTimeFromData(data.createdDate)} style={{ textAlign: 'left', marginLeft: 10, fontSize: 16 }} />
+                                <I18NText text={formatCreatedDateType2(new Date(data.createdDate))} style={{ textAlign: 'left', marginLeft: 10, fontSize: 16 }} />
                             </TransparentView>
 
                             <TransparentView style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginHorizontal: 10, marginTop: 5 }}>

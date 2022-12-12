@@ -1,7 +1,7 @@
 import { TransparentView, View } from "../../../base/View"
 import { BText, I18NText, Text } from "../../../base/Text"
 import { FontAwesome, FontAwesome2 } from "../../../base/FontAwesome"
-import { ListRenderItemInfo, Pressable } from "react-native"
+import { ActivityIndicator, ListRenderItemInfo, Pressable } from "react-native"
 import { useNavigation } from '@react-navigation/native';
 import React, { useCallback, useEffect, useState } from "react";
 import { useToast } from "../../../base/Toast";
@@ -101,17 +101,28 @@ export const OrderStatusNotificationItem = React.memo((props: NotificationItemDa
                         </TransparentView>
                     </Pressable>
 
-                    <Pressable
-                        onPress={() => setIsCollapse(!isCollapse)}
-                        style={{ paddingHorizontal: 25, height: '100%', flexDirection: 'row', alignItems: 'center' }}>
-                        <FontAwesome name={isCollapse ? 'angle-down' : 'angle-up'} size={20} />
-                    </Pressable>
-
+                    {
+                        props.data?.status != 1 ?
+                            <Pressable
+                                onPress={() => setIsCollapse(!isCollapse)}
+                                style={{ paddingHorizontal: 25, height: '100%', flexDirection: 'row', alignItems: 'center' }}>
+                                <FontAwesome name={isCollapse ? 'angle-down' : 'angle-up'} size={20} />
+                            </Pressable>
+                            : null
+                    }
                 </TransparentView>
                 <FlatList
                     showsVerticalScrollIndicator={false}
                     renderItem={renderItem}
                     keyExtractor={extractor}
+                    ListHeaderComponent={
+                        loading ?
+                            <ActivityIndicator
+                                animating={true}
+                                color='black'
+                                style={{}} />
+                            : null
+                    }
                     data={notiDetailItems}
                 />
             </View>

@@ -44,7 +44,7 @@ export const Review = React.memo((props: ReviewType) => {
     const [reachEndList, setReachEndList] = useState(false)
     const I18NReason = useLanguage('Reason')
     const I18NOptional = useLanguage('Optional')
-    const I18NYourRateOptional = useLanguage('Your Reason (Optional)')
+    const I18NYourRateOptional = useLanguage('Your Rate (Optional)')
 
     const showToast = useToast()
 
@@ -254,7 +254,7 @@ export const Review = React.memo((props: ReviewType) => {
                 }
 
                 <Pressable
-                    style={{ marginTop: 40, marginBottom: 20, backgroundColor: '#c0c6cf', padding: 10, borderRadius: 10 }}
+                    style={{ marginTop: 40, marginBottom: 20, backgroundColor: '#3199ad', padding: 10, borderRadius: 10 }}
                     onPress={() => onAddReview()}>
 
                     <I18NText text="Rate" />

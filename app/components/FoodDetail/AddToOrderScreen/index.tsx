@@ -16,7 +16,8 @@ import { RouteProp } from '@react-navigation/core'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { GroupStackParamList } from "../../../navigation/StackGroup"
 import { CartItemData } from "../../Order/Cart"
-import { OrderData, OrderStatus } from "../../Order/OrderItem"
+import { OrderData } from "../../Order/OrderItem"
+import { OrderStatus } from "../../Order/OrderUtils"
 import { calculateShipFee, formatCreatedDateType, formatMoney } from "../../../utils/Utils"
 import { getDistance } from "../../../core/apis/Requests"
 import { addOrdersWithCartId, addOrdersWithCardData } from "../../../core/apis/Requests"

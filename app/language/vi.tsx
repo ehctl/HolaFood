@@ -154,5 +154,7 @@ export const vi: any = {
     "Orderr": 'Thứ tự',
     "Ascending": 'Tăng dần',
     "Descending": 'Giảm dần',
+    "Your FAQS": 'Câu hỏi của bạn',
+    "Send FAQs": 'Gửi câu hỏi',
     "Your Rate (Optional)": 'Đánh giá của bạn (Không bắt buộc)',
 }

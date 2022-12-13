@@ -131,7 +131,7 @@ export const Cart = React.memo(({ navigation }: any) => {
             </TransparentView>
 
             <Pressable
-                style={{ position: 'absolute', bottom: 0, right: 0, left: 0, backgroundColor: '#d7d7d9', paddingHorizontal: 10, paddingVertical: 5, height: 40, justifyContent: 'center', alignItems: 'center' }}
+                style={{ position: 'absolute', bottom: 0, right: 0, left: 0, backgroundColor: '#e8be41', paddingHorizontal: 10, paddingVertical: 5, height: 40, justifyContent: 'center', alignItems: 'center' }}
                 onPress={() => onOrder()}>
 
                 <BText text="Order" style={{ fontSize: 16, fontWeight: '500' }} />

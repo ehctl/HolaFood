@@ -5,7 +5,7 @@ import { I18NText, Text } from "../../../base/Text";
 import { ActivityIndicator, Alert, Pressable } from "react-native";
 import { FontAwesome, FontAwesome1, FontAwesome2 } from "../../../base/FontAwesome";
 import { useNavigation } from '@react-navigation/native';
-import { formatDateTimeFromData, formatMoney } from "../../../utils/Utils";
+import { formatDateTimeFromData, formatMoney, openMapUtil } from "../../../utils/Utils";
 import { MaterialIconType } from "../../../constants/MaterialIconType";
 import { updateOrder } from "../../../core/apis/Requests";
 import { useDispatch } from "react-redux";
@@ -41,6 +41,9 @@ export const OrderItem = React.memo((props: OrderItemType) => {
     const I18NFinishOrder = useLanguage('Finish Order')
     const I18NShipTo = useLanguage('Ship To')
     const I18NShopAddress = useLanguage('Shop Address')
+    const I18NAddress = useLanguage('Address')
+    const I18NView = useLanguage('View')
+    const I18NAddressConfirm = useLanguage('Do you want to view this address in maps application?')
 
     const I18NOrderStatus = useLanguage(getOrderStatusMsg(props.item.status))
 
@@ -49,6 +52,25 @@ export const OrderItem = React.memo((props: OrderItemType) => {
     const navigateToOrderDetail = useCallback((data: OrderData) => {
         navigation.navigate('OrderDetail' as never, { orderId: data.id } as never)
     }, [])
+
+    const openMap = useCallback((address: string) => {
+        Alert.alert(
+            I18NAddress,
+            I18NAddressConfirm,
+            [
+                {
+                    text: I18NCancel,
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
+                },
+                {
+                    text: I18NView, onPress: async () => {
+                        await openMapUtil(address)
+                    }
+                }
+            ]
+        )
+    }, [showToast])
 
     const onFinishOrder = useCallback((orderId: number) => {
         setFinishingOrder(true)
@@ -246,12 +268,19 @@ export const OrderItem = React.memo((props: OrderItemType) => {
                         appStateProps.userType == 'shipper' ?
                             <TransparentView>
                                 <TransparentView>
-                                    <TransparentView style={{ flexDirection: 'row', flexShrink: 1, marginTop: 10 }}>
-                                        <Text text={I18NShopAddress + ': ' + props.item.items[0].productDetail.shopAddress} style={{ textAlign: 'left', fontSize: 16, flexShrink: 1 }} numberOfLines={3} />
-                                    </TransparentView>
-                                    <TransparentView style={{ flexDirection: 'row', flexShrink: 1, marginTop: 5 }}>
-                                        <Text text={I18NShipTo + ': ' + props.item.address} style={{ textAlign: 'left', fontSize: 16, flexShrink: 1 }} numberOfLines={3} />
-                                    </TransparentView>
+                                    <Pressable
+                                        onPress={() => openMap(props.item.items[0].productDetail.shopAddress)}
+                                        style={{ flexDirection: 'row', flexShrink: 1, marginTop: 10 }}>
+                                        <Text text={I18NShopAddress + ': ' + props.item.items[0].productDetail.shopAddress}
+                                            style={{ textAlign: 'left', fontSize: 16, flexShrink: 1, fontWeight: '500' }} />
+                                    </Pressable>
+                                    <Pressable
+                                        onPress={() => openMap(props.item.address)}
+                                        style={{ flexDirection: 'row', flexShrink: 1, marginTop: 5 }}>
+                                        <Text text={I18NShipTo + ': ' + props.item.address}
+                                            style={{ textAlign: 'left', fontSize: 16, flexShrink: 1, fontWeight: '500' }} />
+                                    </Pressable>
+
                                     <TransparentView style={{ flexDirection: 'row', flexShrink: 1, marginTop: 5 }}>
                                         <I18NText text='Ship Fee' style={{ textAlign: 'left', fontSize: 18, flexShrink: 1 }} numberOfLines={3} />
                                         <Text text=': ' style={{ fontSize: 18 }} />

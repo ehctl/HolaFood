@@ -126,7 +126,7 @@ export const NotificationsScreen = React.memo(({ navigation }: any) => {
                 headerProps={{
                     header: <Level1Header
                         text="Notification"
-                        textColor="#2dbd26"
+                        textColor="#e8be41"
                         leftIcons={['search']}
                         leftIconsColor={['#4666a6']}
                         leftIconsTarget={['Search']} />,

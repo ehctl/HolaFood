@@ -308,7 +308,7 @@ export const AddToCartScreen = React.memo((props: AddToCartType) => {
 
             <Pressable
                 style={{
-                    marginHorizontal: 10, marginTop: 30, backgroundColor: '#6aabd9', paddingVertical: 10, borderRadius: 10, marginBottom: 15, shadowColor: "#000",
+                    marginHorizontal: 10, marginTop: 30, backgroundColor: '#e8be41', paddingVertical: 10, borderRadius: 10, marginBottom: 15, shadowColor: "#000",
                     shadowOffset: {
                         width: 0,
                         height: 2
@@ -332,7 +332,7 @@ export const AddToCartScreen = React.memo((props: AddToCartType) => {
                     null :
                     <Pressable
                         style={{
-                            marginHorizontal: 10, backgroundColor: '#6aabd9', paddingVertical: 10, borderRadius: 10, marginBottom: 15, shadowColor: "#000",
+                            marginHorizontal: 10, backgroundColor: '#e8be41', paddingVertical: 10, borderRadius: 10, marginBottom: 15, shadowColor: "#000",
                             shadowOffset: {
                                 width: 0,
                                 height: 2

@@ -39,9 +39,9 @@ export const AccountScreen = () => {
             (response) => {
                 logout(
                     async (response) => {
+                        navigation.replace('Authentication')
                         await deleteInfoBeforeLogout()
                         dispatch(clearUserInfo())
-                        navigation.replace('Authentication')
                     },
                     (e) => {
                         showToast(Constant.API_ERROR_OCCURRED)

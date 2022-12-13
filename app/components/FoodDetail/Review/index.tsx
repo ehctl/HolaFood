@@ -165,7 +165,7 @@ export const Review = React.memo((props: ReviewType) => {
                     <FontAwesome name={isCollapse ? 'angle-down' : 'angle-up'} size={24} style={{ marginLeft: 10 }} />
                 </Pressable>
                 <Pressable
-                    style={{ paddingVertical: 5, paddingHorizontal: 10, backgroundColor: '#5bbdb9', borderRadius: 10 }}
+                    style={{ paddingVertical: 5, paddingHorizontal: 10, backgroundColor: '#e8be41', borderRadius: 10 }}
                     onPress={() => {
                         popupRateRef.current.changeVisibility(true)
                     }}>
@@ -211,7 +211,7 @@ export const Review = React.memo((props: ReviewType) => {
 
                 <Pressable
                     style={{
-                        marginTop: 10, backgroundColor: '#6aabd9', paddingVertical: 10, borderRadius: 10, marginBottom: 15, shadowColor: "#000",
+                        marginTop: 10, backgroundColor: '#e8be41', paddingVertical: 10, borderRadius: 10, marginBottom: 15, shadowColor: "#000",
                         shadowOffset: {
                             width: 0,
                             height: 2
@@ -254,7 +254,7 @@ export const Review = React.memo((props: ReviewType) => {
                 }
 
                 <Pressable
-                    style={{ marginTop: 40, marginBottom: 20, backgroundColor: '#3199ad', padding: 10, borderRadius: 10 }}
+                    style={{ marginTop: 40, marginBottom: 20, backgroundColor: '#e8be41', padding: 10, borderRadius: 10 }}
                     onPress={() => onAddReview()}>
 
                     <I18NText text="Rate" />

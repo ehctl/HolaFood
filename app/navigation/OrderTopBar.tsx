@@ -27,7 +27,7 @@ export const OrderTab = React.memo(() => {
             <View style={getStyle().AnimatedHeader_header}>
                 <Level1Header
                     text="Order"
-                    textColor="#28b1c9"
+                    textColor="#e8be41"
                     leftIcons={stateProps.userType == 'customer' ? ['search'] : []}
                     leftIconsColor={stateProps.userType == 'customer' ? ['#4666a6'] : []}
                     leftIconsTarget={stateProps.userType == 'customer' ? ['Search'] : []} />
@@ -132,7 +132,7 @@ const style = StyleSheet.create({
     },
     divider: {
         height: 2,
-        backgroundColor: '#2a90c7'
+        backgroundColor: '#e8be41'
     },
     tab_element_container: {
         paddingTop: 10,

@@ -95,9 +95,9 @@ export const FoodList = React.memo((props: FoodListProps) => {
 
     return (
         <View style={{
-            flex: 1, flexGrow: 1, flexShrink: 1, marginTop: 10, borderRadius: 15, marginHorizontal: 10
+            flex: 1, flexGrow: 1, flexShrink: 1, marginBottom: 10, borderRadius: 15, marginHorizontal: 10
         }}>
-            <TransparentView style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 10, marginBottom: 5 }}>
+            <TransparentView style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 10, marginVertical: 5}}>
                 <I18NText
                     style={{ textAlign: 'left', fontWeight: '600', fontSize: 20 }}
                     text={getFoodListTitle()} />

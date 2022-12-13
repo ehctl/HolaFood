@@ -79,12 +79,12 @@ export const Toast = React.memo(() => {
         <Animated.View
             style={{
                 opacity: opacity,
-                borderRadius: 10, position: 'absolute', bottom: 50, right: 0, left: 0, height: 40,
+                borderRadius: 10, position: 'absolute', bottom: 50, right: 0, left: 0, paddingHorizontal: 10, paddingVertical: 5,
                 marginHorizontal: 10, backgroundColor: 'grey', justifyContent: 'center', alignItems: 'center'
             }}
             pointerEvents='none'>
 
-            <Animated.Text style={{ color: consumer.color, fontSize: 18 }} numberOfLines={3}>
+            <Animated.Text style={{ color: consumer.color, fontSize: 18, textAlign: 'center' }} numberOfLines={3}>
                 {message}
             </Animated.Text>
         </Animated.View>

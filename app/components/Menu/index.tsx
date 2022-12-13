@@ -37,7 +37,7 @@ export const MenuScreen = React.memo(({ navigation }: any) => {
                 headerProps={{
                     header: <Level1Header
                         text="Menu"
-                        textColor="#a68519"
+                        textColor="#e8be41"
                         leftIcons={['search']}
                         leftIconsColor={['#4666a6']}
                         leftIconsTarget={['Search']} />,

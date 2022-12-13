@@ -88,7 +88,7 @@ export const OrderQueueScreen = React.memo((props: OrderViewProp) => {
                     horizontal={true} >
 
                     <Pressable
-                        style={{ flexDirection: 'row', borderRadius: 10, backgroundColor: '#60cde0', paddingHorizontal: 15, paddingVertical: 5 }}
+                        style={{ flexDirection: 'row', borderRadius: 10, backgroundColor: '#e8be41', paddingHorizontal: 15, paddingVertical: 5 }}
                         onPress={() => popupModalQueueSortTypeRef.current.changeVisibility(true)}>
 
                         <I18NText text="Sort" />
@@ -97,7 +97,7 @@ export const OrderQueueScreen = React.memo((props: OrderViewProp) => {
                         <FontAwesome name="angle-down" size={16} style={{ marginLeft: 10 }} />
                     </Pressable>
                     <Pressable
-                        style={{ flexDirection: 'row', borderRadius: 10, marginLeft: 10, backgroundColor: '#60cde0', paddingHorizontal: 15, paddingVertical: 5 }}
+                        style={{ flexDirection: 'row', borderRadius: 10, marginLeft: 10, backgroundColor: '#e8be41', paddingHorizontal: 15, paddingVertical: 5 }}
                         onPress={() => popupModalQueueSortOrderRef.current.changeVisibility(true)}>
 
                         <I18NText text="Orderr" />
@@ -123,7 +123,7 @@ export const OrderQueueScreen = React.memo((props: OrderViewProp) => {
 
             <PopupModal ref={popupModalQueueSortTypeRef} title='Sort'>
                 <RadioButtonGroup
-                    selectedColor='#28b1c9'
+                    selectedColor='#e8be41'
                     defaultColor='grey'
                     value={orderQueueSortType}
                     valueChange={(value: string) => {

@@ -53,12 +53,12 @@ export const HomeScreen = React.memo(({ navigation }: any) => {
     }, [refresh])
 
     return (
-        <View style={{ flex: 1, height: '100%', backgroundColor: 'red', position: 'relative', margin: 0 }}>
+        <View style={{ flex: 1, height: '100%', backgroundColor: '#e8be41', position: 'relative', margin: 0 }}>
             <AnimatedHeader
                 headerProps={{
                     header: <Level1Header
                         text="HolaFood"
-                        textColor="#d9091f"
+                        textColor="#e8be41"
                         leftIcons={['search', 'shopping-cart']}
                         leftIconsColor={['#4666a6', '#d14fa6']}
                         leftIconsTarget={['Search', 'Cart']} />,

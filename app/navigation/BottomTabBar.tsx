@@ -120,11 +120,11 @@ const BottomTabBar = React.memo((params: BottomBarParams) => {
                         <View style={style.tab_element_container}>
                             <View style={{ flexDirection: 'row', position: 'relative' }}>
                                 <Animated.View style={{ opacity }} >
-                                    <FontAwesome name={params.iconList[index]} size={28} color={'#2a90c7'} />
+                                    <FontAwesome name={params.iconList[index]} size={28} color={'#e8be41'} />
                                 </Animated.View>
                                 {
                                     (route.name == 'Notification' && props.newOrderNotification) ?
-                                        <FontAwesome name='exclamation-circle' size={15} color={'#2a90c7'} style={{ position: 'absolute', right: -8, top: -3 }} />
+                                        <FontAwesome name='exclamation-circle' size={15} color={'#e8be41'} style={{ position: 'absolute', right: -8, top: -3 }} />
                                         : null
                                 }
                             </View>
@@ -150,7 +150,7 @@ const style = StyleSheet.create({
     },
     divider: {
         height: 2,
-        backgroundColor: '#2a90c7'
+        backgroundColor: '#e8be41'
     },
     tab_element_container: {
         paddingVertical: 5,

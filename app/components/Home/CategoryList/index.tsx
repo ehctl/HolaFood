@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react"
 import { TransparentView } from "../../../base/View"
 import { I18NText, Text } from "../../../base/Text"
-import { ListRenderItemInfo, Pressable } from "react-native"
+import { ListRenderItemInfo, Pressable, View } from "react-native"
 import { useNavigation } from '@react-navigation/native';
 import { getFoodCategory } from "../../../core/apis/Requests"
 import { CategoryListShimmer } from "./CategoryListShimmer/CategoryListShimmer"
@@ -68,6 +68,8 @@ export const CategoryList = React.memo(() => {
             <I18NText
                 style={{ textAlign: 'left', fontWeight: '600', fontSize: 20, marginRight: 20 }}
                 text='Food Category' />
+            
+            <View style={{ backgroundColor: '#aaaba7', height: 3, marginTop: 5, borderRadius: 20}}/>
 
             <CategoryListShimmer visible={loading} />
 

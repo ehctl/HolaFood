@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage"
-import { Animated, NativeModules, Platform, Pressable } from "react-native"
+import { Alert, Animated, Linking, NativeModules, Platform, Pressable } from "react-native"
 import { AppLanguage, UserInfo, UserType } from "../redux/Reducer"
 import { Constant } from "./Constant"
 import Warehouse from "./Warehouse"
@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import { Keyboard, KeyboardEvent } from 'react-native';
 import { FontAwesome } from "@expo/vector-icons"
 import { ShipCost } from "../components/FoodDetail/FoodDetailScreen"
+import { startActivityAsync } from "expo-intent-launcher"
 
 
 
@@ -143,7 +144,7 @@ export const calculateShipFee = (distance: number, costPolicy: ShipCost[]) => {
     console.log(' costPolicy rong~~~')
     return 0
   }
-  
+
   const distanceKM = distance / 1000
 
   if (0 < distanceKM && distanceKM <= 3)
@@ -174,6 +175,23 @@ export const getUserRoleById = (role: number): string => {
       return 'Shop'
     case 4:
       return 'Shipper'
+  }
+}
+
+export const openMapUtil = async (daddress: string, failureCallback?: () => void) => {
+  if (isIosDevice())
+    Linking.openURL('http://maps.google.com/maps/search/?api=1&query=' + daddress);
+  else {
+    try {
+      const returnResult = await startActivityAsync("android.intent.action.VIEW", {
+        packageName: "com.google.android.apps.maps",
+        data: "geo:0,0?q=" + daddress
+      })
+      if (returnResult.resultCode != 0 && returnResult.resultCode != -1)
+        throw "Error"
+    } catch (e) {
+      failureCallback()
+    }
   }
 }
 

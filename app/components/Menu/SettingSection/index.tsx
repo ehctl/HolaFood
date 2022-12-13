@@ -11,6 +11,7 @@ import { useState } from "react";
 import React from 'react';
 import { FontAwesome, FontAwesome2 } from '../../../base/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
+import { useToast } from '../../../base/Toast';
 
 export const SettingSection = React.memo(() => {
     const dispatch = useDispatch()
@@ -28,7 +29,7 @@ export const SettingSection = React.memo(() => {
     };
 
     const [isDarkMode, setDarkMode] = useState(props.theme === 'dark');
-
+    const showToast = useToast()
 
     return (
         <TransparentView style={{ flex: 1, justifyContent: 'flex-start', marginHorizontal: 15 }}>
@@ -40,7 +41,8 @@ export const SettingSection = React.memo(() => {
                 <Pressable
                     style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 20 }}
                     onPress={() => {
-                        navigation.navigate('Language' as never)
+                        // navigation.navigate('Language' as never)
+                        showToast(Constant.API_ERROR_OCCURRED)
                     }} >
                     <TransparentView style={{flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center'}}>
                         <FontAwesome name='odnoklassniki-square' color='#2262c9' size={25} style={{ width: 30 }} />

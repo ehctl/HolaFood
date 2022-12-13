@@ -42,7 +42,7 @@ export const CategoryList = React.memo(() => {
                         name={value}
                         iconSource={null}
                         style={{
-                            backgroundColor: foodListType == value ? '#47bac4' : '#dad7de'
+                            backgroundColor: foodListType == value ? '#e8be41' : '#dad7de'
                         }}
                         onPress={() => {
                             scrollViewRef.current.scrollTo({
@@ -66,7 +66,7 @@ export const CategoryList = React.memo(() => {
                         name={item.name}
                         iconSource={item.imageCategory}
                         style={{
-                            backgroundColor: foodListType == item.id ? '#47bac4' : '#dad7de'
+                            backgroundColor: foodListType == item.id ? '#e8be41' : '#dad7de'
                         }}
                         onPress={() => {
                             scrollViewRef.current.scrollTo({

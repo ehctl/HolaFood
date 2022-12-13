@@ -147,7 +147,7 @@ export const OrderScreen = React.memo((props: OrderViewProp) => {
 
                 <Pressable
                     style={{
-                        marginTop: 10, backgroundColor: '#6aabd9', paddingVertical: 10, borderRadius: 10, marginBottom: 15, shadowColor: "#000",
+                        marginTop: 10, backgroundColor: '#e8be41', paddingVertical: 10, borderRadius: 10, marginBottom: 15, shadowColor: "#000",
                         shadowOffset: {
                             width: 0,
                             height: 2

@@ -160,4 +160,7 @@ export const vi: any = {
     "Your FAQS": 'Câu hỏi của bạn',
     "Send FAQs": 'Gửi câu hỏi',
     "Your Rate (Optional)": 'Đánh giá của bạn (Không bắt buộc)',
+    "Please check if map application working normally!": 'Vui lòng kiểm tra lại ứng dụng bản đồ!',
+    "Do you want to view this address in maps application?": 'Bạn có muốn xem địa chỉ này trên ứng dụng bản đồ?',
+    "View": 'Xem',
 }

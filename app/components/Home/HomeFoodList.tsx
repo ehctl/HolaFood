@@ -23,7 +23,7 @@ export const HomeFoodList = React.memo((props: FoodListProps) => {
     const [foodListType, setFoodListType] = useState(FoodListType.POPULAR_FOOD)
     const popupModalRef = useRef(null)
     const navigation = useNavigation()
-    
+
     const showToast = useToast()
 
     const fetchData = useCallback(async () => {
@@ -99,12 +99,15 @@ export const HomeFoodList = React.memo((props: FoodListProps) => {
                     style={{ textAlign: 'left', fontWeight: '600', fontSize: 20, marginRight: 20 }}
                     text={foodListType.toString()} />
 
+
                 <FontAwesome1
                     name="ellipsis1" size={28}
                     onPress={() =>
                         popupModalRef.current.changeVisibility(true)
                     } />
             </View>
+
+            <View style={{ backgroundColor: '#aaaba7', height: 3, marginTop: 5, borderRadius: 30 }} />
 
             <PopupModal ref={popupModalRef} title='Food'>
                 <RadioButtonGroup

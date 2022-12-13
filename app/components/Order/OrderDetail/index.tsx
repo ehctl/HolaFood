@@ -7,11 +7,11 @@ import { CartInnerItem } from "../Cart/CartItem";
 import { TransparentView, View } from "../../../base/View";
 import { I18NText, Text } from "../../../base/Text";
 import { FontAwesome1, FontAwesome2 } from "../../../base/FontAwesome";
-import { formatCreatedDateType2, formatDateTimeFromData, formatMoney, getUserRoleById } from "../../../utils/Utils";
+import { formatCreatedDateType2, formatDateTimeFromData, formatMoney, getUserRoleById, isIosDevice, openMapUtil } from "../../../utils/Utils";
 import { useLanguage } from "../../../base/Themed";
 import { getOrderStatusIcon, getOrderStatusMsg, OrderStatus } from "../OrderUtils";
 import { OrderData } from "../OrderItem";
-import { ActivityIndicator, Alert, Linking, Pressable, TextInput } from "react-native";
+import { ActivityIndicator, Alert, Linking, Platform, Pressable, TextInput } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import { useCallback, useEffect, useRef, useState } from "react";
 import { cancelOrder, getOrderDetail, updateOrder } from "../../../core/apis/Requests";
@@ -26,6 +26,7 @@ import { updateOrder as updateOrderAction } from "../../../redux/Reducer";
 import { isValidNormalText } from "../../../validation/validate";
 import { PopupModal } from "../../../base/PopupModal";
 import { Entypo } from "@expo/vector-icons";
+import { startActivityAsync } from "expo-intent-launcher";
 
 
 export const OrderDetail = (props: OrderDetailProps) => {
@@ -70,6 +71,29 @@ export const OrderDetail = (props: OrderDetailProps) => {
     const I18NFinishOrder = useLanguage('Finish Order')
     const I18NShipTo = useLanguage('Ship To')
     const I18NShopAddress = useLanguage('Shop Address')
+    const I18NAddress = useLanguage('Address')
+    const I18NView = useLanguage('View')
+    const I18NAddressConfirm = useLanguage('Do you want to view this address in maps application?')
+
+
+    const openMap = useCallback((address: string) => {
+        Alert.alert(
+            I18NAddress,
+            I18NAddressConfirm,
+            [
+                {
+                    text: I18NCancel,
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
+                },
+                {
+                    text: I18NView, onPress: async () => {
+                        await openMapUtil(address)
+                    }
+                }
+            ]
+        )
+    }, [showToast])
 
     const fetchData = useCallback(() => {
         setLoading(true)
@@ -331,13 +355,17 @@ export const OrderDetail = (props: OrderDetailProps) => {
                                 <Text text={`${formatMoney(data.price + data.shipFee)} đ`} style={{ textAlign: 'left', fontSize: 20, color: 'red', fontWeight: '500' }} />
                             </TransparentView>
 
-                            <TransparentView style={{ flexDirection: 'row', flexShrink: 1, marginHorizontal: 10, marginTop: 15 }}>
-                                <Text text={I18NShopAddress + ': ' + data.items[0].productDetail.shopAddress} style={{ textAlign: 'left', fontSize: 16, flexShrink: 1 }}  />
-                            </TransparentView>
+                            <Pressable
+                                onPress={() => openMap(data.items[0].productDetail.shopAddress)}
+                                style={{ flexDirection: 'row', flexShrink: 1, marginHorizontal: 10, marginTop: 15 }}>
+                                <Text text={I18NShopAddress + ': ' + data.items[0].productDetail.shopAddress} style={{ textAlign: 'left', fontSize: 16, flexShrink: 1, fontWeight: '500' }} />
+                            </Pressable>
 
-                            <TransparentView style={{ flexDirection: 'row', flexShrink: 1, marginHorizontal: 10, marginTop: 5 }}>
-                                <Text text={I18NShipTo + ': ' + data.address} style={{ textAlign: 'left', fontSize: 16, flexShrink: 1 }}  />
-                            </TransparentView>
+                            <Pressable
+                                onPress={() => openMap(data.address)}
+                                style={{ flexDirection: 'row', flexShrink: 1, marginHorizontal: 10, marginTop: 5 }}>
+                                <Text text={I18NShipTo + ': ' + data.address} style={{ textAlign: 'left', fontSize: 16, flexShrink: 1, fontWeight: '500' }} />
+                            </Pressable>
 
                             <TransparentView style={{ flexDirection: 'row', marginTop: 15 }}>
                                 <I18NText text="Ship Fee" style={{ textAlign: 'left', fontSize: 18, marginLeft: 10 }} />
@@ -359,7 +387,7 @@ export const OrderDetail = (props: OrderDetailProps) => {
                             {
                                 data.items.map((item, index) => (
                                     <TransparentView key={'order_item_' + index}>
-                                        <CartInnerItem item={item} hideShopName={true}/>
+                                        <CartInnerItem item={item} hideShopName={true} />
                                         <View style={{ backgroundColor: 'grey', height: 2, marginVertical: 15, marginHorizontal: 10 }} />
                                     </TransparentView>
                                 ))
@@ -500,7 +528,7 @@ export const OrderDetail = (props: OrderDetailProps) => {
 
                     <Pressable
                         style={{
-                            marginTop: 10, backgroundColor: '#6aabd9', paddingVertical: 10, borderRadius: 10, marginBottom: 15, shadowColor: "#000",
+                            marginTop: 10, backgroundColor: '#e8be41', paddingVertical: 10, borderRadius: 10, marginBottom: 15, shadowColor: "#000",
                             shadowOffset: {
                                 width: 0,
                                 height: 2

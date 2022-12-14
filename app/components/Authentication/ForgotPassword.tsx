@@ -57,7 +57,7 @@ export const ForgotPassword = (props: SignupScreenProp) => {
             </TransparentView>
 
             <TransparentView style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <FontAwesome name='envelope' color='#62c7db' size={17} />
+                <FontAwesome name='envelope' color='#e8be41' size={17} />
                 <TextInput
                     placeholder='Email'
                     placeholderTextColor='#bfbfbd'
@@ -82,7 +82,7 @@ export const ForgotPassword = (props: SignupScreenProp) => {
 
             <Pressable
                 style={{
-                    position: 'relative', marginTop: 25, backgroundColor: '#3199ad', paddingVertical: 10, borderRadius: 10, shadowColor: "#000",
+                    position: 'relative', marginTop: 25, backgroundColor: '#e8be41', paddingVertical: 10, borderRadius: 10, shadowColor: "#000",
                     shadowOffset: {
                         width: 0,
                         height: 2

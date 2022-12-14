@@ -91,7 +91,7 @@ export const Login = (props: LoginScreenProp) => {
             </TransparentView>
 
             <TransparentView style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
-                <FontAwesome name='envelope' color='#62c7db' size={17} style={{ marginLeft: 5 }} />
+                <FontAwesome name='envelope' color='#e8be41' size={17} style={{ marginLeft: 5 }} />
                 <TextInput
                     placeholder='Email'
                     placeholderTextColor='#bfbfbd'
@@ -103,7 +103,7 @@ export const Login = (props: LoginScreenProp) => {
             <View style={{ height: 0.5, backgroundColor: '#62c7db' }} />
 
             <TransparentView style={{ flexDirection: 'row', alignItems: 'center', marginTop: 15 }}>
-                <FontAwesome name='lock' color='#62c7db' size={26} style={{ marginLeft: 5 }} />
+                <FontAwesome name='lock' color='#e8be41' size={26} style={{ marginLeft: 5 }} />
 
                 <TextInput
                     placeholder={I18NPassword}
@@ -135,7 +135,7 @@ export const Login = (props: LoginScreenProp) => {
 
             <Pressable
                 style={{
-                    position: 'relative', marginTop: 45, backgroundColor: '#3199ad', paddingVertical: 10, borderRadius: 10, shadowColor: "#000",
+                    position: 'relative', marginTop: 45, backgroundColor: '#e8be41', paddingVertical: 10, borderRadius: 10, shadowColor: "#000",
                     shadowOffset: {
                         width: 0,
                         height: 2

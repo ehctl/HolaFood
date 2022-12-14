@@ -385,7 +385,7 @@ export const UpdatePassword = () => {
                         onChangeText={(v) => setOldPassword(v)}
                         style={{ textAlign: 'left', fontSize: 18, fontWeight: '500', marginTop: 5, padding: 10, flexGrow: 1, flexShrink: 1 }} />
                     <Pressable onPress={() => setHideOldPassword(!hideOldPassword)} style={{ padding: 5 }}>
-                        <FontAwesome name={hideOldPassword ? 'eye-slash' : 'eye'} color='#0793a8' size={18} />
+                        <FontAwesome name={hideOldPassword ? 'eye-slash' : 'eye'} color='black' size={18} />
                     </Pressable>
                 </View>
                 <I18NText text={oldPasswordErrorMsg} style={{ color: '#cc1818', textAlign: 'left', marginTop: 3 }} />
@@ -398,7 +398,7 @@ export const UpdatePassword = () => {
                         style={{ textAlign: 'left', fontSize: 18, fontWeight: '500', marginTop: 5, padding: 10, borderRadius: 10, flexGrow: 1, flexShrink: 1 }} />
 
                     <Pressable onPress={() => setHideNewPassword(!hideNewPassword)} style={{ padding: 5 }}>
-                        <FontAwesome name={hideNewPassword ? 'eye-slash' : 'eye'} color='#0793a8' size={18} />
+                        <FontAwesome name={hideNewPassword ? 'eye-slash' : 'eye'} color='black' size={18} />
                     </Pressable>
                 </View>
                 {

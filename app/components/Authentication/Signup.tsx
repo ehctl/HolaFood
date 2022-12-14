@@ -45,7 +45,7 @@ export const Signup = (props: SignupScreenProp) => {
                 {
                     canGoBack ?
                         <Pressable
-                            onPress={() => { setVerifySuccess(false), setReset(!reset) }}
+                            onPress={() => { setVerifySuccess(false), setReset(!reset), setCanGoBack(false) }}
                             style={{ position: 'absolute', left: 0 }}>
                             <FontAwesome name='angle-left' size={32} color='white' />
                         </Pressable>
@@ -154,7 +154,7 @@ export const VerifyEmail = React.memo((props: VerifyEmailType) => {
                 !verifyStage ?
                     <TransparentView>
                         <TransparentView style={{ flexDirection: 'row', alignItems: 'center' }}>
-                            <FontAwesome name='envelope' color='#62c7db' size={17} />
+                            <FontAwesome name='envelope' color='#e8be41' size={17} />
                             <TextInput
                                 placeholder='Email'
                                 placeholderTextColor='#bfbfbd'
@@ -169,7 +169,7 @@ export const VerifyEmail = React.memo((props: VerifyEmailType) => {
 
                         <Pressable
                             style={{
-                                position: 'relative', backgroundColor: '#3199ad', paddingVertical: 10, borderRadius: 10, shadowColor: "#000", marginTop: 20,
+                                position: 'relative', backgroundColor: '#e8be41', paddingVertical: 10, borderRadius: 10, shadowColor: "#000", marginTop: 20,
                                 shadowOffset: {
                                     width: 0,
                                     height: 2
@@ -191,7 +191,7 @@ export const VerifyEmail = React.memo((props: VerifyEmailType) => {
                     :
                     <TransparentView>
                         <TransparentView style={{ flexDirection: 'row', alignItems: 'center' }}>
-                            <FontAwesome1 name='qrcode' color='#62c7db' size={17} />
+                            <FontAwesome1 name='qrcode' color='#e8be41' size={17} />
                             <TextInput
                                 placeholder={I18NOtpCode}
                                 placeholderTextColor='#bfbfbd'
@@ -213,7 +213,7 @@ export const VerifyEmail = React.memo((props: VerifyEmailType) => {
 
                         <Pressable
                             style={{
-                                position: 'relative', backgroundColor: '#3199ad', paddingVertical: 10, borderRadius: 10, shadowColor: "#000", marginTop: 20,
+                                position: 'relative', backgroundColor: '#e8be41', paddingVertical: 10, borderRadius: 10, shadowColor: "#000", marginTop: 20,
                                 shadowOffset: {
                                     width: 0,
                                     height: 2
@@ -323,7 +323,7 @@ export const SignUpDetail = React.memo((props: SignUpDetailType) => {
     return (
         <TransparentView>
             <TransparentView style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <FontAwesome name='envelope' color='#62c7db' size={17} />
+                <FontAwesome name='envelope' color='#e8be41' size={17} />
                 <Text
                     text={props.email}
                     style={{ flexGrow: 1, borderWidth: 0, padding: 10, fontSize: 18, textAlign: 'left', color: 'white' }} />
@@ -331,7 +331,7 @@ export const SignUpDetail = React.memo((props: SignUpDetailType) => {
             <View style={{ height: 0.5, backgroundColor: '#62c7db' }} />
 
             <TransparentView style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
-                <FontAwesome2 name='format-list-numbered' color='#62c7db' size={17} />
+                <FontAwesome2 name='format-list-numbered' color='#e8be41' size={17} />
                 <TextInput
                     placeholder={I18NFirstName + ' ﹡'}
                     placeholderTextColor='#bfbfbd'
@@ -346,7 +346,7 @@ export const SignUpDetail = React.memo((props: SignUpDetailType) => {
             }
 
             <TransparentView style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
-                <FontAwesome2 name='format-list-numbered' color='#62c7db' size={17} />
+                <FontAwesome2 name='format-list-numbered' color='#e8be41' size={17} />
                 <TextInput
                     placeholder={I18NLastName + ' ﹡'}
                     placeholderTextColor='#bfbfbd'
@@ -361,7 +361,7 @@ export const SignUpDetail = React.memo((props: SignUpDetailType) => {
             }
 
             <TransparentView style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
-                <FontAwesome name='phone' color='#62c7db' size={20} />
+                <FontAwesome name='phone' color='#e8be41' size={20} />
                 <TextInput
                     placeholder={I18NPhoneNumber + ' ﹡'}
                     placeholderTextColor='#bfbfbd'
@@ -376,7 +376,7 @@ export const SignUpDetail = React.memo((props: SignUpDetailType) => {
             }
 
             <TransparentView style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
-                <FontAwesome name='lock' color='#62c7db' size={26} />
+                <FontAwesome name='lock' color='#e8be41' size={26} />
                 <TextInput
                     placeholder={I18NPassword + ' ﹡'}
                     placeholderTextColor='#bfbfbd'
@@ -396,7 +396,7 @@ export const SignUpDetail = React.memo((props: SignUpDetailType) => {
 
             <Pressable
                 style={{
-                    position: 'relative', marginTop: 45, backgroundColor: '#3199ad', paddingVertical: 10, borderRadius: 10, shadowColor: "#000",
+                    position: 'relative', marginTop: 45, backgroundColor: '#e8be41', paddingVertical: 10, borderRadius: 10, shadowColor: "#000",
                     shadowOffset: {
                         width: 0,
                         height: 2

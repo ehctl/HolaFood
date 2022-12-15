@@ -426,6 +426,39 @@ export const addFoodReview = (
         })
 }
 
+export const deleteFoodReview = (
+    reviewId: number,
+    success: (data: any) => void,
+    failure: (error: any) => void,
+) => {
+    const option = {
+        method: 'POST',
+        data: {
+            id: reviewId,
+        },
+        url: DOMAIN + '/review/delete'
+    }
+
+
+    return addHeaderToken(option).
+        then((newOption) => {
+            axios(newOption)
+                .then((response) => {
+                    if (response.status === 200 && response.data.success) {
+                        success(response.data);
+                    } else {
+                        failure(response.data);
+                    }
+                })
+                .catch(((e) => {
+                    failure(e)
+                }))
+        })
+        .catch((e) => {
+            failure(e)
+        })
+}
+
 export const updateFoodReview = (
     foodId: number,
     review: string,
@@ -668,10 +701,11 @@ export const getShipperOrderQueue = (
     sortType: string,
     sortOrder: string,
     shopId: number,
+    pageIndex: number,
     success: (data: any) => void,
     failure: (error: any) => void
 ) => {
-    return getOrders(2, shopId, 0, success, failure, sortType, sortOrder)
+    return getOrders(2, shopId, pageIndex, success, failure, sortType, sortOrder)
 }
 
 // get status 6, 3
@@ -792,7 +826,7 @@ export const addOrdersWithCartId = (
     const option = {
         method: 'POST',
         data: orders.map((i) => ({
-            price: i.price + i.shipFeeWithShopPolicy,
+            price: i.price,
             shipPrice: i.shipFee,
             shipOrder: i.shipFeeWithShopPolicy,
             distance: i.distance,
@@ -830,7 +864,7 @@ export const addOrdersWithCardData = (
     const option = {
         method: 'POST',
         data: orders.map((i) => ({
-            price: i.price + i.shipFeeWithShopPolicy,
+            price: i.price,
             shipPrice: i.shipFee,
             shipOrder: i.shipFeeWithShopPolicy,
             distance: i.distance,
@@ -850,7 +884,6 @@ export const addOrdersWithCardData = (
 
     return addHeaderToken(option).
         then((newOption) => {
-            console.log(newOption)
             axios(newOption).then((response) => {
                 if (response.status === 200 && response.data.success) {
                     success(response.data);

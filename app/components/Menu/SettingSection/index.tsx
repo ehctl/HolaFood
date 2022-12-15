@@ -41,8 +41,7 @@ export const SettingSection = React.memo(() => {
                 <Pressable
                     style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 20 }}
                     onPress={() => {
-                        // navigation.navigate('Language' as never)
-                        showToast(Constant.API_ERROR_OCCURRED)
+                        navigation.navigate('Language' as never)
                     }} >
                     <TransparentView style={{flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center'}}>
                         <FontAwesome name='odnoklassniki-square' color='#2262c9' size={25} style={{ width: 30 }} />

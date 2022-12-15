@@ -1,14 +1,14 @@
 import { View } from "../../../base/View"
 import { I18NText, Text } from "../../../base/Text"
 import React, { useCallback, useEffect, useRef, useState } from "react"
-import { FontAwesome, FontAwesome1 } from "../../../base/FontAwesome"
+import { FontAwesome, FontAwesome1, FontAwesome2 } from "../../../base/FontAwesome"
 import { ActivityIndicator, Alert, Pressable, TextInput } from "react-native"
 import { FlatList } from "react-native-gesture-handler"
 import { TransparentView } from "../../../base/View"
 import { ReviewStar } from "../Rate"
 import { Button } from "../../../base/Button"
 import { PopupModal } from "../../../base/PopupModal"
-import { addFoodReview, getFoodReviews, updateFoodReview } from "../../../core/apis/Requests"
+import { addFoodReview, deleteFoodReview, getFoodReviews, updateFoodReview } from "../../../core/apis/Requests"
 import { ShimmerGroup, ShimmerItem } from "../../../base/Shimmer"
 import { formatCreatedDateType, formatDateTimeFromData, wait } from "../../../utils/Utils"
 import { useLanguage } from "../../../base/Themed"
@@ -26,6 +26,7 @@ export const Review = React.memo((props: ReviewType) => {
     const [isCollapse, setIsCollapse] = useState(false)
     const [loading, setLoading] = useState(false)
     const [updating, setUpdating] = useState(false)
+    const [deletingReview, setDeletingReview] = useState(false)
     const [reviewList, setReviewList] = useState<ReviewItemType[]>([])
     const updatePopupModal = useRef(null)
     const popupRateRef = useRef(null)
@@ -103,7 +104,7 @@ export const Review = React.memo((props: ReviewType) => {
                 }
             )
         }
-    }, [updateReview, updateStarVote ,reviewList, selectedReviewId])
+    }, [updateReview, updateStarVote, reviewList, selectedReviewId])
 
     useEffect(() => {
         if (selectedReviewId) {
@@ -112,6 +113,22 @@ export const Review = React.memo((props: ReviewType) => {
             setUpdateStarVote(chosenReview.star)
         }
     }, [selectedReviewId])
+
+    const onDeleteReview = useCallback((reviewId: number) => {
+        setDeletingReview(true)
+
+        deleteFoodReview(
+            reviewId,
+            (response) => {
+                setUpdating(false)
+            },
+            (e) => {
+                console.log(e)
+                showToast(Constant.API_ERROR_OCCURRED)
+                setUpdating(false)
+            }
+        )
+    }, [showToast])
 
     const onAddReview = useCallback(() => {
         setUpdating(true)
@@ -151,7 +168,7 @@ export const Review = React.memo((props: ReviewType) => {
 
     const renderItem = ({ item }: any) => {
         return (
-            <ReviewItem data={item} updatePopupModalRef={updatePopupModal} setSelectedReviewId={setSelectedReviewId} />
+            <ReviewItem data={item} updatePopupModalRef={updatePopupModal} setSelectedReviewId={setSelectedReviewId} onDeleteReviewCalblack={onDeleteReview} />
         )
     }
 
@@ -163,6 +180,11 @@ export const Review = React.memo((props: ReviewType) => {
                 <Pressable onPress={() => collapse()} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start' }}>
                     <I18NText text='Comment' style={{ fontSize: 20, fontWeight: '500' }} />
                     <FontAwesome name={isCollapse ? 'angle-down' : 'angle-up'} size={24} style={{ marginLeft: 10 }} />
+
+                    <ActivityIndicator
+                        animating={deletingReview}
+                        color='black'
+                        style={{ marginLeft: 10 }} />
                 </Pressable>
                 <Pressable
                     style={{ paddingVertical: 5, paddingHorizontal: 10, backgroundColor: '#e8be41', borderRadius: 10 }}
@@ -172,9 +194,10 @@ export const Review = React.memo((props: ReviewType) => {
                     <I18NText text="Vote" />
                 </Pressable>
             </TransparentView>
-            {
-                isCollapse ?
-                    <View style={{ width: '100%', borderRadius: 10 }}>
+            <View style={{ width: '100%', marginBottom: 40 }}>
+                {
+                    isCollapse ?
+
                         <FlatList
                             data={reviewList}
                             renderItem={renderItem}
@@ -187,8 +210,9 @@ export const Review = React.memo((props: ReviewType) => {
                                 }
                             }}
                             ListFooterComponent={<ReviewItemShimmer visible={loading} />} />
-                    </View> : null
-            }
+                        : null
+                }
+            </View>
 
             <PopupModal ref={updatePopupModal} title='Update Your Review'>
                 <View style={{ height: 1, backgroundColor: '#c0c6cf' }} />
@@ -289,6 +313,31 @@ export const ReviewItem = React.memo((props: ReviewItemProps) => {
         userInfo: state.userInfo
     }))
 
+    const I18NDeleteReviewConfirm = useLanguage('Do you want to delete this review?')
+    const I18NReview = useLanguage('Review')
+    const I18NCancel = useLanguage('Cancel')
+    const I18NDelete = useLanguage('Delete')
+
+    const onDeleteReviewConfirm = useCallback((reviewId: number) => {
+        Alert.alert(
+            I18NReview,
+            I18NDeleteReviewConfirm,
+            [
+                {
+                    text: I18NCancel,
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
+                },
+                { text: I18NDelete, onPress: () => props.onDeleteReviewCalblack(reviewId) }
+            ]
+        )
+    }, [])
+
+    const onUpdateReview = useCallback((reviewId: number) => {
+        props.setSelectedReviewId(props.data.id);
+        props.updatePopupModalRef.current.changeVisibility(true)
+    }, [])
+
     return (
         <TransparentView style={{ marginHorizontal: 10, marginTop: 10 }}>
             <TransparentView style={{ flexDirection: 'row', paddingBottom: 10 }}>
@@ -306,15 +355,19 @@ export const ReviewItem = React.memo((props: ReviewItemProps) => {
                         }
                     </TransparentView>
                 </TransparentView>
-                <TransparentView>
-                    <TransparentView style={{ alignItems: 'center' }}>
-                        {
-                            appStateProps.userInfo.id == props.data.userId ?
-                                <Pressable style={{ margin: 5 }} onPress={() => { props.setSelectedReviewId(props.data.id); props.updatePopupModalRef.current.changeVisibility(true) }}>
-                                    <FontAwesome name="pencil" size={18} />
-                                </Pressable> : null
-                        }
-                    </TransparentView>
+                <TransparentView style={{ alignItems: 'flex-start' }}>
+                    {
+                        appStateProps.userInfo.id == props.data.userId ?
+                            <Pressable style={{ padding: 5 }} onPress={() => onDeleteReviewConfirm(props.data.id)}>
+                                <FontAwesome2 name="close" size={18} />
+                            </Pressable> : null
+                    }
+                    {
+                        appStateProps.userInfo.id == props.data.userId ?
+                            <Pressable style={{ padding: 5 }} onPress={() => onUpdateReview(props.data.id)}>
+                                <FontAwesome2 name="edit" size={18} />
+                            </Pressable> : null
+                    }
                 </TransparentView>
             </TransparentView>
             <View style={{ height: 1, backgroundColor: 'grey' }} />
@@ -330,7 +383,8 @@ export type ReviewType = {
 export type ReviewItemProps = {
     data: ReviewItemType,
     updatePopupModalRef: React.MutableRefObject<any>
-    setSelectedReviewId: (id: number) => void
+    setSelectedReviewId: (id: number) => void,
+    onDeleteReviewCalblack: (id: number) => void
 }
 
 export type ReviewItemType = {

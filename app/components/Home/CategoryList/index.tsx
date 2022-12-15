@@ -69,7 +69,7 @@ export const CategoryList = React.memo(() => {
                 style={{ textAlign: 'left', fontWeight: '600', fontSize: 20, marginRight: 20 }}
                 text='Food Category' />
             
-            <View style={{ backgroundColor: '#aaaba7', height: 3, marginTop: 5, borderRadius: 20}}/>
+            <View style={{ backgroundColor: '#e6d09e', height: 3, marginTop: 5, borderRadius: 20}}/>
 
             <CategoryListShimmer visible={loading} />
 

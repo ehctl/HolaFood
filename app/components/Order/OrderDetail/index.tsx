@@ -100,7 +100,9 @@ export const OrderDetail = (props: OrderDetailProps) => {
         getOrderDetail(
             props.route.params?.orderId,
             (response) => {
+                console.log(response)
                 const data = response.data
+                console.log(data)
                 setData(mapOrderDataFromResponse(data))
                 setLoading(false)
             },

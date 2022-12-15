@@ -15,10 +15,26 @@ test("Format Date 1", () => {
         Util.formatCreatedDateType(
             new Date("Wed Nov 30 2022 01:49:40 GMT+0700 (Indochina Time)")
         )
-    ).toBe("2022-11-30 1:49:40");
+    ).toBe("2022-11-30 01:49:40");
 });
 
 test("Format Date 2", () => {
+    expect(
+        Util.formatCreatedDateType1(
+            new Date("Wed Nov 30 2022 01:49:40 GMT+0700 (Indochina Time)")
+        )
+    ).toBe("01:49 30-11-2022");
+});
+
+test("Format Date 3", () => {
+    expect(
+        Util.formatCreatedDateType2(
+            new Date("Wed Nov 30 2022 01:49:40 GMT+0700 (Indochina Time)")
+        )
+    ).toBe("30-11-2022 01:49");
+});
+
+test("Format Date 4", () => {
     expect(Util.formatDateTimeFromData("2022-11-03 10:02:31")).toBe(
         "03-11-2022"
     );

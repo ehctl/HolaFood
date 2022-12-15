@@ -58,6 +58,11 @@ export const OrderStatusNotificationItem = React.memo((props: NotificationItemDa
 
     useEffect(() => {
         if (isCollapse)
+            setIsCollapse(false)
+    }, [props.data?.status])
+
+    useEffect(() => {
+        if (isCollapse)
             fetchData()
         else
             setNotiDetailItems([])

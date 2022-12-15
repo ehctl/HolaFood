@@ -107,7 +107,7 @@ export const HomeFoodList = React.memo((props: FoodListProps) => {
                     } />
             </View>
 
-            <View style={{ backgroundColor: '#aaaba7', height: 3, marginTop: 5, borderRadius: 30 }} />
+            <View style={{ backgroundColor: '#e6d09e', height: 3, marginTop: 5, borderRadius: 30 }} />
 
             <PopupModal ref={popupModalRef} title='Food'>
                 <RadioButtonGroup

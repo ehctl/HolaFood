@@ -38,21 +38,29 @@ export const OrderQueueScreen = React.memo((props: OrderViewProp) => {
     const popupModalQueueSortOrderRef = useRef(null)
     const [orderQueueSortType, setOrderQueueSortType] = useState(QueueSortType.DATE)
     const [orderQueueSortOrder, setOrderQueueSortOrder] = useState(QueueSortOrder.DESCENDING)
+    const [pageIndex, setPageIndex] = useState(0)
+    const [reachEndList, setReachEndList] = useState(false)
 
     const showToast = useToast()
 
-    const fetchData = useCallback(() => {
+    const fetchData = useCallback((pageIndex: number) => {
         setLoading(true)
-        dispatch(setOrderQueue([]))
+
+        if (pageIndex == 0 && stateProps.shipperOrderQueue.length != 0)
+            dispatch(setOrderQueue([]))
 
         getShipperOrderQueue(
             orderQueueSortType == QueueSortType.DATE ? 'created_date' : 'distance',
             orderQueueSortOrder == QueueSortOrder.ASCENDING ? 'ASC' : 'DESC',
             stateProps.userInfo.shopId,
+            pageIndex,
             (response) => {
                 const orderDataFromResponse = response.data
                 const orders = orderDataFromResponse.map((i) => mapOrderDataFromResponse(i))
-                dispatch(setOrderQueue(orders))
+                if (orders.length < 10)
+                    setReachEndList(true)
+
+                dispatch(setOrderQueue(pageIndex == 0 ? orders : [...stateProps.shipperOrderQueue, ...orders]))
                 setLoading(false)
             },
             (e) => {
@@ -61,11 +69,13 @@ export const OrderQueueScreen = React.memo((props: OrderViewProp) => {
                 setLoading(false)
             }
         )
-    }, [orderQueueSortType, orderQueueSortOrder])
+    }, [orderQueueSortType, orderQueueSortOrder, stateProps.shipperOrderQueue])
 
     useEffect(() => {
-        fetchData()
-    }, [orderQueueSortType, orderQueueSortOrder, fetchData])
+        setReachEndList(false)
+        setPageIndex(0)
+        fetchData(0)
+    }, [orderQueueSortType, orderQueueSortOrder])
 
     const renderItems = ({ item }) => {
         return (
@@ -85,6 +95,7 @@ export const OrderQueueScreen = React.memo((props: OrderViewProp) => {
                 marginHorizontal: 10
             }}>
                 <ScrollView
+                    showsHorizontalScrollIndicator={false}
                     horizontal={true} >
 
                     <Pressable
@@ -112,14 +123,21 @@ export const OrderQueueScreen = React.memo((props: OrderViewProp) => {
                 refreshControl={
                     <RefreshControl
                         refreshing={false}
-                        onRefresh={() => fetchData()}
+                        onRefresh={() => fetchData(0)}
                     />
                 }
                 renderItem={renderItems}
                 data={stateProps.shipperOrderQueue}
                 keyExtractor={(_, index) => `${index}`}
                 ListEmptyComponent={(!loading && !refreshing) ? <I18NText text='You Do Not Have Any New Order Yet' /> : null}
-                ListFooterComponent={() => renderLoadMore()} />
+                ListFooterComponent={() => renderLoadMore()}
+                onEndReachedThreshold={0.5}
+                onEndReached={() => {
+                    if (!reachEndList && !loading) {
+                        fetchData(pageIndex + 1)
+                        setPageIndex(pageIndex + 1)
+                    }
+                }} />
 
             <PopupModal ref={popupModalQueueSortTypeRef} title='Sort'>
                 <RadioButtonGroup
@@ -159,7 +177,7 @@ export const OrderQueueScreen = React.memo((props: OrderViewProp) => {
                     defaultColor='grey'
                     value={orderQueueSortOrder}
                     valueChange={(value: string) => {
-                        popupModalQueueSortTypeRef.current.changeVisibility(false)
+                        popupModalQueueSortOrderRef.current.changeVisibility(false)
                         setOrderQueueSortOrder(value as QueueSortOrder)
                     }}>
 
@@ -211,7 +229,7 @@ export interface OrderViewProp {
     navigation: NativeStackNavigationProp<BottomStackParamList, 'Order'>;
     route: RouteProp<BottomStackParamList, 'Order'>
 }
-
+``
 export enum QueueSortType {
     DATE = "Date",
     DISTANCE = "Distance"

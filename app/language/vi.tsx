@@ -75,6 +75,8 @@ export const vi: any = {
     'Delete': 'Xóa',
     'Delete Item In Cart': 'Xóa món ăn trong giỏ hàng',
     'Do you want to delete this item from cart?': 'Bạn muốn xóa món ăn này khỏi giỏ hàng?',
+    'Do you want to delete this review?': 'Bạn muốn xóa đánh giá này không?',
+    'Review': 'Đánh giá',
     'Password is not valid': 'Mật khẩu không hợp lệ',
     'System overloaded. Please wait for a moment': 'Hệ thống đang quá tải. Vui lòng đợi trong giây lát.',
     'Phone number is incorrect format': 'Số điện thoại không đúng định dạng',

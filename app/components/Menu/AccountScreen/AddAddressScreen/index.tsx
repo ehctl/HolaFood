@@ -188,8 +188,8 @@ export const AddressItem = React.memo((props: AddressItemType) => {
             </TransparentView>
 
             <TransparentView style={{ flexGrow: 1, flexShrink: 1, marginRight: 15 }}>
-                <Text text={props.data.name} style={{ textAlign: 'left', fontWeight: '500', fontSize: 22, flexShrink: 1 }} numberOfLines={3} />
-                <Text text={props.data.formatted_address} style={{ color: '#6f706f', textAlign: 'left', fontSize: 18, flexShrink: 1 }} numberOfLines={5} />
+                <Text text={props.data.name} style={{ textAlign: 'left', fontWeight: '500', fontSize: 22, flexShrink: 1 }} />
+                <Text text={props.data.formatted_address} style={{ color: '#6f706f', textAlign: 'left', fontSize: 18, flexShrink: 1 }} />
             </TransparentView>
 
             <Pressable style={{ marginRight: 15 }} onPress={() => props.onSelectAddressItem(props.data.place_id)}>

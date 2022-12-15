@@ -28,7 +28,7 @@ export const PopularFoodItem = React.memo((props: PopularFoodItemProps) => {
 
                 <Text
                     text={props.data.productName}
-                    style={{ fontSize: 18, textAlign: 'left', flexGrow: 1, flexShrink: 1, paddingHorizontal: 10, fontWeight: '500' }} numberOfLines={3} />
+                    style={{ fontSize: 18, textAlign: 'left', flexGrow: 1, flexShrink: 1, paddingHorizontal: 10, fontWeight: '500' }} />
 
                 <Image
                     resizeMode="cover"

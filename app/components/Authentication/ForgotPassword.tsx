@@ -70,14 +70,13 @@ export const ForgotPassword = (props: SignupScreenProp) => {
                 sentLinkToEmail ?
                     <I18NText
                         text='We Have Sent A Reset Password Link To Your Email. Please Check Your Email'
-                        style={{ textAlign: 'left', color: 'white', marginTop: 10 }} 
-                        numberOfLines={4}/>
+                        style={{ textAlign: 'left', color: 'white', marginTop: 10 }} />
                     : null
             }
 
             {
                 emailErrorMsg.length != 0 ?
-                    <I18NText text={emailErrorMsg} style={{ color: '#cc1818', textAlign: 'left', marginTop: 3 }} numberOfLines={2} /> : null
+                    <I18NText text={emailErrorMsg} style={{ color: '#cc1818', textAlign: 'left', marginTop: 3 }} /> : null
             }
 
             <Pressable

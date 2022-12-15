@@ -164,7 +164,7 @@ export const VerifyEmail = React.memo((props: VerifyEmailType) => {
                         <View style={{ height: 0.5, backgroundColor: '#62c7db' }} />
                         {
                             emailErrorMsg.length != 0 ?
-                                <I18NText text={emailErrorMsg} style={{ color: '#cc1818', textAlign: 'left', marginTop: 3 }} numberOfLines={2} /> : null
+                                <I18NText text={emailErrorMsg} style={{ color: '#cc1818', textAlign: 'left', marginTop: 3 }} /> : null
                         }
 
                         <Pressable
@@ -204,11 +204,11 @@ export const VerifyEmail = React.memo((props: VerifyEmailType) => {
 
                         <I18NText
                             text='A Code Has Been Sent To Your Email Address. Please Check And Fill Text Below To Verify Your Email.'
-                            style={{ textAlign: 'left', marginTop: 3, color: 'white' }} numberOfLines={2} />
+                            style={{ textAlign: 'left', marginTop: 3, color: 'white' }} />
 
                         {
                             otpCodeErrorMsg.length != 0 ?
-                                <I18NText text={otpCodeErrorMsg} style={{ color: '#cc1818', textAlign: 'left', marginTop: 3 }} numberOfLines={2} /> : null
+                                <I18NText text={otpCodeErrorMsg} style={{ color: '#cc1818', textAlign: 'left', marginTop: 3 }} /> : null
                         }
 
                         <Pressable
@@ -342,7 +342,7 @@ export const SignUpDetail = React.memo((props: SignUpDetailType) => {
 
             {
                 firstNameErrorMsg.length != 0 ?
-                    <I18NText text={firstNameErrorMsg} style={{ color: '#cc1818', textAlign: 'left', marginTop: 3 }} numberOfLines={2} /> : null
+                    <I18NText text={firstNameErrorMsg} style={{ color: '#cc1818', textAlign: 'left', marginTop: 3 }} /> : null
             }
 
             <TransparentView style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
@@ -357,7 +357,7 @@ export const SignUpDetail = React.memo((props: SignUpDetailType) => {
 
             {
                 lastNameErrorMsg.length != 0 ?
-                    <I18NText text={lastNameErrorMsg} style={{ color: '#cc1818', textAlign: 'left', marginTop: 3 }} numberOfLines={2} /> : null
+                    <I18NText text={lastNameErrorMsg} style={{ color: '#cc1818', textAlign: 'left', marginTop: 3 }} /> : null
             }
 
             <TransparentView style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
@@ -372,7 +372,7 @@ export const SignUpDetail = React.memo((props: SignUpDetailType) => {
 
             {
                 phoneNumberErrorMsg.length != 0 ?
-                    <I18NText text={phoneNumberErrorMsg} style={{ color: '#cc1818', textAlign: 'left', marginTop: 3 }} numberOfLines={2} /> : null
+                    <I18NText text={phoneNumberErrorMsg} style={{ color: '#cc1818', textAlign: 'left', marginTop: 3 }} /> : null
             }
 
             <TransparentView style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
@@ -391,7 +391,7 @@ export const SignUpDetail = React.memo((props: SignUpDetailType) => {
 
             {
                 passwordErrorMsg.length != 0 ?
-                    <I18NText text={passwordErrorMsg} style={{ color: '#cc1818', textAlign: 'left', marginTop: 3 }} numberOfLines={2} /> : null
+                    <I18NText text={passwordErrorMsg} style={{ color: '#cc1818', textAlign: 'left', marginTop: 3 }} /> : null
             }
 
             <Pressable

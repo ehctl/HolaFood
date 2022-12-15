@@ -22,9 +22,9 @@ export const DefaultNotificationItem = React.memo((props: NotificationItemData) 
             onPress={() => {
                 navigation.navigate('FoodList' as never)
             }}>
-            <View style={{ backgroundColor: '#c0c6cf', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', flexShrink: 1, borderRadius: 10, marginTop: 15, paddingVertical: 10, paddingHorizontal: 10 }}>
+            <View style={{ backgroundColor: '#dbd9d5', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', flexShrink: 1, borderRadius: 10, marginTop: 15, paddingVertical: 10, paddingHorizontal: 10 }}>
                 <FontAwesome name="shopping-basket" style={{}} size={22} color='#1b5bc2' />
-                <BText text={props.text} numberOfLines={10} style={{ marginLeft: 10, textAlign: 'left', flexShrink: 1, fontWeight: '500', fontSize: 15 }} />
+                <BText text={props.text} style={{ marginLeft: 10, textAlign: 'left', flexShrink: 1, fontWeight: '500', fontSize: 15 }} />
             </View>
         </Pressable>
     )
@@ -82,7 +82,7 @@ export const OrderStatusNotificationItem = React.memo((props: NotificationItemDa
             style={{ marginHorizontal: 5 }} >
 
             <View
-                style={{ backgroundColor: '#c0c6cf', borderRadius: 10, marginTop: 15, paddingVertical: 10, paddingLeft: 10 }}>
+                style={{ backgroundColor: '#dbd9d5', borderRadius: 10, marginTop: 15, paddingVertical: 10, paddingLeft: 10 }}>
                 <TransparentView
                     style={{
                         flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center',
@@ -101,8 +101,7 @@ export const OrderStatusNotificationItem = React.memo((props: NotificationItemDa
                         <TransparentView style={{ flexDirection: 'row', alignItems: 'center', flexShrink: 1, marginTop: 5 }}>
                             <BText
                                 text={`${I18NOrders} ${props.data.orderId} ${I18NOrderStatus}`}
-                                style={{ flexShrink: 1, textAlign: 'left', fontWeight: '500', fontSize: 15 }}
-                                numberOfLines={3} />
+                                style={{ flexShrink: 1, textAlign: 'left', fontWeight: '500', fontSize: 15 }} />
                         </TransparentView>
                     </Pressable>
 
@@ -159,8 +158,7 @@ export const NotificationDetailItem = React.memo((props: NotificationItemData) =
                     <TransparentView style={{ flexDirection: 'row', alignItems: 'center', flexShrink: 1, marginTop: 5 }}>
                         <BText
                             text={getOrderStatusMsg(props.data?.status)}
-                            style={{ flexShrink: 1, textAlign: 'left', fontWeight: '500', fontSize: 15 }}
-                            numberOfLines={3} />
+                            style={{ flexShrink: 1, textAlign: 'left', fontWeight: '500', fontSize: 15 }} />
                     </TransparentView>
                 </Pressable>
             </TransparentView>

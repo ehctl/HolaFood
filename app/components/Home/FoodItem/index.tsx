@@ -60,7 +60,7 @@ export const FoodItem = React.memo((item: FoodItemType) => {
                         <View style={{ width: 20, justifyContent: 'center', alignItems: 'center' }}>
                             <FontAwesome2 name="rice-bowl" size={14} style={{ marginRight: 5 }} color='#97a842' />
                         </View>
-                        <Text text={item.data.productName.trim()} numberOfLines={2} style={{ textAlign: 'left', fontWeight: '500', fontSize: 20, flexShrink: 1 }} />
+                        <Text text={item.data.productName.trim()} style={{ textAlign: 'left', fontWeight: '500', fontSize: 20, flexShrink: 1 }} />
                     </Pressable>
 
                     <Pressable
@@ -69,7 +69,7 @@ export const FoodItem = React.memo((item: FoodItemType) => {
                         <View style={{ width: 20, justifyContent: 'center', alignItems: 'center' }}>
                             <FontAwesome name="home" size={14} style={{ marginRight: 5 }} color='#422475' />
                         </View>
-                        <Text text={item.data.shopName.trim()} numberOfLines={2} style={{ textAlign: 'left', opacity: 0.7, fontSize: 18, flexShrink: 1 }} />
+                        <Text text={item.data.shopName.trim()} style={{ textAlign: 'left', opacity: 0.7, fontSize: 18, flexShrink: 1 }} />
                     </Pressable>
 
                     <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginVertical: 5 }}>

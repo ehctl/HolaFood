@@ -62,8 +62,7 @@ export const Info = React.memo((props: InfoType) => {
                         text={props.data.productName} />
                     <Text
                         style={{ marginTop: 5, textAlign: 'left', fontSize: 14, fontWeight: '400' }}
-                        text={props.data.description}
-                        numberOfLines={10} />
+                        text={props.data.description} />
                 </View>
                 <Pressable style={{ padding: 10 }} onPress={() => { setFoodFavorite(!isFavorite) }}>
                     <FontawesomeAnim name={isFavorite ? 'bookmark' : 'bookmark-o'} color={isFavorite ? 'orange' : 'grey'} size={22} />

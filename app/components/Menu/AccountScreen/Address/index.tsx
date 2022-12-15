@@ -73,7 +73,7 @@ export const Address = React.memo(() => {
                             <TransparentView style={{ width: '100%', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 5 }}>
                                 <TransparentView style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', flexGrow:1, flexShrink: 1 }}>
                                     <FontAwesome2 name="location-on" size={16} color='grey' />
-                                    <Text text={item.address } style={{flexShrink: 1, marginLeft: 10, textAlign: 'left' }} numberOfLines={3}/>
+                                    <Text text={item.address } style={{flexShrink: 1, marginLeft: 10, textAlign: 'left' }} />
                                 </TransparentView>
                                 <TransparentView>
                                     <FontAwesome1

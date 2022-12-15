@@ -82,7 +82,7 @@ export const HomeScreen = React.memo(({ navigation }: any) => {
 
 const getListItem = () => (
     [
-        // HomeItem.NEWS,
+        HomeItem.NEWS,
         HomeItem.LOCATION,
         HomeItem.CATEGORY_LIST,
         HomeItem.FOOD_LIST

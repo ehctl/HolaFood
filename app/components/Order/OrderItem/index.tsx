@@ -234,7 +234,7 @@ export const OrderItem = React.memo((props: OrderItemType) => {
                                 <FontAwesome2 name={getOrderStatusIcon(props.item.status)} size={20} color='#995050' />
                                 <Text
                                     text={I18NOrderStatus + (props?.showOrderDate == false ? '' : ' · ' + formatDateTimeFromData(props.item.createdDate))}
-                                    style={{ flexShrink: 1, marginLeft: 5, textAlign: 'left' }} numberOfLines={3} />
+                                    style={{ flexShrink: 1, marginLeft: 5, textAlign: 'left' }} />
                             </View>
                             : null
                     }
@@ -282,13 +282,13 @@ export const OrderItem = React.memo((props: OrderItemType) => {
                                     </Pressable>
 
                                     <TransparentView style={{ flexDirection: 'row', flexShrink: 1, marginTop: 5 }}>
-                                        <I18NText text='Ship Fee' style={{ textAlign: 'left', fontSize: 18, flexShrink: 1 }} numberOfLines={3} />
+                                        <I18NText text='Ship Fee' style={{ textAlign: 'left', fontSize: 18, flexShrink: 1 }}  />
                                         <Text text=': ' style={{ fontSize: 18 }} />
-                                        <Text text={formatMoney(props.item.shipFee) + ' đ'} style={{ textAlign: 'left', color: 'red', fontSize: 18, flexShrink: 1, fontWeight: '500' }} numberOfLines={3} />
+                                        <Text text={formatMoney(props.item.shipFee) + ' đ'} style={{ textAlign: 'left', color: 'red', fontSize: 18, flexShrink: 1, fontWeight: '500' }} />
                                     </TransparentView>
                                     <TransparentView style={{ flexDirection: 'row', flexShrink: 1, marginTop: 5 }}>
-                                        <I18NText text='Phone Number' style={{ textAlign: 'left', fontSize: 18, flexShrink: 1 }} numberOfLines={3} />
-                                        <Text text={': ' + props.item.phone} style={{ textAlign: 'left', fontSize: 18, flexShrink: 1, fontWeight: '500' }} numberOfLines={3} />
+                                        <I18NText text='Phone Number' style={{ textAlign: 'left', fontSize: 18, flexShrink: 1 }} />
+                                        <Text text={': ' + props.item.phone} style={{ textAlign: 'left', fontSize: 18, flexShrink: 1, fontWeight: '500' }} />
                                     </TransparentView>
                                 </TransparentView>
                             </TransparentView>
@@ -313,7 +313,7 @@ export const OrderItem = React.memo((props: OrderItemType) => {
                             }}
                             onPress={() => confirm(props.item.id, OrderStatus.PROGRESSING)}>
                             <FontAwesome2 name="local-shipping" size={20} color='#288c26' style={{ marginLeft: 10 }} />
-                            <I18NText text="Accept Ship Order" style={{ color: '#288c26', fontSize: 18, marginLeft: 10, flexShrink: 1 }} numberOfLines={2} />
+                            <I18NText text="Accept Ship Order" style={{ color: '#288c26', fontSize: 18, marginLeft: 10, flexShrink: 1 }} />
 
                             <ActivityIndicator
                                 animating={shippingOrder}
@@ -328,7 +328,7 @@ export const OrderItem = React.memo((props: OrderItemType) => {
                             }}
                             onPress={() => confirm(props.item.id, OrderStatus.READY_TO_BE_SHIPPED)}>
                             <FontAwesome2 name="close" size={20} color='red' style={{ marginLeft: 10 }} />
-                            <I18NText text="Cancel Accept Ship Order" style={{ color: 'red', fontSize: 18, marginLeft: 10, flexShrink: 1 }} numberOfLines={2} />
+                            <I18NText text="Cancel Accept Ship Order" style={{ color: 'red', fontSize: 18, marginLeft: 10, flexShrink: 1 }} />
 
                             <ActivityIndicator
                                 animating={cancelingOrder}
@@ -349,7 +349,7 @@ export const OrderItem = React.memo((props: OrderItemType) => {
                             }}
                             onPress={() => confirm(props.item.id, OrderStatus.DONE)}>
                             <FontAwesome2 name="done-all" size={20} color='#288c26' style={{ marginLeft: 10 }} />
-                            <I18NText text="Finish Order" style={{ color: '#288c26', fontSize: 18, marginLeft: 10, flexShrink: 1 }} numberOfLines={2} />
+                            <I18NText text="Finish Order" style={{ color: '#288c26', fontSize: 18, marginLeft: 10, flexShrink: 1 }} />
 
                             <ActivityIndicator
                                 animating={finishingOrder}
@@ -364,7 +364,7 @@ export const OrderItem = React.memo((props: OrderItemType) => {
                             }}
                             onPress={() => confirm(props.item.id, OrderStatus.CANCELED)}>
                             <FontAwesome2 name="close" size={20} color='red' style={{ marginLeft: 10 }} />
-                            <I18NText text="Cancel Ship Order" style={{ color: 'red', fontSize: 18, marginLeft: 0, flexShrink: 1 }} numberOfLines={2} />
+                            <I18NText text="Cancel Ship Order" style={{ color: 'red', fontSize: 18, marginLeft: 0, flexShrink: 1 }} />
 
                             <ActivityIndicator
                                 animating={cancelingOrder}
@@ -384,7 +384,7 @@ export const OrderItem = React.memo((props: OrderItemType) => {
                         }}
                         onPress={() => confirm(props.item.id, OrderStatus.WAITING_FOR_SHIPPER_TO_PICK_UP)}>
                         <FontAwesome2 name="local-shipping" size={20} color='#51418c' style={{ marginLeft: 10 }} />
-                        <I18NText text="Accept Order" style={{ color: '#51418c', fontSize: 18, marginLeft: 20, flexShrink: 1 }} numberOfLines={2} />
+                        <I18NText text="Accept Order" style={{ color: '#51418c', fontSize: 18, marginLeft: 20, flexShrink: 1 }} />
 
                         <ActivityIndicator
                             animating={shippingOrder}
@@ -421,7 +421,7 @@ export const OrderItemCell = React.memo((props: CartItemData) => {
     return (
         <TransparentView style={{ marginLeft: 15, marginTop: 5 }}>
             <TransparentView style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
-                <Text text={props.productDetail.productName.trim()} style={{ maxWidth: '80%', textAlign: 'left' }} numberOfLines={3} />
+                <Text text={props.productDetail.productName.trim()} style={{ maxWidth: '80%', textAlign: 'left' }} />
                 <Text text='·' style={{ marginLeft: 10, fontSize: 12 }} />
                 <Text text={props.quantity.toString() + '  '} style={{ marginLeft: 10, fontSize: 16 }} />
                 <I18NText text='meal' style={{ fontSize: 16 }} />

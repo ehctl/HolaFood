@@ -119,8 +119,7 @@ export const FAQScreen = React.memo(() => {
                         !loading ?
                         <I18NText
                             text='FAQs List Is Empty. Create New One If You Have Any Question For Us'
-                            style={{}}
-                            numberOfLines={3} /> : null,
+                            style={{}} /> : null,
                     ListFooterComponent: getFooterComp()
                 }}
                 hideReload={true} />
@@ -208,7 +207,7 @@ export const FAQItem = React.memo((props: FAQItemType) => {
                         <FontAwesome name="question-circle" size={24} color='#b80707' />
                     </TransparentView>
 
-                    <Text text={props.question} style={{ fontSize: 22, flexShrink: 1, textAlign: 'left' }} numberOfLines={3} />
+                    <Text text={props.question} style={{ fontSize: 22, flexShrink: 1, textAlign: 'left' }} />
                 </TransparentView>
                 <Pressable
                     style={{ padding: 10, justifyContent: 'center', alignItems: 'center' }}
@@ -230,7 +229,6 @@ export const FAQItem = React.memo((props: FAQItemType) => {
                     </TransparentView>
 
                     <Text
-                        numberOfLines={10}
                         text={props.answer ?? 'Waitting for admin to anwser'}
                         style={{ flexShrink: 1, textAlign: 'left', fontSize: 22, marginLeft: 15, }} />
                 </TransparentView>

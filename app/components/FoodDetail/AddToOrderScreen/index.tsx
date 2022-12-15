@@ -190,7 +190,7 @@ export const AddToOrderScreen = React.memo((props: AddToOrderType) => {
                                         style={{ flexDirection: 'row', marginVertical: 5, borderRadius: 10, borderWidth: 1, borderColor: '#2a5496' }}>
                                         <RadioButton value={item.address} style={{ width: '100%', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', padding: 10 }}>
                                             <RadioButtonIcon size={4} />
-                                            <Text text={item.address} style={{ marginHorizontal: 10, textAlign: 'left' }} numberOfLines={3} />
+                                            <Text text={item.address} style={{ marginHorizontal: 10, textAlign: 'left' }} />
                                         </RadioButton>
                                     </TransparentView>
                                 ))
@@ -244,7 +244,7 @@ export const AddToOrderScreen = React.memo((props: AddToOrderType) => {
                                                 style={{ marginLeft: 15, marginTop: 5 }}>
                                                 <TransparentView style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
 
-                                                    <Text text={i.productDetail.productName.trim()} style={{ maxWidth: '80%', textAlign: 'left' }} numberOfLines={3} />
+                                                    <Text text={i.productDetail.productName.trim()} style={{ maxWidth: '80%', textAlign: 'left' }} />
                                                     <Text text='·' style={{ marginLeft: 10, fontSize: 12 }} />
                                                     <Text text={i.quantity.toString() + '  '} style={{ marginLeft: 10, fontSize: 16 }} />
                                                     <I18NText text='meal' style={{ fontSize: 16 }} />
@@ -291,7 +291,7 @@ export const AddToOrderScreen = React.memo((props: AddToOrderType) => {
             }
 
             <TransparentView style={{ flexDirection: 'row', alignItems: 'center', marginTop: 15 }}>
-                <I18NText text='· Thanh toán khi nhận hàng' style={{ marginLeft: 10, textAlign: 'left', fontSize: 18, fontWeight: '500', flexGrow: 1, flexShrink: 1 }} numberOfLines={3}/>
+                <I18NText text='· Thanh toán khi nhận hàng' style={{ marginLeft: 10, textAlign: 'left', fontSize: 18, fontWeight: '500', flexGrow: 1, flexShrink: 1 }} />
             </TransparentView>
 
             <Pressable

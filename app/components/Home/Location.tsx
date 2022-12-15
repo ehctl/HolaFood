@@ -29,8 +29,8 @@ export const Location = React.memo(() => {
     }, [])
 
     return (
-        <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10, height: 50, backgroundColor: '#c0c6cf', borderRadius: 15, flexShrink: 1 }}>
-            <View style={{ backgroundColor: '#c0c6cf', justifyContent: 'center', alignItems: 'center', paddingHorizontal: 5, zIndex: 1 }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10, height: 50, backgroundColor: '#dbd9d5', borderRadius: 15, flexShrink: 1 }}>
+            <View style={{ backgroundColor: '#dbd9d5', justifyContent: 'center', alignItems: 'center', paddingHorizontal: 5, zIndex: 1 }}>
                 <FontAwesome name="location-arrow" size={26} color='#686db0'/>
             </View>
 

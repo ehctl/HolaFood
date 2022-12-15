@@ -96,7 +96,7 @@ export const Info = React.memo(() => {
                                 <I18NText text="Email" style={{ textAlign: 'left', color: '#a19e9d', fontSize: 18 }} />
                                 <Text text=" ﹡ " style={{ color: 'red', textAlign: 'left', fontSize: 18 }} />
                             </TransparentView>
-                            <Text text={appStateProps.userInfo?.email?.trim() ?? ''} style={{ fontSize: 18, color: '#757575', fontWeight: '500', marginTop: 5, textAlign: 'left' }} numberOfLines={5} />
+                            <Text text={appStateProps.userInfo?.email?.trim() ?? ''} style={{ fontSize: 18, color: '#757575', fontWeight: '500', marginTop: 5, textAlign: 'left' }} />
                         </TransparentView>
                     </TransparentView>
                     <View style={{ backgroundColor: 'grey', height: 1, marginLeft: -10 }} />
@@ -109,7 +109,7 @@ export const Info = React.memo(() => {
                                 <I18NText text="Role" style={{ textAlign: 'left', color: '#a19e9d', fontSize: 18 }} />
                                 <Text text=" ﹡ " style={{ color: 'red', textAlign: 'left', fontSize: 18 }} />
                             </TransparentView>
-                            <I18NText text={formatAccountRole(appStateProps.userInfo?.role ?? '')} style={{ fontSize: 18, color: '#757575', fontWeight: '500', marginTop: 5, textAlign: 'left' }} numberOfLines={5} />
+                            <I18NText text={formatAccountRole(appStateProps.userInfo?.role ?? '')} style={{ fontSize: 18, color: '#757575', fontWeight: '500', marginTop: 5, textAlign: 'left' }} />
                         </TransparentView>
                     </TransparentView>
                     <View style={{ backgroundColor: 'grey', height: 1, marginLeft: -10 }} />
@@ -123,7 +123,7 @@ export const Info = React.memo(() => {
                                         <I18NText text="License Plate" style={{ textAlign: 'left', color: '#a19e9d', fontSize: 18 }} />
                                         <Text text=" ﹡ " style={{ color: 'red', textAlign: 'left', fontSize: 18 }} />
                                     </TransparentView>
-                                    <I18NText text={appStateProps.userInfo.licensePlate} style={{ fontSize: 18, color: '#757575', fontWeight: '500', marginTop: 5, textAlign: 'left' }} numberOfLines={5} />
+                                    <I18NText text={appStateProps.userInfo.licensePlate} style={{ fontSize: 18, color: '#757575', fontWeight: '500', marginTop: 5, textAlign: 'left' }}  />
                                 </TransparentView>
                             </TransparentView>
                             <View style={{ backgroundColor: 'grey', height: 1, marginLeft: -10 }} />
@@ -140,7 +140,7 @@ export const Info = React.memo(() => {
                                         <I18NText text="Citizen Identification" style={{ textAlign: 'left', color: '#a19e9d', fontSize: 18 }} />
                                         <Text text=" ﹡ " style={{ color: 'red', textAlign: 'left', fontSize: 18 }} />
                                     </TransparentView>
-                                    <I18NText text={appStateProps.userInfo.citizenIdentification} style={{ fontSize: 18, color: '#757575', fontWeight: '500', marginTop: 5, textAlign: 'left' }} numberOfLines={5} />
+                                    <I18NText text={appStateProps.userInfo.citizenIdentification} style={{ fontSize: 18, color: '#757575', fontWeight: '500', marginTop: 5, textAlign: 'left' }} />
                                 </TransparentView>
                             </TransparentView>
                             <View style={{ backgroundColor: 'grey', height: 1, marginLeft: -10 }} />
@@ -156,7 +156,7 @@ export const Info = React.memo(() => {
                                 <Text text=" ﹡ " style={{ color: 'red', textAlign: 'left', fontSize: 18 }} />
                             </TransparentView>
 
-                            <Text text={appStateProps.userInfo?.firstName?.trim() ?? ''} style={{ fontSize: 18, fontWeight: '500', marginTop: 5, textAlign: 'left' }} numberOfLines={5} />
+                            <Text text={appStateProps.userInfo?.firstName?.trim() ?? ''} style={{ fontSize: 18, fontWeight: '500', marginTop: 5, textAlign: 'left' }}  />
                         </TransparentView>
                         <FontAwesome2
                             name="auto-fix-high" size={24} color='grey'
@@ -177,7 +177,7 @@ export const Info = React.memo(() => {
                                 <Text text=" ﹡ " style={{ color: 'red', textAlign: 'left', fontSize: 18 }} />
                             </TransparentView>
 
-                            <Text text={appStateProps.userInfo?.lastName?.trim() ?? ''} style={{ fontSize: 18, fontWeight: '500', marginTop: 5, textAlign: 'left' }} numberOfLines={5} />
+                            <Text text={appStateProps.userInfo?.lastName?.trim() ?? ''} style={{ fontSize: 18, fontWeight: '500', marginTop: 5, textAlign: 'left' }} />
                         </TransparentView>
                         <FontAwesome2
                             name="auto-fix-high" size={24} color='grey'
@@ -198,7 +198,7 @@ export const Info = React.memo(() => {
                                 <Text text=" ﹡ " style={{ color: 'red', textAlign: 'left', fontSize: 18 }} />
                             </TransparentView>
 
-                            <Text text={appStateProps.userInfo?.phone?.trim() ?? ''} style={{ fontSize: 18, fontWeight: '500', marginTop: 5, textAlign: 'left' }} numberOfLines={5} />
+                            <Text text={appStateProps.userInfo?.phone?.trim() ?? ''} style={{ fontSize: 18, fontWeight: '500', marginTop: 5, textAlign: 'left' }} />
                         </TransparentView>
                         <FontAwesome2
                             name="auto-fix-high" size={24} color='grey'
@@ -271,7 +271,7 @@ export const UpdateUsername = (props: { name: string, updateFirstName: boolean, 
             </TransparentView>
 
             <Pressable
-                style={{ marginTop: 40, marginBottom: 20, backgroundColor: '#c0c6cf', padding: 10, borderRadius: 10 }}
+                style={{ marginTop: 40, marginBottom: 20, backgroundColor: '#e8be41', padding: 10, borderRadius: 10 }}
                 onPress={() => onSubmit()}>
 
                 <I18NText text="Update Your Name" />
@@ -315,7 +315,7 @@ export const UpdatePhone = (props: { phoneNumber: string, callback: (value: stri
             </TransparentView>
 
             <Pressable
-                style={{ marginTop: 40, marginBottom: 20, backgroundColor: '#c0c6cf', padding: 10, borderRadius: 10 }}
+                style={{ marginTop: 40, marginBottom: 20, backgroundColor: '#e8be41', padding: 10, borderRadius: 10 }}
                 onPress={() => onSubmit()}>
                 <I18NText text="Update Your Phone Number" />
 
@@ -417,7 +417,7 @@ export const UpdatePassword = () => {
             </TransparentView>
 
             <Pressable
-                style={{ marginTop: 30, marginBottom: 20, backgroundColor: '#c0c6cf', padding: 10, borderRadius: 10 }}
+                style={{ marginTop: 30, marginBottom: 20, backgroundColor: '#e8be41', padding: 10, borderRadius: 10 }}
                 onPress={() => onChangePassword()}>
                 <Text text="Update Your Password" />
 

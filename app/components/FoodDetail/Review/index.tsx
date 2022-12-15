@@ -120,15 +120,16 @@ export const Review = React.memo((props: ReviewType) => {
         deleteFoodReview(
             reviewId,
             (response) => {
-                setUpdating(false)
+                setReviewList(reviewList.filter((i) => i.id != reviewId))
+                setDeletingReview(false)
             },
             (e) => {
                 console.log(e)
                 showToast(Constant.API_ERROR_OCCURRED)
-                setUpdating(false)
+                setDeletingReview(false)
             }
         )
-    }, [showToast])
+    }, [showToast, reviewList])
 
     const onAddReview = useCallback(() => {
         setUpdating(true)
@@ -343,14 +344,14 @@ export const ReviewItem = React.memo((props: ReviewItemProps) => {
             <TransparentView style={{ flexDirection: 'row', paddingBottom: 10 }}>
                 <TransparentView style={{ flexShrink: 1, width: '100%' }}>
                     <TransparentView style={{ flexDirection: 'row' }}>
-                        <Text text={props.data.userReview + ' · ' + formatDateTimeFromData(props.data.createdDate)} style={{ textAlign: 'left', fontWeight: '500' }} numberOfLines={2} />
+                        <Text text={props.data.userReview + ' · ' + formatDateTimeFromData(props.data.createdDate)} style={{ textAlign: 'left', fontWeight: '500' }} />
                     </TransparentView>
 
                     <TransparentView style={{ marginHorizontal: 10, marginBottom: 5, marginTop: 5, flexGrow: 1 }}>
                         <ReviewStar num={props.data.star} size={13} showNumber={false} />
                         {
                             props.data.review ?
-                                <Text text={props.data.review} numberOfLines={3} style={{ textAlign: 'left', marginTop: 2 }} />
+                                <Text text={props.data.review} style={{ textAlign: 'left', marginTop: 2 }} />
                                 : null
                         }
                     </TransparentView>

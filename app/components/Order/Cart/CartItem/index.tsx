@@ -127,7 +127,7 @@ export const CartInnerItem = (props: CartItemType) => {
 
             <TransparentView style={{ marginHorizontal: 10, flexGrow: 1, flexShrink: 1 }}>
                 <Pressable onPress={() => { navigateToFoodDetail(props.item.productDetail.id) }}>
-                    <Text text={props.item.productDetail.productName.trim()} style={{ textAlign: 'left', fontSize: 20 }} numberOfLines={2} />
+                    <Text text={props.item.productDetail.productName.trim()} style={{ textAlign: 'left', fontSize: 20 }} />
                 </Pressable>
 
                 {
@@ -137,7 +137,7 @@ export const CartInnerItem = (props: CartItemType) => {
                         <Pressable
                             style={{ marginTop: 5 }}
                             onPress={() => { navigateToShopDetail(props.item.productDetail.shopID) }}>
-                            <Text text={props.item.productDetail.shopName.trim()} style={{ fontSize: 16, paddingRight: 5, fontWeight: '500', textAlign: 'left' }} numberOfLines={2} />
+                            <Text text={props.item.productDetail.shopName.trim()} style={{ fontSize: 16, paddingRight: 5, fontWeight: '500', textAlign: 'left' }}/>
                         </Pressable>
                 }
 
@@ -146,8 +146,7 @@ export const CartInnerItem = (props: CartItemType) => {
                         <TransparentView style={{ flexDirection: 'row', marginTop: 5 }}>
                             <Text
                                 text={`${I18NOption}: ${props.item.option.map((item) => ' ' + item.optionName)}`}
-                                style={{ fontSize: 16, flexShrink: 1, textAlign: 'left' }}
-                                numberOfLines={5} />
+                                style={{ fontSize: 16, flexShrink: 1, textAlign: 'left' }} />
                         </TransparentView> : null
                 }
 

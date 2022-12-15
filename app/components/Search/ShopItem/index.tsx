@@ -49,7 +49,7 @@ export const ShopItem = React.memo((item: ShopItemType) => {
                         <View style={{ width: 20, justifyContent: 'center', alignItems: 'center' }}>
                             <FontAwesome2 name="home" size={14} style={{ marginRight: 5 }} color='#97a842' />
                         </View>
-                        <Text text={item.data.shopName} numberOfLines={2} style={{ textAlign: 'left', fontWeight: '500', fontSize: 20, flexShrink: 1 }} />
+                        <Text text={item.data.shopName} style={{ textAlign: 'left', fontWeight: '500', fontSize: 20, flexShrink: 1 }} />
                     </TransparentView>
 
 

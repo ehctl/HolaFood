@@ -255,8 +255,8 @@ export const AddToCartScreen = React.memo((props: AddToCartType) => {
                                             <Select value={item.id} style={{ width: '100%', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', padding: 10 }}>
                                                 <SelectIcon size={4} />
                                                 <TransparentView style={{ marginHorizontal: 10 }}>
-                                                    <Text text={item.optionName} numberOfLines={3} style={{ textAlign: 'left' }} />
-                                                    <Text text={`${item.optionPrice} đ`} style={{ textAlign: 'left', color: 'grey', fontSize: 14 }} numberOfLines={3} />
+                                                    <Text text={item.optionName} style={{ textAlign: 'left' }} />
+                                                    <Text text={`${item.optionPrice} đ`} style={{ textAlign: 'left', color: 'grey', fontSize: 14 }} />
                                                 </TransparentView>
                                             </Select>
                                         </TransparentView>

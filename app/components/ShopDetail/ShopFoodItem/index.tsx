@@ -51,9 +51,9 @@ export const ShopFoodItem = (props: ShopFoodItemProps) => {
                     onPress={() => navigateToFoodDetail(props.data.id)}
                     style={{ flexGrow: 1, flexShrink: 1, marginVertical: 5, justifyContent: 'flex-start', alignItems: 'stretch' }}>
 
-                    <Text text={props.data.productName} numberOfLines={2} style={{ textAlign: 'left', fontWeight: '500', fontSize: 18, flexShrink: 1, marginTop: 5 }} />
+                    <Text text={props.data.productName} style={{ textAlign: 'left', fontWeight: '500', fontSize: 18, flexShrink: 1, marginTop: 5 }} />
 
-                    <Text text={props.data.description} numberOfLines={3} style={{ textAlign: 'left', fontSize: 14, flexShrink: 1, marginTop: 5 }} />
+                    <Text text={props.data.description} style={{ textAlign: 'left', fontSize: 14, flexShrink: 1, marginTop: 5 }} />
                 </Pressable>
             </View>
 

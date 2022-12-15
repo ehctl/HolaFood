@@ -200,7 +200,7 @@ export const AddToOrderScreen = React.memo((props: AddToOrderType) => {
                                 appStateProps.addressList.length != 5 ?
                                     <Pressable
                                         style={{
-                                            marginTop: 10, backgroundColor: '#6aabd9', padding: 10, borderRadius: 10, marginBottom: 15, shadowColor: "#000",
+                                            marginTop: 10, backgroundColor: '#e8be41', padding: 10, borderRadius: 10, marginBottom: 15, shadowColor: "#000",
                                             shadowOffset: {
                                                 width: 0,
                                                 height: 2

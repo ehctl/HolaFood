@@ -135,7 +135,7 @@ export const vi: any = {
     "Add": 'Thêm',
     "Add Address Successfully": 'Thêm địa chỉ thành công',
     "OTP Code Is Not Correct": 'Mã Otp không hợp lệ',
-    "Reason To Cancel This Order": 'Lí do hủy đơn',
+    "Reason To Cancel This Order": 'Lý do hủy đơn',
     "Confirm": 'Xác nhận',
     "Reason": 'Lý do',
     "FAQs": 'Câu hỏi thường gặp',

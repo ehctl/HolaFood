@@ -131,6 +131,7 @@ export const vi: any = {
     "by Admin": 'bởi Quản trị viên',
     "by Shop": 'bởi Cửa hàng',
     "Cancel Accept Ship Order": 'Hủy nhận đơn',
+    "Ship Order": 'Giao đơn',
     "Otp Code": 'Mã Otp',
     "Add": 'Thêm',
     "Add Address Successfully": 'Thêm địa chỉ thành công',

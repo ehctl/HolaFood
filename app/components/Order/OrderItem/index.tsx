@@ -29,7 +29,7 @@ export const OrderItem = React.memo((props: OrderItemType) => {
     const [cancelingOrder, setCancelingOrder] = useState(false)
     const [shippingOrder, setShippingOrder] = useState(false)
 
-    const I18NOrder = useLanguage('Order')
+    const I18NOrder = useLanguage('Orders')
     const I18NCancel = useLanguage('Cancel')
     const I18NCancelOrderConfirm = useLanguage('Are you want to cancel shipping this order?')
     const I18NCancelOrder = useLanguage('Cancel Order')

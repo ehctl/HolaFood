@@ -61,6 +61,7 @@ export const FAQScreen = React.memo(() => {
                 appStateProps.userInfo.id,
                 FAQContent.trim(),
                 (response) => {
+                    setFAQContent('')
                     popupRef.current.changeVisibility(false)
                     setListFAQ([
                         {
@@ -107,7 +108,7 @@ export const FAQScreen = React.memo(() => {
         <View style={{ flex: 1 }}>
             <AnimatedHeader
                 headerProps={{
-                    header: <Level2Header title="FAQ" />,
+                    header: <Level2Header title="FAQs" />,
                     headerHeight: Level2HeaderStat.HEADER_MAX_HEIGHT
                 }}
                 flatListProps={{

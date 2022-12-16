@@ -21,7 +21,7 @@ export const News = () => {
                 removeClippedSubviews={false}
                 scrollEnabled={true}
                 autoplay={true}
-                activeDotColor="#e6d09e" >
+                activeDotColor="orange" >
 
                 <Pressable
                     onPress={() => navigation.navigate('FoodList' as never, { type: 169 } as never)}

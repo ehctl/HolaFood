@@ -261,7 +261,7 @@ export const UpdateUsername = (props: { name: string, updateFirstName: boolean, 
     return (
         <TransparentView>
             <TransparentView style={{ marginTop: 30, alignItems: 'stretch' }}>
-                <I18NText text="Name" style={{ textAlign: 'left', fontSize: 22 }} />
+                <I18NText text={props.updateFirstName ? "First Name" : "Last Name"} style={{ textAlign: 'left', fontSize: 22 }} />
                 <TextInput
                     value={userName}
                     onChangeText={(v) => setUsername(v)}
@@ -274,7 +274,7 @@ export const UpdateUsername = (props: { name: string, updateFirstName: boolean, 
                 style={{ marginTop: 40, marginBottom: 20, backgroundColor: '#e8be41', padding: 10, borderRadius: 10 }}
                 onPress={() => onSubmit()}>
 
-                <I18NText text="Update Your Name" />
+                <I18NText text={"Update"} />
                 <ActivityIndicator
                     animating={loading}
                     color='black'
@@ -305,7 +305,7 @@ export const UpdatePhone = (props: { phoneNumber: string, callback: (value: stri
     return (
         <TransparentView>
             <TransparentView style={{ marginTop: 30, alignItems: 'stretch' }}>
-                <I18NText text="Phone" style={{ textAlign: 'left', fontSize: 22 }} />
+                <I18NText text="Phone Number" style={{ textAlign: 'left', fontSize: 22 }} />
                 <TextInput
                     value={phoneNumber}
                     onChangeText={(v) => setPhoneNumber(v)}
@@ -317,7 +317,7 @@ export const UpdatePhone = (props: { phoneNumber: string, callback: (value: stri
             <Pressable
                 style={{ marginTop: 40, marginBottom: 20, backgroundColor: '#e8be41', padding: 10, borderRadius: 10 }}
                 onPress={() => onSubmit()}>
-                <I18NText text="Update Your Phone Number" />
+                <I18NText text="Update" />
 
                 <ActivityIndicator
                     animating={loading}
@@ -381,6 +381,7 @@ export const UpdatePassword = () => {
                 <View style={{ flexDirection: 'row', backgroundColor: '#cacecf', justifyContent: 'space-between', alignItems: 'center', flexShrink: 1, borderRadius: 10, marginTop: 10 }}>
                     <TextInput
                         placeholder={I18NOldPassword}
+                        placeholderTextColor='#636363'
                         secureTextEntry={hideOldPassword}
                         onChangeText={(v) => setOldPassword(v)}
                         style={{ textAlign: 'left', fontSize: 18, fontWeight: '500', marginTop: 5, padding: 10, flexGrow: 1, flexShrink: 1 }} />
@@ -393,6 +394,7 @@ export const UpdatePassword = () => {
                 <View style={{ flexDirection: 'row', backgroundColor: '#cacecf', justifyContent: 'space-between', alignItems: 'center', flexShrink: 1, borderRadius: 10, marginTop: 10 }}>
                     <TextInput
                         placeholder={I18NNewPassword}
+                        placeholderTextColor='#636363'
                         secureTextEntry={hideNewPassword}
                         onChangeText={(v) => setNewPassword(v)}
                         style={{ textAlign: 'left', fontSize: 18, fontWeight: '500', marginTop: 5, padding: 10, borderRadius: 10, flexGrow: 1, flexShrink: 1 }} />
@@ -419,7 +421,7 @@ export const UpdatePassword = () => {
             <Pressable
                 style={{ marginTop: 30, marginBottom: 20, backgroundColor: '#e8be41', padding: 10, borderRadius: 10 }}
                 onPress={() => onChangePassword()}>
-                <Text text="Update Your Password" />
+                <I18NText text="Update" />
 
                 <ActivityIndicator
                     animating={loading}

@@ -118,13 +118,27 @@ export const AddToCartScreen = React.memo((props: AddToCartType) => {
             tobeUpdatedOrder = { ...tobeUpdatedOrder }
             const oldPrice = tobeUpdatedOrder.price / tobeUpdatedOrder.quantity
             tobeUpdatedOrder.price = oldPrice * (tobeUpdatedOrder.quantity + quantity)
-            tobeUpdatedOrder.quantity = tobeUpdatedOrder.quantity + quantity
+            tobeUpdatedOrder.quantity = props.route.params?.isUpdateMode ? quantity : (tobeUpdatedOrder.quantity + quantity)
 
-            if (props.route.params?.isUpdateMode) {
-                deleteCart(
-                    props.route.params?.cartItemDetail?.id,
+            // if (props.route.params?.isUpdateMode) {
+            //     deleteCart(
+            //         props.route.params?.cartItemDetail?.id,
+            //         (response) => {
+            //             dispatch(deleteCartItems([props.route.params?.cartItemDetail?.id]))
+            //             setAddingToCart(false)
+            //             navigation.goBack()
+            //         },
+            //         (e) => {
+            //             console.log(e)
+            //             showToast(Constant.API_ERROR_OCCURRED)
+            //             setAddingToCart(false)
+            //         }
+            //     )
+            // } else {
+                updateCart(
+                    tobeUpdatedOrder,
                     (response) => {
-                        dispatch(deleteCartItems([props.route.params?.cartItemDetail?.id]))
+                        dispatch(updateCartItem(tobeUpdatedOrder))
                         setAddingToCart(false)
                         navigation.goBack()
                     },
@@ -134,22 +148,7 @@ export const AddToCartScreen = React.memo((props: AddToCartType) => {
                         setAddingToCart(false)
                     }
                 )
-            }
-
-            updateCart(
-                tobeUpdatedOrder,
-                (response) => {
-                    dispatch(updateCartItem(tobeUpdatedOrder))
-                    setAddingToCart(false)
-                    navigation.goBack()
-                },
-                (e) => {
-                    console.log(e)
-                    showToast(Constant.API_ERROR_OCCURRED)
-                    setAddingToCart(false)
-                }
-            )
-
+            // }
         } else {
             if (props.route.params?.isUpdateMode) {
                 updateCart(
@@ -282,8 +281,8 @@ export const AddToCartScreen = React.memo((props: AddToCartType) => {
                         keyboardType="decimal-pad" defaultValue="1"
                         style={{ borderWidth: 0.5, borderColor: '#2a5496', paddingHorizontal: 10, marginHorizontal: 15, fontSize: 28, borderRadius: 10, width: '40%', textAlign: 'center' }}
                         value={`${quantity}`}
-                        onChangeText={(text) => setQuantity(text != '' ? Math.min(100, Math.max(1, parseInt(text))) : 1)} />
-                    <Pressable style={{ paddingHorizontal: 10 }} onPress={() => { setQuantity(Math.min(10, quantity + 1)) }} >
+                        onChangeText={(text) => setQuantity(text != '' ? Math.min(100000, Math.max(1, parseInt(text))) : 1)} />
+                    <Pressable style={{ paddingHorizontal: 10 }} onPress={() => { setQuantity(Math.min(100000, quantity + 1)) }} >
                         <FontAwesome1 name="plus" size={20} />
                     </Pressable>
                 </TransparentView>

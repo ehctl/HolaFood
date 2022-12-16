@@ -227,17 +227,13 @@ export const OrderItem = React.memo((props: OrderItemType) => {
                         <Text text={`: ${props.item.id}`} style={{ marginLeft: 5 }} />
                     </TransparentView>
 
-                    {
-                        appStateProps.userType == 'customer' ?
-                            <View
-                                style={{ flexDirection: 'row', alignSelf: 'flex-start', justifyContent: 'flex-start', borderRadius: 10, marginTop: 5, flexShrink: 1 }}>
-                                <FontAwesome2 name={getOrderStatusIcon(props.item.status)} size={20} color='#995050' />
-                                <Text
-                                    text={I18NOrderStatus + (props?.showOrderDate == false ? '' : ' · ' + formatDateTimeFromData(props.item.createdDate))}
-                                    style={{ flexShrink: 1, marginLeft: 5, textAlign: 'left' }} />
-                            </View>
-                            : null
-                    }
+                    <TransparentView
+                        style={{ flexDirection: 'row', alignSelf: 'flex-start', justifyContent: 'flex-start', borderRadius: 10, marginTop: 5, flexShrink: 1 }}>
+                        <FontAwesome2 name={getOrderStatusIcon(props.item.status)} size={20} color='#995050' />
+                        <Text
+                            text={I18NOrderStatus + (props?.showOrderDate == false ? '' : ' · ' + formatDateTimeFromData(props.item.createdDate))}
+                            style={{ flexShrink: 1, marginLeft: 5, textAlign: 'left' }} />
+                    </TransparentView>
 
                     <TransparentView style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
                         <Entypo name='shop' size={20} color='#3179cc' />
@@ -282,7 +278,7 @@ export const OrderItem = React.memo((props: OrderItemType) => {
                                     </Pressable>
 
                                     <TransparentView style={{ flexDirection: 'row', flexShrink: 1, marginTop: 5 }}>
-                                        <I18NText text='Ship Fee' style={{ textAlign: 'left', fontSize: 18, flexShrink: 1 }}  />
+                                        <I18NText text='Ship Fee' style={{ textAlign: 'left', fontSize: 18, flexShrink: 1 }} />
                                         <Text text=': ' style={{ fontSize: 18 }} />
                                         <Text text={formatMoney(props.item.shipFee) + ' đ'} style={{ textAlign: 'left', color: 'red', fontSize: 18, flexShrink: 1, fontWeight: '500' }} />
                                     </TransparentView>

@@ -131,6 +131,7 @@ export const AddAddressScreen = React.memo(() => {
                     <TextInput
                         style={{ fontSize: 18, flexGrow: 1, flexShrink: 1 }}
                         placeholder='Tỉnh, Thành Phố - Địa Chỉ'
+                        placeholderTextColor='black'
                         value={searchText}
                         onChangeText={setSearchText}
                         numberOfLines={1}

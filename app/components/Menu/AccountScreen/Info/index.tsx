@@ -252,7 +252,6 @@ export const UpdateUsername = (props: { name: string, updateFirstName: boolean, 
         } else if (!nameValidate.qualify) {
             setErrorMsg(nameValidate.message)
         } else {
-            console.log(userName)
             setLoading(true)
             props.callback?.(userName)
         }
@@ -381,7 +380,7 @@ export const UpdatePassword = () => {
                 <View style={{ flexDirection: 'row', backgroundColor: '#cacecf', justifyContent: 'space-between', alignItems: 'center', flexShrink: 1, borderRadius: 10, marginTop: 10 }}>
                     <TextInput
                         placeholder={I18NOldPassword}
-                        placeholderTextColor='#636363'
+                        placeholderTextColor='black'
                         secureTextEntry={hideOldPassword}
                         onChangeText={(v) => setOldPassword(v)}
                         style={{ textAlign: 'left', fontSize: 18, fontWeight: '500', marginTop: 5, padding: 10, flexGrow: 1, flexShrink: 1 }} />
@@ -394,7 +393,7 @@ export const UpdatePassword = () => {
                 <View style={{ flexDirection: 'row', backgroundColor: '#cacecf', justifyContent: 'space-between', alignItems: 'center', flexShrink: 1, borderRadius: 10, marginTop: 10 }}>
                     <TextInput
                         placeholder={I18NNewPassword}
-                        placeholderTextColor='#636363'
+                        placeholderTextColor='black'
                         secureTextEntry={hideNewPassword}
                         onChangeText={(v) => setNewPassword(v)}
                         style={{ textAlign: 'left', fontSize: 18, fontWeight: '500', marginTop: 5, padding: 10, borderRadius: 10, flexGrow: 1, flexShrink: 1 }} />

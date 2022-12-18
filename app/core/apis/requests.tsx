@@ -1134,7 +1134,7 @@ export const getDistance = (
             destinations: destination,
             mode: 'driving',
             region: 'vi',
-            key: GOOGLE_DISTANCE_API_KEY
+            key: GOOGLE_MAP_API_KEY
         },
         url: GOOGLE_DISTANCE_API_URL,
     }

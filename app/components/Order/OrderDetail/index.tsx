@@ -7,11 +7,11 @@ import { CartInnerItem } from "../Cart/CartItem";
 import { TransparentView, View } from "../../../base/View";
 import { I18NText, Text } from "../../../base/Text";
 import { FontAwesome1, FontAwesome2 } from "../../../base/FontAwesome";
-import { formatCreatedDateType2, formatDateTimeFromData, formatMoney, getUserRoleById, isIosDevice, openMapUtil } from "../../../utils/Utils";
+import { formatCreatedDateType2, formatMoney, getUserRoleById, openMapUtil } from "../../../utils/Utils";
 import { useLanguage } from "../../../base/Themed";
 import { getOrderStatusIcon, getOrderStatusMsg, OrderStatus } from "../OrderUtils";
 import { OrderData } from "../OrderItem";
-import { ActivityIndicator, Alert, Linking, Platform, Pressable, TextInput } from "react-native";
+import { ActivityIndicator, Alert, Linking, Pressable, TextInput } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import { useCallback, useEffect, useRef, useState } from "react";
 import { cancelOrder, getOrderDetail, updateOrder } from "../../../core/apis/Requests";
@@ -100,10 +100,10 @@ export const OrderDetail = (props: OrderDetailProps) => {
         getOrderDetail(
             props.route.params?.orderId,
             (response) => {
-                console.log(response)
                 const data = response.data
-                console.log(data)
-                setData(mapOrderDataFromResponse(data))
+                const order = mapOrderDataFromResponse(data)
+                order.createdDate = data.createdDate
+                setData(order)
                 setLoading(false)
             },
             (e) => {
@@ -517,6 +517,7 @@ export const OrderDetail = (props: OrderDetailProps) => {
                     <TransparentView style={{ flexDirection: 'row', marginTop: 15 }}>
                         <TextInput
                             placeholder={I18NReasonToCancel}
+                            placeholderTextColor='black'
                             multiline={true}
                             style={{ fontSize: 18, paddingHorizontal: 10, paddingVertical: 20, paddingTop: 15, backgroundColor: '#cdd1d1', width: '100%', borderRadius: 10 }}
                             value={cancelReason}

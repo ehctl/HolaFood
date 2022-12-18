@@ -1,6 +1,6 @@
 import { TransparentView, View } from "../../../base/View"
 import { Pressable, RefreshControl } from 'react-native';
-import { formatCreatedDateType, getStyle, wait } from "../../../utils/Utils";
+import { formatCreatedDateType, getStyle, reformatDateTime, wait } from "../../../utils/Utils";
 import { useCallback, useEffect, useRef, useState } from "react";
 import React from "react";
 import { useSelector } from "react-redux";
@@ -208,7 +208,7 @@ export const OrderQueueScreen = React.memo((props: OrderViewProp) => {
 
 export const mapOrderDataFromResponse = (data: any): OrderData => {
     const items = data.cart.map((i) => mapCartItemFromResponse(i))
-
+    
     return {
         id: data.id,
         address: data.address,
@@ -217,7 +217,7 @@ export const mapOrderDataFromResponse = (data: any): OrderData => {
         price: data.price - data.shipOrder,
         shipFee: data.shipPrice,
         shipFeeWithShopPolicy: data.shipOrder,
-        createdDate: data.createdDate,
+        createdDate: reformatDateTime(data.createdDate),
         phone: data.phone,
         distance: data.distance,
         roleCancel: data.roleCancel,

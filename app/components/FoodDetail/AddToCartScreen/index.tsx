@@ -117,8 +117,8 @@ export const AddToCartScreen = React.memo((props: AddToCartType) => {
         if (tobeUpdatedOrder != null) {
             tobeUpdatedOrder = { ...tobeUpdatedOrder }
             const oldPrice = tobeUpdatedOrder.price / tobeUpdatedOrder.quantity
-            tobeUpdatedOrder.price = oldPrice * (tobeUpdatedOrder.quantity + quantity)
             tobeUpdatedOrder.quantity = props.route.params?.isUpdateMode ? quantity : (tobeUpdatedOrder.quantity + quantity)
+            tobeUpdatedOrder.price = oldPrice * tobeUpdatedOrder.quantity
 
             // if (props.route.params?.isUpdateMode) {
             //     deleteCart(
@@ -135,19 +135,19 @@ export const AddToCartScreen = React.memo((props: AddToCartType) => {
             //         }
             //     )
             // } else {
-                updateCart(
-                    tobeUpdatedOrder,
-                    (response) => {
-                        dispatch(updateCartItem(tobeUpdatedOrder))
-                        setAddingToCart(false)
-                        navigation.goBack()
-                    },
-                    (e) => {
-                        console.log(e)
-                        showToast(Constant.API_ERROR_OCCURRED)
-                        setAddingToCart(false)
-                    }
-                )
+            updateCart(
+                tobeUpdatedOrder,
+                (response) => {
+                    dispatch(updateCartItem(tobeUpdatedOrder))
+                    setAddingToCart(false)
+                    navigation.goBack()
+                },
+                (e) => {
+                    console.log(e)
+                    showToast(Constant.API_ERROR_OCCURRED)
+                    setAddingToCart(false)
+                }
+            )
             // }
         } else {
             if (props.route.params?.isUpdateMode) {
@@ -255,7 +255,7 @@ export const AddToCartScreen = React.memo((props: AddToCartType) => {
                                                 <SelectIcon size={4} />
                                                 <TransparentView style={{ marginHorizontal: 10 }}>
                                                     <Text text={item.optionName} style={{ textAlign: 'left' }} />
-                                                    <Text text={`${item.optionPrice} đ`} style={{ textAlign: 'left', color: 'grey', fontSize: 14 }} />
+                                                    <Text text={`${formatMoney(item.optionPrice)} đ`} style={{ textAlign: 'left', color: 'grey', fontSize: 14 }} />
                                                 </TransparentView>
                                             </Select>
                                         </TransparentView>

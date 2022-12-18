@@ -17,11 +17,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const Login = (props: LoginScreenProp) => {
     const dispatch = useDispatch()
-    const [email, setEmail] = useState('tuanlinh29718@gmail.com')
-    const [password, setPassword] = useState('123')
+    // const [email, setEmail] = useState('tuanlinh29718@gmail.com')
+    // const [password, setPassword] = useState('123')
     // const [email, setEmail] = useState('dungkaka2000tq@gmail.com')
     // const [email, setEmail] = useState('giaohang@gmail.com')
     // const [password, setPassword] = useState('321')
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
     const [loading, setLoading] = useState(false)
     const [hidePassword, setHidePassword] = useState(true)
     const [errorMsg, setErroMsg] = useState('')

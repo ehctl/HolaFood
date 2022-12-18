@@ -10,7 +10,6 @@ import { ShipCost } from "../components/FoodDetail/FoodDetailScreen"
 import { startActivityAsync } from "expo-intent-launcher"
 
 
-
 export const getStyle = () => Warehouse.getInstance().getStyle()
 
 export const loadI18N = (lanaguage: AppLanguage, text: string) => {
@@ -115,17 +114,17 @@ export const formatDateTimeFromData = (time: string) => {
 
 // YYYY-MM-DD HH:MM:SS
 export const formatCreatedDateType = (time: Date) => {
-  return `${time.getFullYear()}-${time.getMonth() + 1}-${time.getDate()} ${('0' + time.getHours()).slice(-2)}:${('0' + time.getMinutes()).slice(-2)}:${('0' + time.getSeconds()).slice(-2)}`
+  return `${time.getFullYear()}-${('0' + time.getMonth() + 1).slice(-2)}-${('0' + time.getDate()).slice(-2)} ${('0' + time.getHours()).slice(-2)}:${('0' + time.getMinutes()).slice(-2)}:${('0' + time.getSeconds()).slice(-2)}`
 }
 
 // HH:MM DD-MM-YYYY
 export const formatCreatedDateType1 = (time: Date) => {
-  return `${('0' + time.getHours()).slice(-2)}:${('0' + time.getMinutes()).slice(-2)} ${time.getDate()}-${time.getMonth() + 1}-${time.getFullYear()}`
+  return `${('0' + time.getHours()).slice(-2)}:${('0' + time.getMinutes()).slice(-2)} ${('0' + time.getDate()).slice(-2)}-${('0' + time.getMonth() + 1).slice(-2)}-${time.getFullYear()}`
 }
 
 // YYYY-MM-DD HH:MM
 export const formatCreatedDateType2 = (time: Date) => {
-  return `${time.getDate()}-${time.getMonth() + 1}-${time.getFullYear()} ${('0' + time.getHours()).slice(-2)}:${('0' + time.getMinutes()).slice(-2)}`
+  return `${('0' + time.getDate()).slice(-2)}-${('0' + time.getMonth() + 1).slice(-2)}-${time.getFullYear()} ${('0' + time.getHours()).slice(-2)}:${('0' + time.getMinutes()).slice(-2)}`
 }
 
 export const formatAccountRole = (role: string) => {

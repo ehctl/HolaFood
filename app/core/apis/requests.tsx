@@ -1113,7 +1113,7 @@ export const getSuggestAddress = (
                 }
             })
                 .catch(((e) => {
-                    failure(e)
+                    // failure(e)
                 }))
         })
         .catch((e) => {
@@ -1160,15 +1160,16 @@ export const getDistance = (
 
 export const addNewAddress = (
     address: string,
+    formatted_address: string,
     success: (data: any) => void,
     failure: (error: any) => void
 ) => {
     const option = {
         method: 'POST',
         data: {
-            address: address
+            address: address,
+            formatted_address: formatted_address
         },
-        // url: 'https://mocki.io/v1/0fc2e3d9-e4bd-431a-9159-ca71adb563e3',
         url: DOMAIN + '/address/add',
     }
 

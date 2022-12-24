@@ -267,7 +267,7 @@ export const Review = React.memo((props: ReviewType) => {
 
                 <TextInput
                     placeholder={I18NYourRateOptional}
-                    placeholderTextColor='black'
+                    placeholderTextColor='#292828'
                     multiline={true}
                     onChangeText={(v) => setReview(v)}
                     style={{ paddingHorizontal: 10, backgroundColor: '#c0c6cf', fontSize: 14, borderRadius: 10, paddingTop: 15, paddingBottom: 15, marginTop: 20 }} />

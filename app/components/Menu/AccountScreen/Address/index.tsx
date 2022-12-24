@@ -16,6 +16,7 @@ import { useLanguage } from "../../../../base/Themed"
 import { useNavigation } from '@react-navigation/native';
 import { Constant } from "../../../../utils/Constant"
 import { useToast } from "../../../../base/Toast"
+import { openMapUtil } from "../../../../utils/Utils"
 
 
 
@@ -33,7 +34,9 @@ export const Address = React.memo(() => {
     const I18NDeleteAddress = useLanguage("Delete Address")
     const I18NDeleteAddressConfirm = useLanguage("Are you sure you want to delete this address")
     const I18NMaxAddressWarning = useLanguage("You Can Have Maximum 5 Addressess")
-
+    const I18NAddress = useLanguage('Address')
+    const I18NView = useLanguage('View')
+    const I18NAddressConfirm = useLanguage('Do you want to view this address in maps application?')
     const showToast = useToast()
 
     const onDeleteAddress = useCallback((id: number) => {
@@ -50,6 +53,25 @@ export const Address = React.memo(() => {
                 showToast(Constant.API_ERROR_OCCURRED)
                 setLoadingDelete(false)
             }
+        )
+    }, [])
+
+    const openMap = useCallback((address: string) => {
+        Alert.alert(
+            I18NAddress,
+            I18NAddressConfirm,
+            [
+                {
+                    text: I18NCancel,
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
+                },
+                {
+                    text: I18NView, onPress: async () => {
+                        await openMapUtil(address)
+                    }
+                }
+            ]
         )
     }, [])
 
@@ -71,10 +93,15 @@ export const Address = React.memo(() => {
                     appStateProps.addressList.map((item: UserAddress, index: number) => (
                         <TransparentView key={index} style={{ justifyContent: 'center', width: '100%' }}>
                             <TransparentView style={{ width: '100%', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 5 }}>
-                                <TransparentView style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', flexGrow:1, flexShrink: 1 }}>
+                                <Pressable 
+                                onPress={() => {openMap(item.formatted_address + ' - ' + item.address)}}
+                                style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', flexGrow: 1, marginRight: 20, flexShrink: 1 }}>
                                     <FontAwesome2 name="location-on" size={16} color='grey' />
-                                    <Text text={item.address } style={{flexShrink: 1, marginLeft: 10, textAlign: 'left' }} />
-                                </TransparentView>
+                                    <TransparentView>
+                                        <Text text={item.address} style={{ flexShrink: 1, marginLeft: 10, textAlign: 'left', fontWeight: '500' }} />
+                                        <Text text={item.formatted_address} style={{ flexShrink: 1, marginLeft: 10, fontSize: 14, textAlign: 'left' }} />
+                                    </TransparentView>
+                                </Pressable>
                                 <TransparentView>
                                     <FontAwesome1
                                         name="close" size={18} color='grey' style={{ padding: 5 }}
@@ -122,6 +149,7 @@ export const Address = React.memo(() => {
 export const mapUserAddressFromResponse = (data): UserAddress[] => {
     return data.map((item) => ({
         id: item.id,
-        address: item.address
+        address: item.address,
+        formatted_address: item.formatted_address
     }))
 }

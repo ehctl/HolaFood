@@ -380,7 +380,7 @@ export const UpdatePassword = () => {
                 <View style={{ flexDirection: 'row', backgroundColor: '#cacecf', justifyContent: 'space-between', alignItems: 'center', flexShrink: 1, borderRadius: 10, marginTop: 10 }}>
                     <TextInput
                         placeholder={I18NOldPassword}
-                        placeholderTextColor='black'
+                        placeholderTextColor='#292828'
                         secureTextEntry={hideOldPassword}
                         onChangeText={(v) => setOldPassword(v)}
                         style={{ textAlign: 'left', fontSize: 18, fontWeight: '500', marginTop: 5, padding: 10, flexGrow: 1, flexShrink: 1 }} />
@@ -393,7 +393,7 @@ export const UpdatePassword = () => {
                 <View style={{ flexDirection: 'row', backgroundColor: '#cacecf', justifyContent: 'space-between', alignItems: 'center', flexShrink: 1, borderRadius: 10, marginTop: 10 }}>
                     <TextInput
                         placeholder={I18NNewPassword}
-                        placeholderTextColor='black'
+                        placeholderTextColor='#292828'
                         secureTextEntry={hideNewPassword}
                         onChangeText={(v) => setNewPassword(v)}
                         style={{ textAlign: 'left', fontSize: 18, fontWeight: '500', marginTop: 5, padding: 10, borderRadius: 10, flexGrow: 1, flexShrink: 1 }} />

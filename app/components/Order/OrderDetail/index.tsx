@@ -34,6 +34,7 @@ export const OrderDetail = (props: OrderDetailProps) => {
     const dispatch = useDispatch()
     const appStateProps = useSelector((state: AppState) => ({
         userType: state.userType,
+        addressList: state.userAddressList
     }))
 
     const [loading, setLoading] = useState(true)
@@ -75,8 +76,7 @@ export const OrderDetail = (props: OrderDetailProps) => {
     const I18NView = useLanguage('View')
     const I18NAddressConfirm = useLanguage('Do you want to view this address in maps application?')
 
-
-    const openMap = useCallback((address: string) => {
+    const openMap = useCallback((address: string, startAddress?: string) => {
         Alert.alert(
             I18NAddress,
             I18NAddressConfirm,
@@ -88,7 +88,7 @@ export const OrderDetail = (props: OrderDetailProps) => {
                 },
                 {
                     text: I18NView, onPress: async () => {
-                        await openMapUtil(address)
+                        await openMapUtil(address, startAddress)
                     }
                 }
             ]
@@ -328,7 +328,7 @@ export const OrderDetail = (props: OrderDetailProps) => {
                                 <I18NText text={getOrderStatusMsg(data.status)} style={{ textAlign: 'left', marginLeft: 10, fontSize: 16, fontWeight: '500' }} />
                                 {
                                     data.status == OrderStatus.CANCELED ?
-                                        <I18NText text={`by ${getUserRoleById(data.roleCancel)}`} style={{ textAlign: 'left', marginLeft: 3, fontSize: 16 }} />
+                                        <I18NText text={`by ${getUserRoleById(data.roleCancel)}`} style={{ textAlign: 'left', marginLeft: 3, fontSize: 16, fontWeight: '500' }} />
                                         : null
                                 }
                             </TransparentView>
@@ -364,7 +364,10 @@ export const OrderDetail = (props: OrderDetailProps) => {
                             </Pressable>
 
                             <Pressable
-                                onPress={() => openMap(data.address)}
+                                onPress={() => openMap(
+                                    (appStateProps.addressList.filter((i) => i.address == data.address)?.[0]?.formatted_address ?? '') + ' - ' + data.address,
+                                    data.items[0].productDetail.shopAddress
+                                )}
                                 style={{ flexDirection: 'row', flexShrink: 1, marginHorizontal: 10, marginTop: 5 }}>
                                 <Text text={I18NShipTo + ': ' + data.address} style={{ textAlign: 'left', fontSize: 16, flexShrink: 1, fontWeight: '500' }} />
                             </Pressable>
@@ -517,9 +520,9 @@ export const OrderDetail = (props: OrderDetailProps) => {
                     <TransparentView style={{ flexDirection: 'row', marginTop: 15 }}>
                         <TextInput
                             placeholder={I18NReasonToCancel}
-                            placeholderTextColor='black'
+                            placeholderTextColor='#292828'
                             multiline={true}
-                            style={{ fontSize: 18, paddingHorizontal: 10, paddingVertical: 20, paddingTop: 15, backgroundColor: '#cdd1d1', width: '100%', borderRadius: 10 }}
+                            style={{ fontSize: 18, paddingHorizontal: 10, paddingBottom: 20, paddingTop: 15, backgroundColor: '#cdd1d1', width: '100%', borderRadius: 10 }}
                             value={cancelReason}
                             onChangeText={(v) => { setCancelReason(v) }} />
                     </TransparentView>

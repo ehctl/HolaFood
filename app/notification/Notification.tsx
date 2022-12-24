@@ -76,8 +76,7 @@ export default class Notification {
         const data = notification.request.content.data as DataNotificationType
         switch (data.type) {
           case 'OrderStatusChange':
-            console.log(data)
-            console.log('Notification: Status Change')
+            console.log('Notification: Order Status Change')
             dispatch(updateOrderStatus({
               orderId: data.orderId,
               status: data.status,

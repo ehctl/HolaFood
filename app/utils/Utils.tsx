@@ -154,13 +154,14 @@ export const calculateShipFee = (distance: number, costPolicy: ShipCost[]) => {
     return costPolicy[1].price + Math.ceil(distanceKM - 5) * costPolicy[2].price
 }
 
-export const getUserRole = (role: string): UserType => {
+export const getUserRole = (role: string): UserType | undefined => {
   if (role == 'ROLE_CUSTOMER')
     return 'customer'
   else if (role == 'ROLE_SHIPPER')
     return 'shipper'
   else {
     console.log('Unsupported user role')
+    return undefined
   }
 }
 
@@ -177,14 +178,21 @@ export const getUserRoleById = (role: number): string => {
   }
 }
 
-export const openMapUtil = async (daddress: string, failureCallback?: () => void) => {
+export const openMapUtil = async (destinationAddress: string, startAddress?: string, failureCallback?: () => void) => {
+  const query = startAddress ?
+    'http://maps.google.com/maps?saddr=' + encodeURIComponent(startAddress) + '&daddr=' + encodeURIComponent(destinationAddress) + '&directionsmode=driving' :
+    isIosDevice() ?
+      'http://maps.google.com/maps/search/?api=1&query=' + encodeURIComponent(destinationAddress) :
+      ("geo:0,0?q=" + encodeURIComponent(destinationAddress))
+
   if (isIosDevice())
-    Linking.openURL('http://maps.google.com/maps/search/?api=1&query=' + daddress);
+    Linking.openURL(query);
   else {
     try {
       const returnResult = await startActivityAsync("android.intent.action.VIEW", {
         packageName: "com.google.android.apps.maps",
-        data: "geo:0,0?q=" + daddress
+        // data: "geo:0,0?q=" + destinationAddress
+        data: query
       })
       if (returnResult.resultCode != 0 && returnResult.resultCode != -1)
         throw "Error"

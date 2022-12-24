@@ -72,7 +72,7 @@ export const OrderHistoryScreen = React.memo(() => {
             pageIndex,
             (response) => {
                 const orderDataFromResponse = response.data
-                const orders = orderDataFromResponse.map((i) => mapOrderDataFromResponse(i))
+                var orders = orderDataFromResponse.map((i) => mapOrderDataFromResponse(i))
                 if (orders.length < 10)
                     setReachedEndList(true)
                 setListOrder(categorizeOrderByDate(orders, pageIndex == 0))
@@ -84,7 +84,7 @@ export const OrderHistoryScreen = React.memo(() => {
                 setLoading(false)
             }
         )
-    }, [categorizeOrderByDate])
+    }, [categorizeOrderByDate, showToast])
 
     const onRefresh = useCallback(() => {
         setListOrder([])

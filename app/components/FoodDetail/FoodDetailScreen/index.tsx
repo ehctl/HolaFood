@@ -61,7 +61,7 @@ export const FoodDetailScreen = React.memo(({ route }: any) => {
     useEffect(() => {
         fetchData()
 
-    }, [])
+    }, [route.params.itemId])
 
     const renderItems = ({ item }: ListRenderItemInfo<ListItem>) => {
         switch (item) {

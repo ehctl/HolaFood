@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { ActivityIndicator, Pressable } from 'react-native';
+import { ActivityIndicator, Alert, Pressable } from 'react-native';
 import { FontAwesome } from '../../base/FontAwesome';
 import { I18NText } from '../../base/Text';
 import { TransparentView, View } from '../../base/View';
@@ -17,18 +17,18 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const Login = (props: LoginScreenProp) => {
     const dispatch = useDispatch()
-    // const [email, setEmail] = useState('tuanlinh29718@gmail.com')
-    // const [password, setPassword] = useState('123')
-    // const [email, setEmail] = useState('dungkaka2000tq@gmail.com')
+    const [email, setEmail] = useState('tuanlinh29718@gmail.com')
     // const [email, setEmail] = useState('giaohang@gmail.com')
-    // const [password, setPassword] = useState('321')
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
+    // const [email, setEmail] = useState('dungkaka2000tq@gmail.com')
+    const [password, setPassword] = useState('Holafood1')
+    // const [email, setEmail] = useState('')`
+    // const [password, setPassword] = useState('')`
     const [loading, setLoading] = useState(false)
     const [hidePassword, setHidePassword] = useState(true)
     const [errorMsg, setErroMsg] = useState('')
 
     const I18NPassword = useLanguage('Password')
+    const I18NLoginRoleWarning = useLanguage('You Can Only Login As Customer Or Shipper!')
 
     const onLoginSuccess = useCallback(async (response) => {
         const token = response.token
@@ -36,25 +36,29 @@ export const Login = (props: LoginScreenProp) => {
         const userType = getUserRole(userInfo.role)
         const notiToken = (await AsyncStorage.getItem(Constant.APP_NOTIFICATION_TOKEN)) ?? ''
 
-        dispatch(setUserType(userType))
-        dispatch(setUserApiToken(token))
-        dispatch(setUserInfo(userInfo))
-        saveApiTokenInfoLocalStorage(token)
-        saveUserInfoLocalStorage(userInfo)
+        if (userType) {
+            dispatch(setUserType(userType))
+            dispatch(setUserApiToken(token))
+            dispatch(setUserInfo(userInfo))
+            saveApiTokenInfoLocalStorage(token)
+            saveUserInfoLocalStorage(userInfo)
 
-        if (userType == 'customer' && notiToken.length > 0) {
-            addNotificationToken(
-                notiToken,
-                (response) => {
-                    console.log('Add notification token success')
-                },
-                (e) => {
-                    console.log(e)
-                }
-            )
+            if (userType == 'customer' && notiToken.length > 0) {
+                addNotificationToken(
+                    notiToken,
+                    (response) => {
+                        console.log('Add notification token success')
+                    },
+                    (e) => {
+                        console.log(e)
+                    }
+                )
+            }
+
+            props.onSuccess(userType)
+        } else {
+            Alert.alert(I18NLoginRoleWarning)
         }
-
-        props.onSuccess(userType)
     }, [])
 
     const onLogin = useCallback(() => {
@@ -176,7 +180,6 @@ export const Login = (props: LoginScreenProp) => {
                 onPress={() => props.changeMode(AuthenticationMode.SINGUP)} >
 
                 <I18NText text='Sign Up' style={{ color: 'white' }} />
-
             </Pressable>
         </View>
     )

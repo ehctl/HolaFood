@@ -64,21 +64,16 @@ export const AddToCartScreen = React.memo((props: AddToCartType) => {
 
     const getTobeUpdatedOrder = useCallback(() => {
         const index = appStateProps.cartItems.findIndex((item) => {
-            if (item.productDetail.id == itemData.id) {
-                if (note == item.note) {
-                    if (option.length == item.option.length) {
-                        if (option.length == 0)
-                            return true
+            if (item.productDetail.id == itemData.id && note == item.note && option.length == item.option.length) {
+                if (option.length == 0)
+                    return true
 
-                        for (let i = 0; i < option.length; i++) {
-                            if (option[i] == item.option[i].id) {
-                                if (note == item.note) {
-                                    return true
-                                }
-                            }
-                        }
-                    }
+                for (let i = 0; i < option.length; i++) {
+                    if (option[i] != item.option[i].id)
+                        return false
                 }
+
+                return true
             }
 
             return false
@@ -111,30 +106,31 @@ export const AddToCartScreen = React.memo((props: AddToCartType) => {
     const onAddToCart = useCallback(() => {
         setAddingToCart(true)
         var tobeUpdatedOrder = getTobeUpdatedOrder()
-
+        console.log(tobeUpdatedOrder)
         const cartItem = genCartItem()
 
         if (tobeUpdatedOrder != null) {
             tobeUpdatedOrder = { ...tobeUpdatedOrder }
             const oldPrice = tobeUpdatedOrder.price / tobeUpdatedOrder.quantity
-            tobeUpdatedOrder.quantity = props.route.params?.isUpdateMode ? quantity : (tobeUpdatedOrder.quantity + quantity)
+            tobeUpdatedOrder.quantity = tobeUpdatedOrder.quantity + quantity
             tobeUpdatedOrder.price = oldPrice * tobeUpdatedOrder.quantity
 
-            // if (props.route.params?.isUpdateMode) {
-            //     deleteCart(
-            //         props.route.params?.cartItemDetail?.id,
-            //         (response) => {
-            //             dispatch(deleteCartItems([props.route.params?.cartItemDetail?.id]))
-            //             setAddingToCart(false)
-            //             navigation.goBack()
-            //         },
-            //         (e) => {
-            //             console.log(e)
-            //             showToast(Constant.API_ERROR_OCCURRED)
-            //             setAddingToCart(false)
-            //         }
-            //     )
-            // } else {
+            if (props.route.params?.isUpdateMode) {
+                deleteCart(
+                    props.route.params?.cartItemDetail?.id,
+                    (response) => {
+                        dispatch(deleteCartItems([props.route.params?.cartItemDetail?.id]))
+                        setAddingToCart(false)
+                    },
+                    (e) => {
+                        console.log(e)
+                        console.log(e)
+                        showToast(Constant.API_ERROR_OCCURRED)
+                        setAddingToCart(false)
+                    }
+                )
+            } 
+
             updateCart(
                 tobeUpdatedOrder,
                 (response) => {
@@ -148,7 +144,6 @@ export const AddToCartScreen = React.memo((props: AddToCartType) => {
                     setAddingToCart(false)
                 }
             )
-            // }
         } else {
             if (props.route.params?.isUpdateMode) {
                 updateCart(

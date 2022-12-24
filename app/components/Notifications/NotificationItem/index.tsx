@@ -54,7 +54,7 @@ export const OrderStatusNotificationItem = React.memo((props: NotificationItemDa
                 showToast(Constant.API_ERROR_OCCURRED)
             }
         )
-    }, [props.data?.orderId])
+    }, [props.data?.orderId, props.data?.status])
 
     useEffect(() => {
         if (isCollapse)

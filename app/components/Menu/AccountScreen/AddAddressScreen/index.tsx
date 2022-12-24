@@ -66,12 +66,14 @@ export const AddAddressScreen = React.memo(() => {
     const onAddNewAddress = useCallback((address: SearchAddressType) => {
         setLoading(true)
         addNewAddress(
+            address.name, 
             address.formatted_address,
             (response) => {
                 const list = [...appStateProps.addressList]
                 list.push({
                     id: response?.address?.id,
-                    address: address.formatted_address
+                    address: address.name,
+                    formatted_address: address.formatted_address
                 })
                 dispatch(setUserAddressList(list))
                 showToast('Add Address Successfully')
@@ -87,7 +89,7 @@ export const AddAddressScreen = React.memo(() => {
     const onSelectAddressItem = useCallback((placeId: string) => {
         const address = searchData.filter((i) => i.place_id == placeId)[0]
 
-        if (appStateProps.addressList.filter((i) => i.address == address.formatted_address).length > 0) {
+        if (appStateProps.addressList.filter((i) => i.formatted_address == address.formatted_address).length > 0) {
             Alert.alert(I18NAlreadyAddedAddress)
         } else if (appStateProps.addressList.length >= MAX_SAVED_ADDRESS) {
             Alert.alert(I18NMaxAddressWarning)
@@ -131,7 +133,7 @@ export const AddAddressScreen = React.memo(() => {
                     <TextInput
                         style={{ fontSize: 18, flexGrow: 1, flexShrink: 1 }}
                         placeholder='Tỉnh, Thành Phố - Địa Chỉ'
-                        placeholderTextColor='black'
+                        placeholderTextColor='#292828'
                         value={searchText}
                         onChangeText={setSearchText}
                         numberOfLines={1}

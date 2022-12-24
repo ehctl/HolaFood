@@ -23,6 +23,7 @@ import { getDistance } from "../../../core/apis/Requests"
 import { addOrdersWithCartId, addOrdersWithCardData } from "../../../core/apis/Requests"
 import { Constant } from "../../../utils/Constant"
 import { useToast } from "../../../base/Toast"
+import { Entypo } from "@expo/vector-icons"
 
 
 export const AddToOrderScreen = React.memo((props: AddToOrderType) => {
@@ -33,7 +34,7 @@ export const AddToOrderScreen = React.memo((props: AddToOrderType) => {
         addressList: state.userAddressList,
     }))
 
-    const [address, setAddress] = useState(appStateProps.addressList.length > 0 ? appStateProps.addressList[0].address : '')
+    const [address, setAddress] = useState(appStateProps.addressList.length > 0 ? appStateProps.addressList[0].formatted_address : '')
     const [listOrder, setListOrder] = useState<OrderData[]>([])
     const [addingOrder, setAddingOrder] = useState(false)
     const [distanceList, setDistanceList] = useState<number[]>(Array(100).fill(0))
@@ -85,11 +86,10 @@ export const AddToOrderScreen = React.memo((props: AddToOrderType) => {
         const hashMap = {}
 
         cartItemList.forEach((v, _) => {
-            if (hashMap[v.productDetail.shopID]) {
+            if (hashMap[v.productDetail.shopID])
                 hashMap[v.productDetail.shopID].push(v)
-            } else {
+            else
                 hashMap[v.productDetail.shopID] = [v]
-            }
         })
 
         return Object.values(hashMap)
@@ -108,7 +108,7 @@ export const AddToOrderScreen = React.memo((props: AddToOrderType) => {
                 status: OrderStatus.SUBMITTED,
                 price: price,
                 createdDate: formatCreatedDateType(time),
-                address: address,
+                address: appStateProps.addressList.filter((i) => i.formatted_address == address)?.[0]?.address ?? '',
                 shipFee: listShipPrice[index],
                 shipFeeWithShopPolicy: listShipPriceWithShopPolicy[index],
                 phone: appStateProps.userInfo.phone,
@@ -188,7 +188,7 @@ export const AddToOrderScreen = React.memo((props: AddToOrderType) => {
                                     <TransparentView
                                         key={'address_' + index}
                                         style={{ flexDirection: 'row', marginVertical: 5, borderRadius: 10, borderWidth: 1, borderColor: '#2a5496' }}>
-                                        <RadioButton value={item.address} style={{ width: '100%', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', padding: 10 }}>
+                                        <RadioButton value={item.formatted_address} style={{ width: '100%', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', padding: 10 }}>
                                             <RadioButtonIcon size={4} />
                                             <Text text={item.address} style={{ marginHorizontal: 10, textAlign: 'left' }} />
                                         </RadioButton>
@@ -231,8 +231,9 @@ export const AddToOrderScreen = React.memo((props: AddToOrderType) => {
                         <TransparentView style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                             <TransparentView>
                                 <TransparentView style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                    <Entypo name='shop' size={20} color='#3179cc' />
                                     <Text
-                                        style={{ textAlign: 'left', fontSize: 22, fontWeight: '500' }}
+                                        style={{ textAlign: 'left', fontSize: 22, fontWeight: '500', marginLeft: 10 }}
                                         text={item.items[0].productDetail.shopName.trim()} />
                                 </TransparentView>
 

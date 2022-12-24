@@ -145,9 +145,9 @@ export const FAQScreen = React.memo(() => {
                 <TransparentView style={{ flexDirection: 'row', marginTop: 15 }}>
                     <TextInput
                         placeholder={I18NYourFAQS}
-                        placeholderTextColor='black'
+                        placeholderTextColor='#292828'
                         multiline={true}
-                        style={{ fontSize: 18, paddingHorizontal: 10, paddingVertical: 20, paddingTop: 15, backgroundColor: '#cdd1d1', width: '100%', borderRadius: 10 }}
+                        style={{ fontSize: 18, paddingHorizontal: 10, paddingTop: 15, paddingBottom: 15, backgroundColor: '#cdd1d1', width: '100%', borderRadius: 10 }}
                         value={FAQContent}
                         onChangeText={(v) => { setFAQContent(v) }} />
                 </TransparentView>

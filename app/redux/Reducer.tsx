@@ -47,7 +47,8 @@ export type UserInfo = {
 
 export type UserAddress = {
     id: number,
-    address: string
+    address: string,
+    formatted_address: string
 }
 
 const initalStates: AppState = {

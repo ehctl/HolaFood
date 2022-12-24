@@ -163,6 +163,7 @@ export const vi: any = {
     "Orderr": 'Thứ tự',
     "Ascending": 'Tăng dần',
     "Descending": 'Giảm dần',
+    "You Can Only Login As Customer Or Shipper!": 'Bạn chỉ đăng nhập được với vai trò là người giao hàng hoặc khách hàng!',
     "Your FAQS": 'Câu hỏi của bạn',
     "Send FAQs": 'Gửi câu hỏi',
     "Your Rate (Optional)": 'Đánh giá của bạn (Không bắt buộc)',

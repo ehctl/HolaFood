@@ -17,12 +17,14 @@ import { Constant } from "../../../utils/Constant";
 import { useToast } from "../../../base/Toast";
 import { Entypo } from "@expo/vector-icons";
 import { getOrderStatusIcon, getOrderStatusMsg, OrderStatus } from "../OrderUtils";
+import { add } from "react-native-reanimated";
 
 export const OrderItem = React.memo((props: OrderItemType) => {
     const navigation = useNavigation()
     const dispatch = useDispatch()
     const appStateProps = useSelector((state: AppState) => ({
-        userType: state.userType
+        userType: state.userType,
+        addressList: state.userAddressList
     }))
 
     const [finishingOrder, setFinishingOrder] = useState(false)
@@ -53,7 +55,7 @@ export const OrderItem = React.memo((props: OrderItemType) => {
         navigation.navigate('OrderDetail' as never, { orderId: data.id } as never)
     }, [])
 
-    const openMap = useCallback((address: string) => {
+    const openMap = useCallback((address: string, startAddress?: string) => {
         Alert.alert(
             I18NAddress,
             I18NAddressConfirm,
@@ -65,7 +67,7 @@ export const OrderItem = React.memo((props: OrderItemType) => {
                 },
                 {
                     text: I18NView, onPress: async () => {
-                        await openMapUtil(address)
+                        await openMapUtil(address, startAddress)
                     }
                 }
             ]
@@ -238,7 +240,7 @@ export const OrderItem = React.memo((props: OrderItemType) => {
                     <TransparentView style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
                         <Entypo name='shop' size={20} color='#3179cc' />
                         <Text
-                            style={{ marginLeft: 5, textAlign: 'left', fontSize: 22, fontWeight: '500' }}
+                            style={{ marginLeft: 5, textAlign: 'left', fontSize: 22, fontWeight: '500', flexShrink: 1 }}
                             text={props.item.items[0].productDetail.shopName} />
 
                     </TransparentView>
@@ -271,7 +273,10 @@ export const OrderItem = React.memo((props: OrderItemType) => {
                                             style={{ textAlign: 'left', fontSize: 16, flexShrink: 1, fontWeight: '500' }} />
                                     </Pressable>
                                     <Pressable
-                                        onPress={() => openMap(props.item.address)}
+                                        onPress={() => openMap(
+                                            appStateProps.addressList.filter((i) => i.address == props.item.address)?.[0]?.formatted_address ?? props.item.address,
+                                            props.item.items[0].productDetail.shopAddress
+                                        )}
                                         style={{ flexDirection: 'row', flexShrink: 1, marginTop: 5 }}>
                                         <Text text={I18NShipTo + ': ' + props.item.address}
                                             style={{ textAlign: 'left', fontSize: 16, flexShrink: 1, fontWeight: '500' }} />
@@ -398,7 +403,7 @@ export const OrderItem = React.memo((props: OrderItemType) => {
                         }}
                         onPress={() => confirm(props.item.id, OrderStatus.CANCELED)}>
                         <FontAwesome2 name="close" size={20} color='red' />
-                        <I18NText text="Cancel Order" style={{ color: 'red', fontSize: 18, marginLeft: 20 }} />
+                        <I18NText text="Cancel Order" style={{ color: 'red', fontSize: 18, marginLeft: 20, flexShrink: 1 }} />
 
                         <ActivityIndicator
                             animating={cancelingOrder}

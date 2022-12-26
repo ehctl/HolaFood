@@ -8,7 +8,7 @@ import { useSelector } from "react-redux"
 import { AppState, clearUserInfo, setUserInfo } from "../../../../redux/Reducer"
 import { useLanguage } from "../../../../base/Themed"
 import React from "react"
-import { isValidName, isValidNormalText, isValidPassword, isValidPhoneNumber } from "../../../../validation/validate"
+import { isValidFirstName, isValidName, isValidNormalText, isValidPassword, isValidPhoneNumber } from "../../../../validation/validate"
 import { changePassword, updateUserInfo } from "../../../../core/apis/Requests"
 import { deleteInfoBeforeLogout, formatAccountRole, saveUserInfoLocalStorage } from "../../../../utils/Utils"
 import { useNavigation } from '@react-navigation/native';
@@ -246,7 +246,7 @@ export const UpdateUsername = (props: { name: string, updateFirstName: boolean, 
     const [errorMsg, setErrorMsg] = useState('')
 
     const onSubmit = useCallback(() => {
-        const nameValidate = isValidName(userName)
+        const nameValidate = props.updateFirstName ? isValidFirstName(userName) : isValidName(userName)
         if (userName == props.name) {
             setErrorMsg('Value was not changed')
         } else if (!nameValidate.qualify) {
@@ -308,7 +308,7 @@ export const UpdatePhone = (props: { phoneNumber: string, callback: (value: stri
                 <TextInput
                     value={phoneNumber}
                     onChangeText={(v) => setPhoneNumber(v)}
-                    keyboardType='decimal-pad'
+                    keyboardType='numbers-and-punctuation'
                     style={{ textAlign: 'left', fontSize: 18, fontWeight: '500', marginTop: 10, padding: 10, backgroundColor: '#cacecf', borderRadius: 10 }} />
                 <I18NText text={errorMsg} style={{ color: 'red', textAlign: 'left', marginTop: 5 }} />
             </TransparentView>

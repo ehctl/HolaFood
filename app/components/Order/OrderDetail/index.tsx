@@ -46,7 +46,7 @@ export const OrderDetail = (props: OrderDetailProps) => {
     const cancelOrderPopupRef = useRef(null)
 
     const navigateToShopDetail = (id: number) => {
-        navigation.navigate('ShopDetail' as never, { shopId: id } as never)
+        appStateProps.userType == 'customer' ? navigation.navigate('ShopDetail' as never, { shopId: id } as never) : null
     }
 
     const navigateToFoodDetail = (id: number) => {
@@ -351,11 +351,21 @@ export const OrderDetail = (props: OrderDetailProps) => {
                                 <Text text={data.items[0].productDetail.shopName} style={{ marginLeft: 10, textAlign: 'left', fontSize: 20, marginHorizontal: 10 }} />
                             </Pressable>
 
-                            <TransparentView style={{ flexDirection: 'row', marginTop: 10 }}>
-                                <I18NText text="Price" style={{ textAlign: 'left', fontSize: 20, marginLeft: 10 }} />
-                                <Text text=" : " style={{ textAlign: 'left', fontSize: 20 }} />
-                                <Text text={`${formatMoney(data.price + data.shipFee)} đ`} style={{ textAlign: 'left', fontSize: 20, color: 'red', fontWeight: '500' }} />
-                            </TransparentView>
+                            {
+                                appStateProps.userType == 'shipper' ?
+                                    <TransparentView style={{ flexDirection: 'row', marginTop: 15 }}>
+                                        <I18NText text={"Shipping Cost Receive"} style={{ textAlign: 'left', fontSize: 18, marginLeft: 10 }} />
+                                        <Text text=" : " style={{ textAlign: 'left', fontSize: 18 }} />
+                                        <Text text={`${formatMoney(data.shipFee)} đ`} style={{ textAlign: 'left', fontSize: 18, color: 'red', fontWeight: '500' }} />
+                                    </TransparentView>
+                                    :
+                                    <TransparentView style={{ flexDirection: 'row', marginTop: 10 }}>
+                                        <I18NText text="Price" style={{ textAlign: 'left', fontSize: 20, marginLeft: 10 }} />
+                                        <Text text=" : " style={{ textAlign: 'left', fontSize: 20 }} />
+                                        <Text text={`${formatMoney(data.price + data.shipFeeWithShopPolicy)} đ`} style={{ textAlign: 'left', fontSize: 20, color: 'red', fontWeight: '500' }} />
+                                    </TransparentView>
+                            }
+
 
                             <Pressable
                                 onPress={() => openMap(data.items[0].productDetail.shopAddress)}
@@ -372,10 +382,21 @@ export const OrderDetail = (props: OrderDetailProps) => {
                                 <Text text={I18NShipTo + ': ' + data.address} style={{ textAlign: 'left', fontSize: 16, flexShrink: 1, fontWeight: '500' }} />
                             </Pressable>
 
+                            {
+                                appStateProps.userType == 'shipper' ?
+                                    <TransparentView style={{ flexDirection: 'row', marginTop: 10 }}>
+                                        <I18NText text="Price" style={{ textAlign: 'left', fontSize: 20, marginLeft: 10 }} />
+                                        <Text text=" : " style={{ textAlign: 'left', fontSize: 20 }} />
+                                        <Text text={`${formatMoney(data.price + data.shipFeeWithShopPolicy)} đ`} style={{ textAlign: 'left', fontSize: 20, color: 'red', fontWeight: '500' }} />
+                                    </TransparentView>
+                                    :
+                                    null
+                            }
+
                             <TransparentView style={{ flexDirection: 'row', marginTop: 15 }}>
-                                <I18NText text="Ship Fee" style={{ textAlign: 'left', fontSize: 18, marginLeft: 10 }} />
+                                <I18NText text={"Ship Fee"} style={{ textAlign: 'left', fontSize: 18, marginLeft: 10 }} />
                                 <Text text=" : " style={{ textAlign: 'left', fontSize: 18 }} />
-                                <Text text={`${formatMoney(data.shipFee)} đ`} style={{ textAlign: 'left', fontSize: 18, color: 'red', fontWeight: '500' }} />
+                                <Text text={`${formatMoney(data.shipFeeWithShopPolicy)} đ`} style={{ textAlign: 'left', fontSize: 18, color: 'red', fontWeight: '500' }} />
                             </TransparentView>
 
                             <Pressable
@@ -392,7 +413,7 @@ export const OrderDetail = (props: OrderDetailProps) => {
                             {
                                 data.items.map((item, index) => (
                                     <TransparentView key={'order_item_' + index}>
-                                        <CartInnerItem item={item} hideShopName={true} />
+                                        <CartInnerItem item={item} hideShopName={true} canNavigate={appStateProps.userType == 'customer'} />
                                         <View style={{ backgroundColor: 'grey', height: 2, marginVertical: 15, marginHorizontal: 10 }} />
                                     </TransparentView>
                                 ))

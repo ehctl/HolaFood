@@ -38,9 +38,9 @@ export const MenuScreen = React.memo(({ navigation }: any) => {
                     header: <Level1Header
                         text="Menu"
                         textColor="#e8be41"
-                        leftIcons={['search']}
-                        leftIconsColor={['#4666a6']}
-                        leftIconsTarget={['Search']} />,
+                        leftIcons={appStateProps.userType == 'customer' ? ['search'] : []}
+                        leftIconsColor={appStateProps.userType == 'customer' ? ['#4666a6'] : []}
+                        leftIconsTarget={appStateProps.userType == 'customer' ? ['Search'] : []} />,
                     headerHeight: Level1HeaderStats.HEADER_MAX_HEIGHT
                 }}
                 useScrollView={true}

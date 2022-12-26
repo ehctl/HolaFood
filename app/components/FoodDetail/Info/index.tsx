@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import { Animated, Image, Modal, Pressable } from "react-native"
 import { TransparentView, View } from "../../../base/View"
-import { Text } from "../../../base/Text"
+import { I18NText, Text } from "../../../base/Text"
 import React from "react"
 import { FoodDetailData } from "../FoodDetailScreen"
 import { FontAwesome } from "../../../base/FontAwesome"
@@ -32,8 +32,8 @@ export const Info = React.memo((props: InfoType) => {
             props.data.id,
             (response) => {
                 setIsFavorite(value)
-                const newData = {...props.data}
-                newData.isFavorite = value  
+                const newData = { ...props.data }
+                newData.isFavorite = value
                 props.onDataChange(newData)
             },
             (e) => {
@@ -54,12 +54,24 @@ export const Info = React.memo((props: InfoType) => {
     const FontawesomeAnim = Animated.createAnimatedComponent(DefaultFA)
 
     return (
-        <View style={{ marginTop: 20, padding: 5, borderColor: 'green', borderWidth: 2, borderRadius: 10 }}>
+        <View style={{ marginTop: 20, padding: 5, borderColor: props.data.statusSell != 'Đang bán' ? 'red' : 'green', borderWidth: 2, borderRadius: 10 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                 <View style={{ flexDirection: 'column', flexShrink: 1 }}>
+                    {
+                        props.data.statusSell != 'Đang bán' ?
+                            <View
+                                style={{ borderRadius: 15, alignSelf: 'center', marginBottom: 10 , paddingHorizontal: 15, paddingVertical: 5, backgroundColor: '#ed3734'}}>
+                                <I18NText
+                                    text="Not selling at the moment" 
+                                    style={{fontSize: 16, color: 'white'}}/>
+                            </View>
+                            : null
+                    }
+
                     <Text
                         style={{ textAlign: 'left', fontSize: 18, fontWeight: '700' }}
                         text={props.data.productName} />
+
                     <Text
                         style={{ marginTop: 5, textAlign: 'left', fontSize: 14, fontWeight: '400' }}
                         text={props.data.description} />

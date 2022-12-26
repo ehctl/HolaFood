@@ -109,11 +109,11 @@ export const CartInnerItem = (props: CartItemType) => {
     const I18NOption = useLanguage('Option')
 
     const navigateToFoodDetail = useCallback((itemId: number) => {
-        navigation.navigate('FoodDetail' as never, { itemId: itemId } as never)
+        !props.canNavigate ? null : navigation.navigate('FoodDetail' as never, { itemId: itemId } as never)
     }, [])
 
     const navigateToShopDetail = (id: number) => {
-        navigation.navigate('ShopDetail' as never, { shopId: id } as never)
+        !props.canNavigate ? null : navigation.navigate('ShopDetail' as never, { shopId: id } as never)
     }
 
     return (
@@ -174,5 +174,6 @@ export const CartInnerItem = (props: CartItemType) => {
 
 export type CartItemType = {
     item: CartItemData,
-    hideShopName?: boolean
+    hideShopName?: boolean,
+    canNavigate?: boolean
 }

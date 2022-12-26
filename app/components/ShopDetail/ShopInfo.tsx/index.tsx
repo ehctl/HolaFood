@@ -5,18 +5,43 @@ import { Text } from "../../../base/Text"
 import { Image } from "../../../base/Image"
 import React, { useCallback, useEffect, useState } from "react"
 import { ShopInfoShimmer } from "../ShopDetailShimmer.tsx"
-import { wait } from "../../../utils/Utils"
+import { openMapUtil, wait } from "../../../utils/Utils"
 import { getShopInfo } from "../../../core/apis/Requests"
 import { FontAwesome } from "../../../base/FontAwesome"
-import { Pressable } from 'react-native'
+import { Alert, Pressable } from 'react-native'
 import { Linking } from "react-native"
 import { Constant } from "../../../utils/Constant"
 import { useToast } from "../../../base/Toast"
+import { useLanguage } from "../../../base/Themed"
 
 export const ShopInfo = React.memo((props: ShopInfoProps) => {
     const [shopData, setShopData] = useState<ShopData>(null)
 
+    const I18NAddress = useLanguage('Address')
+    const I18NView = useLanguage('View')
+    const I18NAddressConfirm = useLanguage('Do you want to view this address in maps application?')
+    const I18NCancel = useLanguage('Cancel')
+
     const showToast = useToast()
+
+    const openMap = useCallback((address: string) => {
+        Alert.alert(
+            I18NAddress,
+            I18NAddressConfirm,
+            [
+                {
+                    text: I18NCancel,
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
+                },
+                {
+                    text: I18NView, onPress: async () => {
+                        await openMapUtil(address)
+                    }
+                }
+            ]
+        )
+    }, [])
 
     const fetchData = useCallback(async () => {
         getShopInfo(
@@ -46,7 +71,12 @@ export const ShopInfo = React.memo((props: ShopInfoProps) => {
                         style={{ width: 150, height: 150, borderRadius: 15 }}
                     />
                     <TransparentView style={{ marginHorizontal: 10, flexGrow: 1, flexShrink: 1 }}>
-                        <Text text={shopData.shopAddress} style={{ fontSize: 14, fontWeight: '500', textAlign: 'left' }} />
+                        <Pressable
+                            style={{ flexDirection: 'row' }}
+                            onPress={() => openMap(shopData.shopAddress)}>
+                            <FontAwesome name="location-arrow" size={22} color='#0c53c4' />
+                            <Text text={shopData.shopAddress} style={{ fontSize: 14, fontWeight: '500', textAlign: 'left', marginLeft: 10 }} />
+                        </Pressable>
 
                         <Pressable
                             style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginTop: 10 }}

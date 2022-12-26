@@ -4,7 +4,7 @@ import { FoodListType } from "../../components/FoodList/FoodListType";
 import { CartItemData } from "../../components/Order/Cart";
 import { OrderData } from "../../components/Order/OrderItem";
 import { Constant } from "../../utils/Constant";
-import { DOMAIN, GOOGLE_DISTANCE_API_KEY, GOOGLE_DISTANCE_API_URL, GOOGLE_MAP_API_KEY, GOOGLE_MAP_SUGGEST_ADDRESS_API_URL, ORI_DOMAIN } from "./Constant";
+import { DOMAIN, GOOGLE_DISTANCE_API_URL, GOOGLE_MAP_API_KEY, GOOGLE_MAP_SUGGEST_ADDRESS_API_URL, ORI_DOMAIN } from "./Constant";
 
 export const getSearchResult = (
     text: string,
@@ -231,7 +231,6 @@ export const getFoodListByType = (
             id: 0,
             index: page
         },
-        // url: 'https://mocki.io/v1/c08ac5c9-78b3-4bc6-9afe-dd8e4dc4a3ca',
         url: DOMAIN + '/product/getproductby',
         signal: abortController?.signal
     }
@@ -771,6 +770,7 @@ export const getOrders = (
 
     return addHeaderToken(option).
         then((newOption) => {
+            console.log(newOption)
             axios(newOption).then((response) => {
                 if (response.status === 200 && response.data.success) {
                     success(response.data);
@@ -1395,7 +1395,7 @@ export const login = (
     }
 
     axios(option)
-        .then((response) => {
+    .then((response) => {
             if (response.status === 200 && response.data.success) {
                 success(response.data);
             } else {

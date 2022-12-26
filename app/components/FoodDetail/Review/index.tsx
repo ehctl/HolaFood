@@ -87,10 +87,15 @@ export const Review = React.memo((props: ReviewType) => {
         } else {
             setUpdating(true)
             updateFoodReview(
-                props.data.id,
+                selectedReviewId,
                 updateReview,
                 updateStarVote,
                 (response) => {
+                    const newAvrStar = (props.data.star * props.data.numberOfReview - chosenReview.star + updateStarVote) / (props.data.numberOfReview )
+                    const newData = { ...props.data }
+                    newData.star = newAvrStar
+                    props.onDataChange(newData)
+
                     chosenReview.review = updateReview
                     chosenReview.star = updateStarVote
                     setReviewList([...reviewList])
@@ -104,7 +109,7 @@ export const Review = React.memo((props: ReviewType) => {
                 }
             )
         }
-    }, [updateReview, updateStarVote, reviewList, selectedReviewId])
+    }, [updateReview, updateStarVote, reviewList, selectedReviewId, props.data])
 
     useEffect(() => {
         if (selectedReviewId) {
@@ -114,12 +119,18 @@ export const Review = React.memo((props: ReviewType) => {
         }
     }, [selectedReviewId])
 
-    const onDeleteReview = useCallback((reviewId: number) => {
+    const onDeleteReview = useCallback((reviewId: number, star: number) => {
         setDeletingReview(true)
 
         deleteFoodReview(
             reviewId,
             (response) => {
+                const newAvrStar = (props.data.star * props.data.numberOfReview - star) / (props.data.numberOfReview - 1)
+                const newData = { ...props.data }
+                newData.star = newAvrStar
+                newData.numberOfReview -= 1
+
+                props.onDataChange(newData)
                 setReviewList(reviewList.filter((i) => i.id != reviewId))
                 setDeletingReview(false)
             },
@@ -129,7 +140,7 @@ export const Review = React.memo((props: ReviewType) => {
                 setDeletingReview(false)
             }
         )
-    }, [showToast, reviewList])
+    }, [showToast, reviewList, props.data])
 
     const onAddReview = useCallback(() => {
         setUpdating(true)
@@ -156,6 +167,7 @@ export const Review = React.memo((props: ReviewType) => {
                 const newData = { ...props.data }
                 newData.star = newAvrStar
                 newData.numberOfReview += 1
+
                 props.onDataChange(newData)
                 popupRateRef.current.changeVisibility(false)
             },
@@ -165,11 +177,11 @@ export const Review = React.memo((props: ReviewType) => {
                 setUpdating(false)
             }
         )
-    }, [starVoted, review])
+    }, [starVoted, review, props.data])
 
     const renderItem = ({ item }: any) => {
         return (
-            <ReviewItem data={item} updatePopupModalRef={updatePopupModal} setSelectedReviewId={setSelectedReviewId} onDeleteReviewCalblack={onDeleteReview} />
+            <ReviewItem data={item} updatePopupModalRef={updatePopupModal} setSelectedReviewId={setSelectedReviewId} onDeleteReviewCalblack={() => onDeleteReview(item.id, item.star)} />
         )
     }
 

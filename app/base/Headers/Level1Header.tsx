@@ -8,6 +8,7 @@ import { I18NText, Text } from "../Text";
 import { useSelector } from "react-redux";
 import { AppState } from "../../redux/Reducer";
 import { isIosDevice } from "../../utils/Utils";
+import { FoodListType } from "../../components/FoodList/FoodListType";
 
 
 export const Level1Header = React.memo((props: HomeHeaderProp) => {
@@ -30,7 +31,12 @@ export const Level1Header = React.memo((props: HomeHeaderProp) => {
                             key={index}
                             style={style.iconContainer}
                             onPress={() => {
-                                navigation.navigate(props.leftIconsTarget[index] as never)
+                                const destScreen = props.leftIconsTarget[index]
+
+                                if (destScreen == 'FoodList') 
+                                    navigation.navigate('FoodList' as never, { type: FoodListType.FAVORITE_FOOD } as never)
+                                else
+                                    navigation.navigate(props.leftIconsTarget[index] as never)
                             }} >
                             <TransparentView style={{ position: 'relative', margin: 10, }}>
                                 {
@@ -38,7 +44,7 @@ export const Level1Header = React.memo((props: HomeHeaderProp) => {
                                         <View
                                             style={{
                                                 position: 'absolute', right: -13, top: -13, backgroundColor: '#029699',
-                                                borderRadius: 20, padding: 3, zIndex: 1, aspectRatio: 1, height: 20, alignItems: 'center', justifyContent: 'center'
+                                                borderRadius: 20, padding: 3, zIndex: 1, width: 20, height: 20, alignItems: 'center', justifyContent: 'center'
                                             }}>
                                             <Text text={(appStateProps.cartItems.length).toString()} style={{ fontWeight: '600', fontSize: isIosDevice() ? 10 : 8, color: 'white' }} />
                                             {/* <Text text={(appStateProps.cartItems.length + appStateProps.orders.length).toString()} style={{ fontWeight: '600', fontSize: isIosDevice() ? 10 : 8, color: 'white' }} /> */}

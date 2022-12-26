@@ -85,23 +85,22 @@ export const NotificationsScreen = React.memo(({ navigation }: any) => {
         }
     }, [appStateProps.selectedBottomTabIndex, appStateProps.newNotifications])
 
-    const appStateListener = useRef(null);
+    // const appStateListener = useRef(null);
 
-    useEffect(() => {
-        appStateListener.current = ApplicationState.addEventListener("change", nextAppState => {
-            if (nextAppState == 'active' && appStateProps.selectedBottomTabIndex == 2 && !loading) {
-                checkNewNotification()
-                setReachEndList(false)
-                setPageIndex(0)
-                fetchData(0)
-            }
-        });
+    // useEffect(() => {
+    //     appStateListener.current = ApplicationState.addEventListener("change", nextAppState => {
+    //         if (nextAppState == 'active' && appStateProps.selectedBottomTabIndex == 2 && !loading) {
+    //             checkNewNotification()
+    //             setReachEndList(false)
+    //             setPageIndex(0)
+    //             fetchData(0)
+    //         }
+    //     });
 
-        return () => {
-            appStateListener.current.remove()
-        }
-    }, [loading])
-
+    //     return () => {
+    //         appStateListener.current.remove()
+    //     }
+    // }, [loading])
 
     useEffect(() => {
         checkNewNotification()

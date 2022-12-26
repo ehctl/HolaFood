@@ -2,7 +2,7 @@ import React, { useCallback, useState } from "react";
 import { TransparentView, View } from "../../../base/View";
 import { CartItemData } from "../Cart";
 import { I18NText, Text } from "../../../base/Text";
-import { ActivityIndicator, Alert, Pressable } from "react-native";
+import { ActivityIndicator, Alert, Linking, Pressable } from "react-native";
 import { FontAwesome, FontAwesome1, FontAwesome2 } from "../../../base/FontAwesome";
 import { useNavigation } from '@react-navigation/native';
 import { formatDateTimeFromData, formatMoney, openMapUtil } from "../../../utils/Utils";
@@ -257,7 +257,7 @@ export const OrderItem = React.memo((props: OrderItemType) => {
 
                     <TransparentView style={{ marginTop: 5, flexDirection: 'row', alignItems: 'center' }}>
                         <Text
-                            text={`${formatMoney(appStateProps.userType == 'shipper' ? props.item.price : props.item.price + props.item.shipFee)} đ`}
+                            text={`${formatMoney(props.item.price + props.item.shipFee)} đ`}
                             style={{ textAlign: 'left', color: 'red', fontSize: 18, fontWeight: '500' }} />
                     </TransparentView>
 
@@ -287,10 +287,13 @@ export const OrderItem = React.memo((props: OrderItemType) => {
                                         <Text text=': ' style={{ fontSize: 18 }} />
                                         <Text text={formatMoney(props.item.shipFee) + ' đ'} style={{ textAlign: 'left', color: 'red', fontSize: 18, flexShrink: 1, fontWeight: '500' }} />
                                     </TransparentView>
-                                    <TransparentView style={{ flexDirection: 'row', flexShrink: 1, marginTop: 5 }}>
+                                    <Pressable
+                                        onPress={() => Linking.openURL(`tel:+${props.item.phone}`)}
+                                        style={{ flexDirection: 'row', flexShrink: 1, marginTop: 5 }}>
+                                            
                                         <I18NText text='Phone Number' style={{ textAlign: 'left', fontSize: 18, flexShrink: 1 }} />
                                         <Text text={': ' + props.item.phone} style={{ textAlign: 'left', fontSize: 18, flexShrink: 1, fontWeight: '500' }} />
-                                    </TransparentView>
+                                    </Pressable>
                                 </TransparentView>
                             </TransparentView>
                             : null

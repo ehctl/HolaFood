@@ -13,6 +13,14 @@ export const isValidName = (text: string) => {
     getFailValidation('Name is incorrect format')
 }
 
+export const isValidFirstName = (text: string) => {
+  return text.
+    match(/^[a-zA-Z_ÀÁÂÃÈÉÊẾÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêếìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\ ]+$/) && text.length < 25 ?
+    getSuccessValidation()
+    :
+    getFailValidation('First Name is incorrect format')
+}
+
 export const validateLoginInfo = (email: string, password: string): ValidateResultType => {
   if (email.length == 0) {
     return getFailValidation('Please fill in email')
@@ -28,7 +36,7 @@ export const validateLoginInfo = (email: string, password: string): ValidateResu
 export const isValidPhoneNumber = (phoneNumber: string) => {
   return phoneNumber.toLowerCase()
     .match(
-      /(84|0[3|5|7|8|9])+([0-9]{8})\b/
+      /^(((\+|)84)|0)(3|5|7|8|9)+([0-9]{8})\b$/
     ) ?
     getSuccessValidation()
     : getFailValidation('Phone number is incorrect format')

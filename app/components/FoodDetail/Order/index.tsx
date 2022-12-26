@@ -11,16 +11,20 @@ export const Order = React.memo((props: FoodDetailData) => {
     const navigation = useNavigation()
     return (
         <View>
+            {
+                props.statusSell == 'Đang bán' ?
+                    <Pressable
+                        style={{ backgroundColor: '#dea30d', paddingVertical: 15, borderRadius: 10, marginTop: 15 }}
+                        onPress={() => {
+                            navigation.navigate('AddToCart' as never, { foodDetail: props } as never)
+                        }} >
 
-            <Pressable
-                style={{ backgroundColor: '#dea30d', paddingVertical: 15, borderRadius: 10, marginTop: 15 }}
-                onPress={() => {
-                    navigation.navigate('AddToCart' as never, { foodDetail: props } as never)
-                }} >
+                        <I18NText text="Add To Cart" style={{ fontSize: 18, fontWeight: '500' }} />
 
-                <I18NText text="Add To Cart" style={{ fontSize: 18, fontWeight: '500' }} />
+                    </Pressable>
+                    : null
+            }
 
-            </Pressable>
         </View>
     )
 })

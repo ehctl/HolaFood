@@ -16,7 +16,6 @@ export const Rate = React.memo((props: FoodDetailData) => {
     const I18NVote = useLanguage('Vote')
     const I18NOptional = useLanguage('Optional')
 
-
     return (
         <View style={{ flex: 1 }}>
             <View style={{ marginTop: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -29,8 +28,6 @@ export const Rate = React.memo((props: FoodDetailData) => {
                     </View>
                 </View>
             </View>
-
-
         </View >
     )
 })
@@ -57,7 +54,7 @@ export const ReviewStar = React.memo((props: { num: number, size?: number, showN
 })
 
 
-const genStar = (num) => {
+const genStar = (num: number) => {
     const starArr = []
     if (num - Math.floor(num) != 0)
         starArr.push({
@@ -73,12 +70,11 @@ const genStar = (num) => {
         })
     }
 
-    for (let i = 5; i > Math.ceil(num); i--) {
+    while (starArr.length < 5)
         starArr.push({
             name: 'star-o',
             color: 'grey'
         })
-    }
 
     return starArr
 }

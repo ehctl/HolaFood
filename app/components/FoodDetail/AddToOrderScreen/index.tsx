@@ -63,13 +63,21 @@ export const AddToOrderScreen = React.memo((props: AddToOrderType) => {
                         setListShipPriceWithShopPolicy([...listShipPriceWithShopPolicy])
                     },
                     (e) => {
-                        distanceList[index] = 0
-                        listShipPrice[index] = 0
-                        listShipPriceWithShopPolicy[index] = 0
+                        // distanceList[index] = 0
+                        // listShipPrice[index] = 0
+                        // listShipPriceWithShopPolicy[index] = 0
+                        // setDistanceList(distanceList)
+                        // setListShipPrice([...listShipPrice])
+                        // setListShipPriceWithShopPolicy([...listShipPriceWithShopPolicy])
+                        // console.log(e)
+
+                        const distance = 10000
+                        distanceList[index] = distance / 1000
+                        listShipPrice[index] = calculateShipFee(distance, item.items[0].productDetail.cost.filter((i) => i.categoryCost == 2))
+                        listShipPriceWithShopPolicy[index] = calculateShipFee(distance, item.items[0].productDetail.cost.filter((i) => i.categoryCost == 1))
                         setDistanceList(distanceList)
                         setListShipPrice([...listShipPrice])
                         setListShipPriceWithShopPolicy([...listShipPriceWithShopPolicy])
-                        console.log(e)
                     }
                 )
             })

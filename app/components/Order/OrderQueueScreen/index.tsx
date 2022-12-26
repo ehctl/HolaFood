@@ -1,5 +1,5 @@
 import { TransparentView, View } from "../../../base/View"
-import { Pressable, RefreshControl } from 'react-native';
+import { Alert, Pressable, RefreshControl } from 'react-native';
 import { formatCreatedDateType, getStyle, reformatDateTime, wait } from "../../../utils/Utils";
 import { useCallback, useEffect, useRef, useState } from "react";
 import React from "react";
@@ -20,6 +20,7 @@ import { useToast } from "../../../base/Toast";
 import { PopupModal } from "../../../base/PopupModal";
 import { RadioButton, RadioButtonGroup, RadioButtonIcon } from "../../../base/RadioGroup";
 import { FontAwesome, FontAwesome1, FontAwesome2 } from "../../../base/FontAwesome";
+import { useLanguage } from "../../../base/Themed";
 
 
 export const OrderQueueScreen = React.memo((props: OrderViewProp) => {
@@ -42,6 +43,8 @@ export const OrderQueueScreen = React.memo((props: OrderViewProp) => {
     const [reachEndList, setReachEndList] = useState(false)
 
     const showToast = useToast()
+
+    const I18NWarning = useLanguage('Shipper not linked to any shops')
 
     const fetchData = useCallback((pageIndex: number) => {
         setLoading(true)
@@ -69,13 +72,21 @@ export const OrderQueueScreen = React.memo((props: OrderViewProp) => {
                 setLoading(false)
             }
         )
-    }, [orderQueueSortType, orderQueueSortOrder, stateProps.shipperOrderQueue])
+    }, [orderQueueSortType, orderQueueSortOrder, stateProps.shipperOrderQueue, showToast])
 
     useEffect(() => {
-        setReachEndList(false)
-        setPageIndex(0)
-        fetchData(0)
-    }, [orderQueueSortType, orderQueueSortOrder])
+        if (stateProps.userInfo.shopId != -1) {
+            setReachEndList(false)
+            setPageIndex(0)
+            fetchData(0)
+        }
+    }, [orderQueueSortType, orderQueueSortOrder, stateProps.userInfo.shopId])
+
+    useEffect(() => {
+        if (stateProps.userInfo.shopId == -1) {
+            Alert.alert(I18NWarning)
+        }
+    }, [])
 
     const renderItems = ({ item }) => {
         return (
@@ -99,7 +110,7 @@ export const OrderQueueScreen = React.memo((props: OrderViewProp) => {
                     horizontal={true} >
 
                     <Pressable
-                        style={{ flexDirection: 'row', borderRadius: 10, backgroundColor: '#e8be41', paddingHorizontal: 15, paddingVertical: 5 }}
+                        style={{ flexDirection: 'row', alignItems: 'center', borderRadius: 10, backgroundColor: '#e8be41', paddingHorizontal: 15, paddingVertical: 5 }}
                         onPress={() => popupModalQueueSortTypeRef.current.changeVisibility(true)}>
 
                         <I18NText text="Sort" />
@@ -108,7 +119,7 @@ export const OrderQueueScreen = React.memo((props: OrderViewProp) => {
                         <FontAwesome name="angle-down" size={16} style={{ marginLeft: 10 }} />
                     </Pressable>
                     <Pressable
-                        style={{ flexDirection: 'row', borderRadius: 10, marginLeft: 10, backgroundColor: '#e8be41', paddingHorizontal: 15, paddingVertical: 5 }}
+                        style={{ flexDirection: 'row', alignItems: 'center', borderRadius: 10, marginLeft: 10, backgroundColor: '#e8be41', paddingHorizontal: 15, paddingVertical: 5 }}
                         onPress={() => popupModalQueueSortOrderRef.current.changeVisibility(true)}>
 
                         <I18NText text="Orderr" />
@@ -208,7 +219,7 @@ export const OrderQueueScreen = React.memo((props: OrderViewProp) => {
 
 export const mapOrderDataFromResponse = (data: any): OrderData => {
     const items = data.cart.map((i) => mapCartItemFromResponse(i))
-    
+
     return {
         id: data.id,
         address: data.address,

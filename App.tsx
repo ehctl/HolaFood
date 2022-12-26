@@ -68,7 +68,8 @@ const AppRoot = React.memo(() => {
 
         responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
           if (response.notification.request.content.data?.type == "OrderStatusChange")
-            navigationRef.current.navigate('Notification' as never, { needRefresh: true } as never)
+            // navigationRef.current.navigate('Notification' as never, { needRefresh: true } as never)
+            navigationRef.current.navigate('OrderDetail' as never, { orderId: response.notification.request.content.data.orderId } as never)
         });
 
         try {

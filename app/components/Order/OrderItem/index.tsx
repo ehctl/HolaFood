@@ -257,7 +257,7 @@ export const OrderItem = React.memo((props: OrderItemType) => {
 
                     <TransparentView style={{ marginTop: 5, flexDirection: 'row', alignItems: 'center' }}>
                         <Text
-                            text={`${formatMoney(props.item.price + props.item.shipFee)} đ`}
+                            text={`${formatMoney(props.item.price + props.item.shipFeeWithShopPolicy)} đ`}
                             style={{ textAlign: 'left', color: 'red', fontSize: 18, fontWeight: '500' }} />
                     </TransparentView>
 
@@ -288,7 +288,7 @@ export const OrderItem = React.memo((props: OrderItemType) => {
                                         <Text text={formatMoney(props.item.shipFee) + ' đ'} style={{ textAlign: 'left', color: 'red', fontSize: 18, flexShrink: 1, fontWeight: '500' }} />
                                     </TransparentView>
                                     <Pressable
-                                        onPress={() => Linking.openURL(`tel:+${props.item.phone}`)}
+                                        onPress={() => Linking.openURL(`tel:${props.item.phone}`)}
                                         style={{ flexDirection: 'row', flexShrink: 1, marginTop: 5 }}>
                                             
                                         <I18NText text='Phone Number' style={{ textAlign: 'left', fontSize: 18, flexShrink: 1 }} />

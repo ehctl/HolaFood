@@ -303,7 +303,7 @@ export const OrderDetail = (props: OrderDetailProps) => {
                 headerProps={{
                     header: <Level2Header
                         title='Order Detail'
-                        canNavigateToOrderScreen={true} />,
+                        canNavigateToOrderScreen={appStateProps.userType == 'customer'} />,
                     headerHeight: Level2HeaderStat.HEADER_MAX_HEIGHT
                 }}
                 onRefresh={() => fetchData()}

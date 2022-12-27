@@ -770,7 +770,6 @@ export const getOrders = (
 
     return addHeaderToken(option).
         then((newOption) => {
-            console.log(newOption)
             axios(newOption).then((response) => {
                 if (response.status === 200 && response.data.success) {
                     success(response.data);

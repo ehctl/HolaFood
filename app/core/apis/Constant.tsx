@@ -1,5 +1,5 @@
-export const DOMAIN = 'http://swp490g52-env.eba-sk7m9gfw.ap-southeast-1.elasticbeanstalk.com/api'
 export const ORI_DOMAIN = 'http://swp490g52-env.eba-sk7m9gfw.ap-southeast-1.elasticbeanstalk.com'
+export const DOMAIN = ORI_DOMAIN + '/api'
 export const GOOGLE_DISTANCE_API_URL = 'https://maps.googleapis.com/maps/api/distancematrix/json'
 export const GOOGLE_MAP_SUGGEST_ADDRESS_API_URL = 'https://maps.googleapis.com/maps/api/place/textsearch/json'
 export const GOOGLE_MAP_API_KEY = 'AIzaSyCggSF1d1JVqgAvoSKZV2eICY1GSPOTbBI'

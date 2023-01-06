@@ -23,24 +23,7 @@ export const getSearchResult = (
         signal: abortController?.signal
     }
 
-
-    return addHeaderToken(option).
-        then((newOption) => {
-            axios(newOption)
-                .then((response) => {
-                    if (response.status === 200 && response.data.success) {
-                        success(response.data);
-                    } else {
-                        failure(response);
-                    }
-                })
-                .catch(((e) => {
-                    failure(e)
-                }))
-        })
-        .catch((e) => {
-            failure(e)
-        })
+    return request(option, success, failure)
 }
 
 export const getUserInfo = async () => {
@@ -82,20 +65,7 @@ export const updateUserInfo = (
         url: DOMAIN + '/user/updateuserinfo',
     }
 
-    return addHeaderToken(option).
-        then((newOption) => {
-            axios(newOption)
-                .then((response) => {
-                    if (response.status === 200 && response.data.success) {
-                        success(response.data);
-                    } else {
-                        failure(response.data);
-                    }
-                })
-        })
-        .catch((e) => {
-            failure(e)
-        })
+    return request(option, success, failure)
 }
 
 export const getShopInfo = (
@@ -111,20 +81,7 @@ export const getShopInfo = (
         url: DOMAIN + '/shop/getinfoshop',
     }
 
-    return addHeaderToken(option).
-        then((newOption) => {
-            axios(newOption)
-                .then((response) => {
-                    if (response.status === 200 && response.data.success) {
-                        success(response.data);
-                    } else {
-                        failure(response.data);
-                    }
-                })
-        })
-        .catch((e) => {
-            failure(e)
-        })
+    return request(option, success, failure)
 }
 
 export const getShopListFood = (
@@ -143,20 +100,7 @@ export const getShopListFood = (
         url: DOMAIN + '/product/getproductby',
     }
 
-    return addHeaderToken(option).
-        then((newOption) => {
-            axios(newOption)
-                .then((response) => {
-                    if (response.status === 200) {
-                        success(response.data);
-                    } else {
-                        failure(response);
-                    }
-                })
-        })
-        .catch((e) => {
-            failure(e)
-        })
+    return request(option, success, failure)
 }
 
 export const getFoodList = (
@@ -193,28 +137,11 @@ export const getFoodListByCategory = (
             id: categoryId,
             index: page
         },
-        // url: 'https://mocki.io/v1/c08ac5c9-78b3-4bc6-9afe-dd8e4dc4a3ca',
         url: DOMAIN + '/product/getproductby',
         signal: abortController?.signal
     }
 
-    return addHeaderToken(option).
-        then((newOption) => {
-            axios(newOption)
-                .then((response) => {
-                    if (response.status === 200 && response.data.success) {
-                        success(response.data);
-                    } else {
-                        failure(response.data);
-                    }
-                })
-                .catch(((e) => {
-                    failure(e)
-                }))
-        })
-        .catch((e) => {
-            failure(e)
-        })
+    return request(option, success, failure)
 }
 
 export const getFoodListByType = (
@@ -235,23 +162,7 @@ export const getFoodListByType = (
         signal: abortController?.signal
     }
 
-    return addHeaderToken(option).
-        then((newOption) => {
-            axios(newOption)
-                .then((response) => {
-                    if (response.status === 200 && response.data.success) {
-                        success(response.data);
-                    } else {
-                        failure(response.data);
-                    }
-                })
-                .catch(((e) => {
-                    failure(e)
-                }))
-        })
-        .catch((e) => {
-            failure(e)
-        })
+    return request(option, success, failure)
 }
 
 export const getPopularFood = (
@@ -267,23 +178,7 @@ export const getPopularFood = (
         signal: abortController?.signal
     }
 
-    return addHeaderToken(option).
-        then((newOption) => {
-            axios(newOption)
-                .then((response) => {
-                    if (response.status === 200 && response.data.success) {
-                        success(response.data);
-                    } else {
-                        failure(response.data);
-                    }
-                })
-                .catch(((e) => {
-                    failure(e)
-                }))
-        })
-        .catch((e) => {
-            failure(e)
-        })
+    return request(option, success, failure)
 }
 
 export const getFoodDetail = (
@@ -301,23 +196,7 @@ export const getFoodDetail = (
         url: DOMAIN + '/product/getproductby',
     }
 
-    return addHeaderToken(option).
-        then((newOption) => {
-            axios(newOption)
-                .then((response) => {
-                    if (response.status === 200) {
-                        success(response.data);
-                    } else {
-                        failure(response.data);
-                    }
-                })
-                .catch(((e) => {
-                    failure(e)
-                }))
-        })
-        .catch((e) => {
-            failure(e)
-        })
+    return request(option, success, failure)
 }
 
 export const getFoodOption = (
@@ -333,23 +212,7 @@ export const getFoodOption = (
         url: DOMAIN + '/option/getoptionbyproduct',
     }
 
-    return addHeaderToken(option).
-        then((newOption) => {
-            axios(newOption)
-                .then((response) => {
-                    if (response.status === 200 && response.data.success) {
-                        success(response.data);
-                    } else {
-                        failure(response.data);
-                    }
-                })
-                .catch(((e) => {
-                    failure(e)
-                }))
-        })
-        .catch((e) => {
-            failure(e)
-        })
+    return request(option, success, failure)
 }
 
 
@@ -368,24 +231,7 @@ export const getFoodReviews = (
         url: DOMAIN + '/review/getreviewbyproduct',
     }
 
-
-    return addHeaderToken(option).
-        then((newOption) => {
-            axios(newOption)
-                .then((response) => {
-                    if (response.status === 200) {
-                        success(response.data);
-                    } else {
-                        failure(response.data);
-                    }
-                })
-                .catch(((e) => {
-                    failure(e)
-                }))
-        })
-        .catch((e) => {
-            failure(e)
-        })
+    return request(option, success, failure)
 }
 
 export const addFoodReview = (
@@ -405,24 +251,7 @@ export const addFoodReview = (
         url: DOMAIN + '/review/add'
     }
 
-
-    return addHeaderToken(option).
-        then((newOption) => {
-            axios(newOption)
-                .then((response) => {
-                    if (response.status === 200 && response.data.success) {
-                        success(response.data);
-                    } else {
-                        failure(response.data);
-                    }
-                })
-                .catch(((e) => {
-                    failure(e)
-                }))
-        })
-        .catch((e) => {
-            failure(e)
-        })
+    return request(option, success, failure)
 }
 
 export const deleteFoodReview = (
@@ -438,24 +267,7 @@ export const deleteFoodReview = (
         url: DOMAIN + '/review/delete'
     }
 
-
-    return addHeaderToken(option).
-        then((newOption) => {
-            axios(newOption)
-                .then((response) => {
-                    if (response.status === 200 && response.data.success) {
-                        success(response.data);
-                    } else {
-                        failure(response.data);
-                    }
-                })
-                .catch(((e) => {
-                    failure(e)
-                }))
-        })
-        .catch((e) => {
-            failure(e)
-        })
+    return request(option, success, failure)
 }
 
 export const updateFoodReview = (
@@ -475,24 +287,7 @@ export const updateFoodReview = (
         url: DOMAIN + '/review/update'
     }
 
-
-    return addHeaderToken(option).
-        then((newOption) => {
-            axios(newOption)
-                .then((response) => {
-                    if (response.status === 200) {
-                        success(response.data);
-                    } else {
-                        failure(response.data);
-                    }
-                })
-                .catch(((e) => {
-                    failure(e)
-                }))
-        })
-        .catch((e) => {
-            failure(e)
-        })
+    return request(option, success, failure)
 }
 
 export const getFoodCategory = (
@@ -506,23 +301,7 @@ export const getFoodCategory = (
         url: DOMAIN + '/category/getall',
     }
 
-    return addHeaderToken(option).
-        then((newOption) => {
-            axios(newOption)
-                .then((response) => {
-                    if (response.status === 200 && response.data.success) {
-                        success(response.data);
-                    } else {
-                        failure(response.data);
-                    }
-                })
-                .catch(((e) => {
-                    failure(e)
-                }))
-        })
-        .catch((e) => {
-            failure(e)
-        })
+    return request(option, success, failure)
 }
 
 export const getListAddress = (
@@ -533,27 +312,10 @@ export const getListAddress = (
         method: 'GET',
         params: {
         },
-        // url: 'https://mocki.io/v1/0fc2e3d9-e4bd-431a-9159-ca71adb563e3',
         url: DOMAIN + '/address/getaddress',
     }
 
-    return addHeaderToken(option).
-        then((newOption) => {
-            axios(newOption)
-                .then((response) => {
-                    if (response.status === 200 && response.data.success) {
-                        success(response.data);
-                    } else {
-                        failure(response.data);
-                    }
-                })
-                .catch(((e) => {
-                    failure(e)
-                }))
-        })
-        .catch((e) => {
-            failure(e)
-        })
+    return request(option, success, failure)
 }
 
 
@@ -568,24 +330,7 @@ export const getCartItems = (
         url: DOMAIN + '/cart/getcart',
     }
 
-    return addHeaderToken(option).
-        then((newOption) => {
-            axios(newOption)
-                .then((response) => {
-                    if (response.status === 200 && response.data.success) {
-                        success(response.data);
-                    } else {
-                        failure(response.data);
-                    }
-                })
-                .catch(((e) => {
-                    failure(e)
-                    failure(e)
-                }))
-        })
-        .catch((e) => {
-            failure(e)
-        })
+    return request(option, success, failure)
 }
 
 export const addCart = (
@@ -607,22 +352,7 @@ export const addCart = (
         url: DOMAIN + '/cart/add',
     }
 
-    return addHeaderToken(option).
-        then((newOption) => {
-            axios(newOption).then((response) => {
-                if (response.status === 200 && response.data.success) {
-                    success(response.data);
-                } else {
-                    failure(response.data);
-                }
-            })
-                .catch(((e) => {
-                    failure(e)
-                }))
-        })
-        .catch((e) => {
-            failure(e)
-        })
+    return request(option, success, failure)
 }
 
 export const updateCart = (
@@ -645,22 +375,7 @@ export const updateCart = (
         url: DOMAIN + '/cart/update',
     }
 
-    return addHeaderToken(option).
-        then((newOption) => {
-            axios(newOption).then((response) => {
-                if (response.status === 200 && response.data.success) {
-                    success(response.data);
-                } else {
-                    failure(response.data);
-                }
-            })
-                .catch(((e) => {
-                    failure(e)
-                }))
-        })
-        .catch((e) => {
-            failure(e)
-        })
+    return request(option, success, failure)
 }
 
 
@@ -677,23 +392,7 @@ export const deleteCart = (
         url: DOMAIN + '/cart/delete',
     }
 
-    return addHeaderToken(option).
-        then((newOption) => {
-            axios(newOption).then((response) => {
-                if (response.status === 200 && response.data.success) {
-                    success(response.data);
-                } else {
-                    failure(response.data);
-                }
-            })
-                .catch(((e) => {
-                    failure(e)
-                    failure(e)
-                }))
-        })
-        .catch((e) => {
-            failure(e)
-        })
+    return request(option, success, failure)
 }
 
 export const getShipperOrderQueue = (
@@ -768,22 +467,7 @@ export const getOrders = (
             }
         }
 
-    return addHeaderToken(option).
-        then((newOption) => {
-            axios(newOption).then((response) => {
-                if (response.status === 200 && response.data.success) {
-                    success(response.data);
-                } else {
-                    failure(response.data);
-                }
-            })
-                .catch(((e) => {
-                    failure(e)
-                }))
-        })
-        .catch((e) => {
-            failure(e)
-        })
+    return request(option, success, failure)
 }
 
 export const getOrderDetail = (
@@ -799,22 +483,7 @@ export const getOrderDetail = (
         url: DOMAIN + '/order/getorderbyid',
     }
 
-    return addHeaderToken(option).
-        then((newOption) => {
-            axios(newOption).then((response) => {
-                if (response.status === 200 && response.data.success) {
-                    success(response.data);
-                } else {
-                    failure(response.data);
-                }
-            })
-                .catch(((e) => {
-                    failure(e)
-                }))
-        })
-        .catch((e) => {
-            failure(e)
-        })
+    return request(option, success, failure)
 }
 
 export const addOrdersWithCartId = (
@@ -837,22 +506,7 @@ export const addOrdersWithCartId = (
         url: DOMAIN + '/order/add',
     }
 
-    return addHeaderToken(option).
-        then((newOption) => {
-            axios(newOption).then((response) => {
-                if (response.status === 200 && response.data.success) {
-                    success(response.data);
-                } else {
-                    failure(response.data);
-                }
-            })
-                .catch(((e) => {
-                    failure(e)
-                }))
-        })
-        .catch((e) => {
-            failure(e)
-        })
+    return request(option, success, failure)
 }
 
 export const addOrdersWithCardData = (
@@ -881,22 +535,7 @@ export const addOrdersWithCardData = (
         url: DOMAIN + '/order/add',
     }
 
-    return addHeaderToken(option).
-        then((newOption) => {
-            axios(newOption).then((response) => {
-                if (response.status === 200 && response.data.success) {
-                    success(response.data);
-                } else {
-                    failure(response.data);
-                }
-            })
-                .catch(((e) => {
-                    failure(e)
-                }))
-        })
-        .catch((e) => {
-            failure(e)
-        })
+    return request(option, success, failure)
 }
 
 export const updateOrder = (
@@ -914,22 +553,7 @@ export const updateOrder = (
         url: DOMAIN + '/order/update',
     }
 
-    return addHeaderToken(option).
-        then((newOption) => {
-            axios(newOption).then((response) => {
-                if (response.status === 200 && response.data.success) {
-                    success(response.data);
-                } else {
-                    failure(response.data);
-                }
-            })
-                .catch(((e) => {
-                    failure(e)
-                }))
-        })
-        .catch((e) => {
-            failure(e)
-        })
+    return request(option, success, failure)
 }
 
 export const cancelOrder = (
@@ -948,22 +572,7 @@ export const cancelOrder = (
         url: DOMAIN + '/order/update',
     }
 
-    return addHeaderToken(option).
-        then((newOption) => {
-            axios(newOption).then((response) => {
-                if (response.status === 200 && response.data.success) {
-                    success(response.data);
-                } else {
-                    failure(response.data);
-                }
-            })
-                .catch(((e) => {
-                    failure(e)
-                }))
-        })
-        .catch((e) => {
-            failure(e)
-        })
+    return request(option, success, failure)
 }
 
 export const getNotification = (
@@ -979,22 +588,7 @@ export const getNotification = (
         url: DOMAIN + '/notifications/get',
     }
 
-    return addHeaderToken(option).
-        then((newOption) => {
-            axios(newOption).then((response) => {
-                if (response.status === 200 && response.data.success) {
-                    success(response.data);
-                } else {
-                    failure(response.data);
-                }
-            })
-                .catch(((e) => {
-                    failure(e)
-                }))
-        })
-        .catch((e) => {
-            failure(e)
-        })
+    return request(option, success, failure)
 }
 
 export const getNotificationDetailItems = (
@@ -1010,22 +604,7 @@ export const getNotificationDetailItems = (
         url: DOMAIN + '/notifications/getnotibyorderid',
     }
 
-    return addHeaderToken(option).
-        then((newOption) => {
-            axios(newOption).then((response) => {
-                if (response.status === 200 && response.data.success) {
-                    success(response.data);
-                } else {
-                    failure(response.data);
-                }
-            })
-                .catch(((e) => {
-                    failure(e)
-                }))
-        })
-        .catch((e) => {
-            failure(e)
-        })
+    return request(option, success, failure)
 }
 
 export const checkNewNotification = (
@@ -1039,22 +618,7 @@ export const checkNewNotification = (
         url: DOMAIN + '/notifications/notinew',
     }
 
-    return addHeaderToken(option).
-        then((newOption) => {
-            axios(newOption).then((response) => {
-                if (response.status === 200 && response.data.success) {
-                    success(response.data);
-                } else {
-                    failure(response.data);
-                }
-            })
-                .catch(((e) => {
-                    failure(e)
-                }))
-        })
-        .catch((e) => {
-            failure(e)
-        })
+    return request(option, success, failure)
 }
 
 export const updateSeenAllNotification = (
@@ -1068,22 +632,7 @@ export const updateSeenAllNotification = (
         url: DOMAIN + '/notifications/updatenotinew',
     }
 
-    return addHeaderToken(option).
-        then((newOption) => {
-            axios(newOption).then((response) => {
-                if (response.status === 200 && response.data.success) {
-                    success(response.data);
-                } else {
-                    failure(response.data);
-                }
-            })
-                .catch(((e) => {
-                    failure(e)
-                }))
-        })
-        .catch((e) => {
-            failure(e)
-        })
+    return request(option, success, failure)
 }
 
 export const getSuggestAddress = (
@@ -1172,23 +721,7 @@ export const addNewAddress = (
         url: DOMAIN + '/address/add',
     }
 
-    return addHeaderToken(option).
-        then((newOption) => {
-            axios(newOption)
-                .then((response) => {
-                    if (response.status === 200 && response.data.success) {
-                        success(response.data);
-                    } else {
-                        failure(response.data);
-                    }
-                })
-                .catch(((e) => {
-                    failure(e)
-                }))
-        })
-        .catch((e) => {
-            failure(e)
-        })
+    return request(option, success, failure)
 }
 
 export const deleteAddress = (
@@ -1204,23 +737,7 @@ export const deleteAddress = (
         url: DOMAIN + '/address/delete',
     }
 
-    return addHeaderToken(option).
-        then((newOption) => {
-            axios(newOption)
-                .then((response) => {
-                    if (response.status === 200 && response.data.success) {
-                        success(response.data);
-                    } else {
-                        failure(response.data);
-                    }
-                })
-                .catch(((e) => {
-                    failure(e)
-                }))
-        })
-        .catch((e) => {
-            failure(e)
-        })
+    return request(option, success, failure)
 }
 
 export const getListFAQ = (
@@ -1234,23 +751,7 @@ export const getListFAQ = (
         url: DOMAIN + '/contact/getcontactbyuser',
     }
 
-    return addHeaderToken(option).
-        then((newOption) => {
-            axios(newOption)
-                .then((response) => {
-                    if (response.status === 200) {
-                        success(response.data);
-                    } else {
-                        failure(response.data);
-                    }
-                })
-                .catch(((e) => {
-                    failure(e)
-                }))
-        })
-        .catch((e) => {
-            failure(e)
-        })
+    return request(option, success, failure)
 }
 
 export const addNewFAQ = (
@@ -1268,23 +769,7 @@ export const addNewFAQ = (
         url: DOMAIN + '/contact/addcontact',
     }
 
-    return addHeaderToken(option).
-        then((newOption) => {
-            axios(newOption)
-                .then((response) => {
-                    if (response.status === 200) {
-                        success(response.data);
-                    } else {
-                        failure(response.data);
-                    }
-                })
-                .catch(((e) => {
-                    failure(e)
-                }))
-        })
-        .catch((e) => {
-            failure(e)
-        })
+    return request(option, success, failure)
 }
 
 export const updateProductFavorite = (
@@ -1312,23 +797,7 @@ export const addFavorite = (
         url: DOMAIN + '/favorite/add',
     }
 
-    return addHeaderToken(option).
-        then((newOption) => {
-            axios(newOption)
-                .then((response) => {
-                    if (response.status === 200) {
-                        success(response.data);
-                    } else {
-                        failure(response.data);
-                    }
-                })
-                .catch(((e) => {
-                    failure(e)
-                }))
-        })
-        .catch((e) => {
-            failure(e)
-        })
+    return request(option, success, failure)
 }
 
 export const deleteFavorite = (
@@ -1346,37 +815,9 @@ export const deleteFavorite = (
         url: DOMAIN + '/favorite/delete',
     }
 
-    return addHeaderToken(option).
-        then((newOption) => {
-            axios(newOption).then((response) => {
-                if (response.status === 200) {
-                    success(response.data);
-                } else {
-                    failure(response.data);
-                }
-            })
-                .catch(((e) => {
-                    failure(e)
-                }))
-        })
-        .catch((e) => {
-            failure(e)
-        })
+    return request(option, success, failure)
 }
 
-export const addHeaderToken = (option) => {
-    return AsyncStorage.getItem(Constant.APP_API_TOKEN).then((value: string) => {
-        option = {
-            ...option, ...{
-                headers: {
-                    Authorization: 'Bearer ' + value
-                }
-            }
-        }
-
-        return option
-    })
-}
 
 export const login = (
     email: string,
@@ -1448,7 +889,7 @@ export const signup = (
             email: email,
             phone: phone,
         },
-        url: 'http://swp490g52-env.eba-sk7m9gfw.ap-southeast-1.elasticbeanstalk.com/api/user/register',
+        url: DOMAIN + '/user/register',
     }
 
     axios(option)
@@ -1557,23 +998,7 @@ export const addNotificationToken = (
         url: DOMAIN + '/notificationstoken/add',
     }
 
-    return addHeaderToken(option).
-        then((newOption) => {
-            console.log('new noti token', token)
-            axios(newOption).then((response) => {
-                if (response.status === 200) {
-                    success(response.data);
-                } else {
-                    failure(response.data);
-                }
-            })
-                .catch(((e) => {
-                    failure(e)
-                }))
-        })
-        .catch((e) => {
-            failure(e)
-        })
+    return request(option, success, failure)
 }
 
 export const deleteNotificationToken = (
@@ -1589,11 +1014,14 @@ export const deleteNotificationToken = (
         url: DOMAIN + '/notificationstoken/delete',
     }
 
+    return request(option, success, failure)
+}
+
+export const request = (option, success, failure) => {
     return addHeaderToken(option).
         then((newOption) => {
-            console.log('new noti token', token)
             axios(newOption).then((response) => {
-                if (response.status === 200) {
+                if (response.status === 200 && response.data.success) {
                     success(response.data);
                 } else {
                     failure(response.data);
@@ -1606,4 +1034,18 @@ export const deleteNotificationToken = (
         .catch((e) => {
             failure(e)
         })
+}
+
+export const addHeaderToken = (option) => {
+    return AsyncStorage.getItem(Constant.APP_API_TOKEN).then((value: string) => {
+        option = {
+            ...option, ...{
+                headers: {
+                    Authorization: 'Bearer ' + value
+                }
+            }
+        }
+
+        return option
+    })
 }

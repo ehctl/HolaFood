@@ -6,7 +6,7 @@ import { GroupStackParamList } from '../../navigation/StackGroup';
 import { WebViewHeader } from '../Headers/WebviewHeader';
 import React from 'react';
 
-export const WebView = (props: WebViewProp) => {
+export const WebView = React.memo((props: WebViewProp) => {
     const webView = useRef<DefaultWebView>(null)
     const webViewHeader = useRef(null)
 
@@ -32,7 +32,7 @@ export const WebView = (props: WebViewProp) => {
         onNavigationStateChange={handleWebViewNavigationStateChange}
         onShouldStartLoadWithRequest={(e) => true}
     />
-}
+})
 
 
 export interface WebViewProp {

@@ -6,6 +6,7 @@ import { FontAwesome } from "../../base/FontAwesome";
 import Swiper from 'react-native-swiper'
 import { Image } from "../../base/Image";
 import { useNavigation } from '@react-navigation/native';
+import { Slider } from "../../base/Slider";
 
 
 export const News = () => {
@@ -67,6 +68,21 @@ export const News = () => {
                     </TransparentView>
                 </Pressable>
             </Swiper>
+
+            {/* <Slider>
+                <View style={{backgroundColor: 'red', height: 100, alignItems: 'center', justifyContent: 'center'}}>
+                    <Text text="view 1"/>
+                </View>
+                <View style={{backgroundColor: 'green', height: 100, alignItems: 'center', justifyContent: 'center'}}>
+                    <Text text="view 2"/>
+                </View>
+                <View style={{backgroundColor: 'green', height: 100, alignItems: 'center', justifyContent: 'center'}}>
+                    <Text text="view 3"/>
+                </View>
+                <View style={{backgroundColor: 'green', height: 100, alignItems: 'center', justifyContent: 'center'}}>
+                    <Text text="view 4"/>
+                </View>
+            </Slider> */}
         </Animated.View>
     )
 }

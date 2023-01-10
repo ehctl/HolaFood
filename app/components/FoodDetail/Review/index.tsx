@@ -125,10 +125,13 @@ export const Review = React.memo((props: ReviewType) => {
         deleteFoodReview(
             reviewId,
             (response) => {
-                const newAvrStar = (props.data.star * props.data.numberOfReview - star) / (props.data.numberOfReview - 1)
+                var newAvrStar = (props.data.star * props.data.numberOfReview - star) / (props.data.numberOfReview - 1)
+                if (newAvrStar - Math.floor(newAvrStar) < 0.001)
+                    newAvrStar = Math.floor(newAvrStar)
+                    
                 const newData = { ...props.data }
-                newData.star = newAvrStar
                 newData.numberOfReview -= 1
+                newData.star = newData.numberOfReview == 0 ? 0 : newAvrStar
 
                 props.onDataChange(newData)
                 setReviewList(reviewList.filter((i) => i.id != reviewId))

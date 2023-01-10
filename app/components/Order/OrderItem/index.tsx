@@ -283,7 +283,7 @@ export const OrderItem = React.memo((props: OrderItemType) => {
                                     </Pressable>
 
                                     <TransparentView style={{ flexDirection: 'row', flexShrink: 1, marginTop: 5 }}>
-                                        <I18NText text='Ship Fee' style={{ textAlign: 'left', fontSize: 18, flexShrink: 1 }} />
+                                        <I18NText text={'Shipping Cost Receive'} style={{ textAlign: 'left', fontSize: 18, flexShrink: 1 }} />
                                         <Text text=': ' style={{ fontSize: 18 }} />
                                         <Text text={formatMoney(props.item.shipFee) + ' đ'} style={{ textAlign: 'left', color: 'red', fontSize: 18, flexShrink: 1, fontWeight: '500' }} />
                                     </TransparentView>
